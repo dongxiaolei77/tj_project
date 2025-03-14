@@ -1,0 +1,17 @@
+CREATE TABLE `risk_apply_asso_comp_info` (
+  `_from` varchar(50) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '起点id',
+  `_from_name` varchar(200) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '起点名称',
+  `_from_certno` varchar(30) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '起点证件号码',
+  `_from_type` varchar(10) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '起点类型',
+  `_to` varchar(50) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '终点id',
+  `_to_name` varchar(200) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '终点名称',
+  `_to_certno` varchar(30) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '终点证件号码',
+  `_to_type` varchar(10) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '终点类型',
+  `_class` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `asso_des` varchar(20) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '企业关系',
+  `data_source` varchar(30) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '数据来源',
+  `data_dt` char(10) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '数据日期',
+  `asso_sts` char(1) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '是否有效',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT='企业关系表'

@@ -1,0 +1,10 @@
+create  table risk_base_cust_ins_info
+
+(
+ tbmc varchar(100) COMMENT '投保人名称',
+ cert_no varchar(40) COMMENT '投保人证件号码',
+ tbmj decimal(20,2) COMMENT '投保面积',
+ tbnd int COMMENT '投保年度',
+ create_time datetime COMMENT '创建时间',
+ update_time datetime COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC COMMENT '客户投保信息表';

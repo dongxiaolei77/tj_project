@@ -1,0 +1,927 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>trans_risk_base_jk_contract</name>
+    <description/>
+    <extended_description/>
+    <trans_version/>
+    <trans_type>Normal</trans_type>
+    <directory>/</directory>
+    <parameters>
+    </parameters>
+    <log>
+      <trans-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <size_limit_lines/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STATUS</id>
+          <enabled>Y</enabled>
+          <name>STATUS</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+          <subject/>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+          <subject/>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>STARTDATE</id>
+          <enabled>Y</enabled>
+          <name>STARTDATE</name>
+        </field>
+        <field>
+          <id>ENDDATE</id>
+          <enabled>Y</enabled>
+          <name>ENDDATE</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>DEPDATE</id>
+          <enabled>Y</enabled>
+          <name>DEPDATE</name>
+        </field>
+        <field>
+          <id>REPLAYDATE</id>
+          <enabled>Y</enabled>
+          <name>REPLAYDATE</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>Y</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+        <field>
+          <id>EXECUTING_SERVER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_SERVER</name>
+        </field>
+        <field>
+          <id>EXECUTING_USER</id>
+          <enabled>N</enabled>
+          <name>EXECUTING_USER</name>
+        </field>
+        <field>
+          <id>CLIENT</id>
+          <enabled>N</enabled>
+          <name>CLIENT</name>
+        </field>
+      </trans-log-table>
+      <perf-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <interval/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>SEQ_NR</id>
+          <enabled>Y</enabled>
+          <name>SEQ_NR</name>
+        </field>
+        <field>
+          <id>LOGDATE</id>
+          <enabled>Y</enabled>
+          <name>LOGDATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>INPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>INPUT_BUFFER_ROWS</name>
+        </field>
+        <field>
+          <id>OUTPUT_BUFFER_ROWS</id>
+          <enabled>Y</enabled>
+          <name>OUTPUT_BUFFER_ROWS</name>
+        </field>
+      </perf-log-table>
+      <channel-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>LOGGING_OBJECT_TYPE</id>
+          <enabled>Y</enabled>
+          <name>LOGGING_OBJECT_TYPE</name>
+        </field>
+        <field>
+          <id>OBJECT_NAME</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_NAME</name>
+        </field>
+        <field>
+          <id>OBJECT_COPY</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_COPY</name>
+        </field>
+        <field>
+          <id>REPOSITORY_DIRECTORY</id>
+          <enabled>Y</enabled>
+          <name>REPOSITORY_DIRECTORY</name>
+        </field>
+        <field>
+          <id>FILENAME</id>
+          <enabled>Y</enabled>
+          <name>FILENAME</name>
+        </field>
+        <field>
+          <id>OBJECT_ID</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_ID</name>
+        </field>
+        <field>
+          <id>OBJECT_REVISION</id>
+          <enabled>Y</enabled>
+          <name>OBJECT_REVISION</name>
+        </field>
+        <field>
+          <id>PARENT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>PARENT_CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>ROOT_CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>ROOT_CHANNEL_ID</name>
+        </field>
+      </channel-log-table>
+      <step-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>TRANSNAME</id>
+          <enabled>Y</enabled>
+          <name>TRANSNAME</name>
+        </field>
+        <field>
+          <id>STEPNAME</id>
+          <enabled>Y</enabled>
+          <name>STEPNAME</name>
+        </field>
+        <field>
+          <id>STEP_COPY</id>
+          <enabled>Y</enabled>
+          <name>STEP_COPY</name>
+        </field>
+        <field>
+          <id>LINES_READ</id>
+          <enabled>Y</enabled>
+          <name>LINES_READ</name>
+        </field>
+        <field>
+          <id>LINES_WRITTEN</id>
+          <enabled>Y</enabled>
+          <name>LINES_WRITTEN</name>
+        </field>
+        <field>
+          <id>LINES_UPDATED</id>
+          <enabled>Y</enabled>
+          <name>LINES_UPDATED</name>
+        </field>
+        <field>
+          <id>LINES_INPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_INPUT</name>
+        </field>
+        <field>
+          <id>LINES_OUTPUT</id>
+          <enabled>Y</enabled>
+          <name>LINES_OUTPUT</name>
+        </field>
+        <field>
+          <id>LINES_REJECTED</id>
+          <enabled>Y</enabled>
+          <name>LINES_REJECTED</name>
+        </field>
+        <field>
+          <id>ERRORS</id>
+          <enabled>Y</enabled>
+          <name>ERRORS</name>
+        </field>
+        <field>
+          <id>LOG_FIELD</id>
+          <enabled>N</enabled>
+          <name>LOG_FIELD</name>
+        </field>
+      </step-log-table>
+      <metrics-log-table>
+        <connection/>
+        <schema/>
+        <table/>
+        <timeout_days/>
+        <field>
+          <id>ID_BATCH</id>
+          <enabled>Y</enabled>
+          <name>ID_BATCH</name>
+        </field>
+        <field>
+          <id>CHANNEL_ID</id>
+          <enabled>Y</enabled>
+          <name>CHANNEL_ID</name>
+        </field>
+        <field>
+          <id>LOG_DATE</id>
+          <enabled>Y</enabled>
+          <name>LOG_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_DATE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DATE</name>
+        </field>
+        <field>
+          <id>METRICS_CODE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_CODE</name>
+        </field>
+        <field>
+          <id>METRICS_DESCRIPTION</id>
+          <enabled>Y</enabled>
+          <name>METRICS_DESCRIPTION</name>
+        </field>
+        <field>
+          <id>METRICS_SUBJECT</id>
+          <enabled>Y</enabled>
+          <name>METRICS_SUBJECT</name>
+        </field>
+        <field>
+          <id>METRICS_TYPE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_TYPE</name>
+        </field>
+        <field>
+          <id>METRICS_VALUE</id>
+          <enabled>Y</enabled>
+          <name>METRICS_VALUE</name>
+        </field>
+      </metrics-log-table>
+    </log>
+    <maxdate>
+      <connection/>
+      <table/>
+      <field/>
+      <offset>0.0</offset>
+      <maxdiff>0.0</maxdiff>
+    </maxdate>
+    <size_rowset>10000</size_rowset>
+    <sleep_time_empty>50</sleep_time_empty>
+    <sleep_time_full>50</sleep_time_full>
+    <unique_connections>N</unique_connections>
+    <feedback_shown>Y</feedback_shown>
+    <feedback_size>50000</feedback_size>
+    <using_thread_priorities>Y</using_thread_priorities>
+    <shared_objects_file/>
+    <capture_step_performance>N</capture_step_performance>
+    <step_performance_capturing_delay>1000</step_performance_capturing_delay>
+    <step_performance_capturing_size_limit>100</step_performance_capturing_size_limit>
+    <dependencies>
+    </dependencies>
+    <partitionschemas>
+    </partitionschemas>
+    <slaveservers>
+    </slaveservers>
+    <clusterschemas>
+    </clusterschemas>
+    <created_user>-</created_user>
+    <created_date>2021/11/18 15:50:40.852</created_date>
+    <modified_user>-</modified_user>
+    <modified_date>2021/11/18 15:50:40.852</modified_date>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
+    <is_key_private>N</is_key_private>
+  </info>
+  <notepads>
+  </notepads>
+  <connection>
+    <name>dw_base</name>
+    <server>${dw_base_ip}</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>${dw_base_host}</database>
+    <port>3306</port>
+    <username>${dw_base_user}</username>
+    <password>${dw_base_pass}</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>EXTRA_OPTION_MYSQL.characterEncoding</code>
+        <attribute>utf8</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>3306</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <connection>
+    <name>dw_risk_risk</name>
+    <server>${dw_risk_ip}</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>${dw_risk_host}</database>
+    <port>3306</port>
+    <username>${dw_risk_user}</username>
+    <password>${dw_risk_pass}</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>3306</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop>
+      <from>表输入</from>
+      <to>表输出</to>
+      <enabled>Y</enabled>
+    </hop>
+  </order>
+  <step>
+    <name>表输入</name>
+    <type>TableInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>dw_base</connection>
+    <sql>select  
+t1.loan_cont_id as jk_contract_code, -- 借款合同编号
+t1.proj_no as guar_id,-- 主项目编号
+t1.is_sign_max_guar, -- 是否签订最高额保证合同
+t2.loan_bank as loan_bank_name, -- 贷款银行名称
+case when t2.loan_bank like '%农村商业%' or t2.loan_bank like '%农商%' then '农商银行'
+when t2.loan_bank like '%邮储%' or t2.loan_bank like '%邮政储蓄%' then '邮储银行'
+when t2.loan_bank like '%农业%' or t2.loan_bank like '%农行%' then '农业银行'
+else '其他银行' end as bank_class, -- 贷款银行分类
+trim(t2.cust_name) as cust_name,-- 贷款主体名称
+t2.cust_type,-- 贷款主体类型
+replace(trim(t2.cert_no),'	','') as cert_no,-- 证件号码
+trim(t2.tel_no) as tel_no,-- 联系方式
+t1.loan_cont_beg_dt as jk_contract_begin_dt,-- 借款合同开始日期
+t1.loan_cont_end_dt as jk_contract_end_dt,-- 借款合同结束日期
+t1.loan_cont_term as jk_contract_terms,-- 借款期限（月）
+t1.loan_cont_rate as jk_contract_rate, -- 利率
+round(t1.loan_cont_amt,2) as jk_contract_amt, -- 借款合同金额（万元）
+case 
+  when t1.loan_type='0' then '普通贷款'
+  when t1.loan_type='1' then '自主循环贷（随借随还）'
+  when t1.loan_type='2' then '非自主循环贷（一年一支用）' 
+else null end as debt_type,-- 贷款方式
+t2.loan_use as debt_use, -- 贷款用途
+date_format(t2.loan_begin_dt,'%Y-%m-%d') as first_fk_dt,-- 合同内首笔放款日期
+round(coalesce(case when t2.guar_amt>10000 then t2.guar_amt/10000 else t2.guar_amt end ,loan_amt),2)  as first_fk_amt, -- 合同内首笔放款金额
+t2.data_source,-- 数据来源
+t2.guar_prod, -- 担保产品
+curdate() as create_time,
+curdate() as update_time
+from 
+(
+	select   distinct t1.proj_no,t1.loan_type,t2.*  
+	from  dw_base.tmp_ods_t_biz_project_main t1
+	inner join  dw_base.tmp_ods_t_biz_proj_sign t2 
+	on t1.proj_id=t2.proj_id
+) t1 left join 
+(select  *   from dw_base.dwd_guar_info_all) t2
+on t1.proj_no=t2.guar_id
+where t2.item_stt in('已放款','已解保')
+union
+select
+t1.loan_no as jk_contract_code,
+t1.guar_id,
+null as is_sign_max_guar,
+t1.loan_bank as loan_bank_name,
+case when t1.loan_bank like '%农村商业%' or t1.loan_bank like '%农商%' then '农商银行'
+when t1.loan_bank like '%邮储%' or t1.loan_bank like '%邮政储蓄%' then '邮储银行'
+when t1.loan_bank like '%农业%' or t1.loan_bank like '%农行%' then '农业银行'
+else '其他银行' end as bank_class, 
+trim(t1.cust_name) as cust_name,-- 贷款主体名称
+t1.cust_type,-- 贷款主体类型
+replace(trim(t1.cert_no),'	','') as cert_no,-- 证件号码
+trim(t1.tel_no) as tel_no,-- 联系方式
+t1.loan_begin_dt as jk_contract_begin_dt,
+t1.loan_end_dt as jk_contract_end_dt,
+t1.loan_term as jk_contract_terms,
+t1.loan_rate as jk_contract_rate,
+t1.loan_amt as jk_contract_amt,
+case 
+  when t3.loan_type='0' then '普通贷款'
+  when t3.loan_type='1' then '自主循环贷（随借随还）'
+  when t3.loan_type='2' then '非自主循环贷（一年一支用）' 
+else null end as debt_type,-- 贷款方式
+t1.loan_use as debt_use,
+t1.loan_begin_dt as first_fk_dt,
+t1.loan_amt as first_fk_amt,
+t1.data_source,
+t1.guar_prod,
+curdate() as create_time,
+curdate() as update_time
+from 
+(
+	select  *   from dw_base.dwd_guar_info_all 
+	where item_stt in ('已放款','已解保') and guar_id not like '%XZ%'
+	group by replace(trim(cert_no),'	','') 
+	having count(guar_id)=1
+)  t1
+left join 
+(
+	select   distinct t1.proj_no,t1.loan_type,t2.*  
+	from  dw_base.tmp_ods_t_biz_project_main t1
+	inner join  dw_base.tmp_ods_t_biz_proj_sign t2 
+	on t1.proj_id=t2.proj_id
+) t2 
+on t1.guar_id=t2.proj_no
+left join dw_base.tmp_ods_t_biz_project_main  t3
+on t1.guar_id=t3.proj_no
+where t2.proj_no is null
+union 
+-- 按照证件号码和合同号分组，取多个值去重
+select
+replace(trim(t1.loan_no),'	','') as jk_contract_code,
+min(t1.guar_id) as guar_id,
+null as is_sign_max_guar,
+t1.loan_bank as loan_bank_name,
+case when t1.loan_bank like '%农村商业%' or t1.loan_bank like '%农商%' then '农商银行'
+when t1.loan_bank like '%邮储%' or t1.loan_bank like '%邮政储蓄%' then '邮储银行'
+when t1.loan_bank like '%农业%' or t1.loan_bank like '%农行%' then '农业银行'
+else '其他银行' end as bank_class, 
+trim(t1.cust_name) as cust_name,-- 贷款主体名称
+t1.cust_type,-- 贷款主体类型
+replace(trim(t1.cert_no),'	','') as cert_no,-- 证件号码
+trim(t1.tel_no) as tel_no,-- 联系方式
+date_format(min(t1.loan_begin_dt),'%Y-%m-%d') as jk_contract_begin_dt,
+date_format(max(t1.loan_end_dt),'%Y-%m-%d') as jk_contract_end_dt,
+case when max(t1.loan_term)= 12 then sum(loan_term) else max(t1.loan_term) end as jk_contract_terms,
+max(t1.loan_rate) as jk_contract_rate,
+max(t1.loan_amt) as jk_contract_amt,
+null as debt_type,-- 贷款方式
+t1.loan_use as debt_use,
+date_format(min(t1.loan_begin_dt),'%Y-%m-%d') as first_fk_dt,
+min(t1.loan_amt) as first_fk_amt,
+t1.data_source,
+t1.guar_prod,
+curdate() as create_time,
+curdate() as update_time
+from 
+( 
+	select t1.*
+  from dw_base.dwd_guar_info_all t1
+  inner join 
+	(
+		select  distinct replace(trim(cert_no),'	','') as cert_no,replace(trim(loan_no),'	','') as loan_no   
+    from dw_base.dwd_guar_info_all 
+		where  loan_no is not null and loan_no&lt;&gt;'' and loan_no&lt;&gt;'无'
+    and guar_id not like '%XZ%' and item_stt in ('已放款','已解保') 
+		group by replace(trim(cert_no),'	','') ,replace(trim(loan_no),'	','')
+		having count(guar_id)>1
+	) t2
+   on replace(trim(t1.cert_no),'	','')=t2.cert_no and replace(trim(t1.loan_no),'	','')=t2.loan_no
+   where guar_id not like '%XZ%' and item_stt in ('已放款','已解保') 
+  
+)  t1
+left join 
+(
+	select   distinct t2.loan_cont_id as loan_no
+	from  dw_base.tmp_ods_t_biz_project_main t1
+	inner join  dw_base.tmp_ods_t_biz_proj_sign t2 
+	on t1.proj_id=t2.proj_id
+) t2 
+on t1.loan_no=t2.loan_no
+where t2.loan_no is null 
+group by replace(trim(t1.cert_no),'	','') ,replace(trim(t1.loan_no),'	','')
+
+union 
+-- 按照证件号码和合同号码分组，取唯一值
+select
+replace(trim(t1.loan_no),'	','') as jk_contract_code,
+t1.guar_id as guar_id,
+null as is_sign_max_guar,
+t1.loan_bank as loan_bank_name,
+case when t1.loan_bank like '%农村商业%' or t1.loan_bank like '%农商%' then '农商银行'
+when t1.loan_bank like '%邮储%' or t1.loan_bank like '%邮政储蓄%' then '邮储银行'
+when t1.loan_bank like '%农业%' or t1.loan_bank like '%农行%' then '农业银行'
+else '其他银行' end as bank_class, 
+trim(t1.cust_name) as cust_name,-- 贷款主体名称
+t1.cust_type,-- 贷款主体类型
+replace(trim(t1.cert_no),'	','') as cert_no,-- 证件号码
+trim(t1.tel_no) as tel_no,-- 联系方式
+date_format(t1.loan_begin_dt,'%Y-%m-%d') as jk_contract_begin_dt,
+date_format(t1.loan_end_dt,'%Y-%m-%d') as jk_contract_end_dt,
+t1.loan_term  as jk_contract_terms,
+t1.loan_rate as jk_contract_rate,
+t1.loan_amt as jk_contract_amt,
+null as debt_type,-- 贷款方式
+t1.loan_use as debt_use,
+date_format(t1.loan_begin_dt,'%Y-%m-%d') as first_fk_dt,
+t1.loan_amt as first_fk_amt,
+t1.data_source,
+t1.guar_prod,
+curdate() as create_time,
+curdate() as update_time
+from 
+( 
+	select *  
+  from dw_base.dwd_guar_info_all 
+	where  loan_no is not null and loan_no&lt;&gt;'' and loan_no&lt;&gt;'无' and loan_no not like '1%' and loan_no not like '0%'
+  and guar_id not like '%XZ%' and item_stt in ('已放款','已解保') 
+	group by replace(trim(cert_no),'	','') ,replace(trim(loan_no),'	','')
+	having count(guar_id)=1
+)  t1
+left join 
+(
+	select   distinct t2.loan_cont_id as loan_no
+	from  dw_base.tmp_ods_t_biz_project_main t1
+	inner join  dw_base.tmp_ods_t_biz_proj_sign t2 
+	on t1.proj_id=t2.proj_id
+) t2 
+on t1.loan_no=t2.loan_no
+left join 
+(
+	select  *   from dw_base.dwd_guar_info_all 
+	where item_stt in ('已放款','已解保') and guar_id not like '%XZ%'
+	group by replace(trim(cert_no),'	','') 
+	having count(guar_id)=1
+) t3
+on t1.guar_id=t3.guar_id
+where t2.loan_no is null and t3.guar_id is null </sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>304</xloc>
+      <yloc>288</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>表输出</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>dw_risk_risk</connection>
+    <schema/>
+    <table>risk_base_jk_contract_info</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+      <field>
+        <column_name>jk_contract_code</column_name>
+        <stream_name>jk_contract_code</stream_name>
+      </field>
+      <field>
+        <column_name>guar_id</column_name>
+        <stream_name>guar_id</stream_name>
+      </field>
+      <field>
+        <column_name>is_sign_max_guar</column_name>
+        <stream_name>is_sign_max_guar</stream_name>
+      </field>
+      <field>
+        <column_name>loan_bank_name</column_name>
+        <stream_name>loan_bank_name</stream_name>
+      </field>
+      <field>
+        <column_name>bank_class</column_name>
+        <stream_name>bank_class</stream_name>
+      </field>
+      <field>
+        <column_name>cust_name</column_name>
+        <stream_name>cust_name</stream_name>
+      </field>
+      <field>
+        <column_name>cust_type</column_name>
+        <stream_name>cust_type</stream_name>
+      </field>
+      <field>
+        <column_name>cert_no</column_name>
+        <stream_name>cert_no</stream_name>
+      </field>
+      <field>
+        <column_name>tel_no</column_name>
+        <stream_name>tel_no</stream_name>
+      </field>
+      <field>
+        <column_name>jk_contract_begin_dt</column_name>
+        <stream_name>jk_contract_begin_dt</stream_name>
+      </field>
+      <field>
+        <column_name>jk_contract_end_dt</column_name>
+        <stream_name>jk_contract_end_dt</stream_name>
+      </field>
+      <field>
+        <column_name>jk_contract_terms</column_name>
+        <stream_name>jk_contract_terms</stream_name>
+      </field>
+      <field>
+        <column_name>jk_contract_rate</column_name>
+        <stream_name>jk_contract_rate</stream_name>
+      </field>
+      <field>
+        <column_name>jk_contract_amt</column_name>
+        <stream_name>jk_contract_amt</stream_name>
+      </field>
+      <field>
+        <column_name>debt_type</column_name>
+        <stream_name>debt_type</stream_name>
+      </field>
+      <field>
+        <column_name>debt_use</column_name>
+        <stream_name>debt_use</stream_name>
+      </field>
+      <field>
+        <column_name>first_fk_dt</column_name>
+        <stream_name>first_fk_dt</stream_name>
+      </field>
+      <field>
+        <column_name>first_fk_amt</column_name>
+        <stream_name>first_fk_amt</stream_name>
+      </field>
+      <field>
+        <column_name>data_source</column_name>
+        <stream_name>data_source</stream_name>
+      </field>
+      <field>
+        <column_name>guar_prod</column_name>
+        <stream_name>guar_prod</stream_name>
+      </field>
+      <field>
+        <column_name>create_time</column_name>
+        <stream_name>create_time</stream_name>
+      </field>
+      <field>
+        <column_name>update_time</column_name>
+        <stream_name>update_time</stream_name>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>576</xloc>
+      <yloc>288</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step_error_handling>
+  </step_error_handling>
+  <slave-step-copy-partition-distribution>
+  </slave-step-copy-partition-distribution>
+  <slave_transformation>N</slave_transformation>
+  <attributes/>
+</transformation>

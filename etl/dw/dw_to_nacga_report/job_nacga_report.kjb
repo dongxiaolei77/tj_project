@@ -1,0 +1,3491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job>
+  <name>job_nacga_report</name>
+  <description/>
+  <extended_description/>
+  <job_version/>
+  <job_status>0</job_status>
+  <directory>/</directory>
+  <created_user>-</created_user>
+  <created_date>2023/02/08 15:59:19.391</created_date>
+  <modified_user>-</modified_user>
+  <modified_date>2023/02/08 15:59:19.391</modified_date>
+  <parameters>
+    </parameters>
+  <connection>
+    <name>nacga_report</name>
+    <server>${nacga_report_ip}</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>${nacga_report_host}</database>
+    <port>3306</port>
+    <username>${nacga_report_user}</username>
+    <password>${nacga_report_pass}</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>3306</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
+  <slaveservers>
+    </slaveservers>
+  <job-log-table>
+    <connection/>
+    <schema/>
+    <table/>
+    <size_limit_lines/>
+    <interval/>
+    <timeout_days/>
+    <field>
+      <id>ID_JOB</id>
+      <enabled>Y</enabled>
+      <name>ID_JOB</name>
+    </field>
+    <field>
+      <id>CHANNEL_ID</id>
+      <enabled>Y</enabled>
+      <name>CHANNEL_ID</name>
+    </field>
+    <field>
+      <id>JOBNAME</id>
+      <enabled>Y</enabled>
+      <name>JOBNAME</name>
+    </field>
+    <field>
+      <id>STATUS</id>
+      <enabled>Y</enabled>
+      <name>STATUS</name>
+    </field>
+    <field>
+      <id>LINES_READ</id>
+      <enabled>Y</enabled>
+      <name>LINES_READ</name>
+    </field>
+    <field>
+      <id>LINES_WRITTEN</id>
+      <enabled>Y</enabled>
+      <name>LINES_WRITTEN</name>
+    </field>
+    <field>
+      <id>LINES_UPDATED</id>
+      <enabled>Y</enabled>
+      <name>LINES_UPDATED</name>
+    </field>
+    <field>
+      <id>LINES_INPUT</id>
+      <enabled>Y</enabled>
+      <name>LINES_INPUT</name>
+    </field>
+    <field>
+      <id>LINES_OUTPUT</id>
+      <enabled>Y</enabled>
+      <name>LINES_OUTPUT</name>
+    </field>
+    <field>
+      <id>LINES_REJECTED</id>
+      <enabled>Y</enabled>
+      <name>LINES_REJECTED</name>
+    </field>
+    <field>
+      <id>ERRORS</id>
+      <enabled>Y</enabled>
+      <name>ERRORS</name>
+    </field>
+    <field>
+      <id>STARTDATE</id>
+      <enabled>Y</enabled>
+      <name>STARTDATE</name>
+    </field>
+    <field>
+      <id>ENDDATE</id>
+      <enabled>Y</enabled>
+      <name>ENDDATE</name>
+    </field>
+    <field>
+      <id>LOGDATE</id>
+      <enabled>Y</enabled>
+      <name>LOGDATE</name>
+    </field>
+    <field>
+      <id>DEPDATE</id>
+      <enabled>Y</enabled>
+      <name>DEPDATE</name>
+    </field>
+    <field>
+      <id>REPLAYDATE</id>
+      <enabled>Y</enabled>
+      <name>REPLAYDATE</name>
+    </field>
+    <field>
+      <id>LOG_FIELD</id>
+      <enabled>Y</enabled>
+      <name>LOG_FIELD</name>
+    </field>
+    <field>
+      <id>EXECUTING_SERVER</id>
+      <enabled>N</enabled>
+      <name>EXECUTING_SERVER</name>
+    </field>
+    <field>
+      <id>EXECUTING_USER</id>
+      <enabled>N</enabled>
+      <name>EXECUTING_USER</name>
+    </field>
+    <field>
+      <id>START_JOB_ENTRY</id>
+      <enabled>N</enabled>
+      <name>START_JOB_ENTRY</name>
+    </field>
+    <field>
+      <id>CLIENT</id>
+      <enabled>N</enabled>
+      <name>CLIENT</name>
+    </field>
+  </job-log-table>
+  <jobentry-log-table>
+    <connection/>
+    <schema/>
+    <table/>
+    <timeout_days/>
+    <field>
+      <id>ID_BATCH</id>
+      <enabled>Y</enabled>
+      <name>ID_BATCH</name>
+    </field>
+    <field>
+      <id>CHANNEL_ID</id>
+      <enabled>Y</enabled>
+      <name>CHANNEL_ID</name>
+    </field>
+    <field>
+      <id>LOG_DATE</id>
+      <enabled>Y</enabled>
+      <name>LOG_DATE</name>
+    </field>
+    <field>
+      <id>JOBNAME</id>
+      <enabled>Y</enabled>
+      <name>TRANSNAME</name>
+    </field>
+    <field>
+      <id>JOBENTRYNAME</id>
+      <enabled>Y</enabled>
+      <name>STEPNAME</name>
+    </field>
+    <field>
+      <id>LINES_READ</id>
+      <enabled>Y</enabled>
+      <name>LINES_READ</name>
+    </field>
+    <field>
+      <id>LINES_WRITTEN</id>
+      <enabled>Y</enabled>
+      <name>LINES_WRITTEN</name>
+    </field>
+    <field>
+      <id>LINES_UPDATED</id>
+      <enabled>Y</enabled>
+      <name>LINES_UPDATED</name>
+    </field>
+    <field>
+      <id>LINES_INPUT</id>
+      <enabled>Y</enabled>
+      <name>LINES_INPUT</name>
+    </field>
+    <field>
+      <id>LINES_OUTPUT</id>
+      <enabled>Y</enabled>
+      <name>LINES_OUTPUT</name>
+    </field>
+    <field>
+      <id>LINES_REJECTED</id>
+      <enabled>Y</enabled>
+      <name>LINES_REJECTED</name>
+    </field>
+    <field>
+      <id>ERRORS</id>
+      <enabled>Y</enabled>
+      <name>ERRORS</name>
+    </field>
+    <field>
+      <id>RESULT</id>
+      <enabled>Y</enabled>
+      <name>RESULT</name>
+    </field>
+    <field>
+      <id>NR_RESULT_ROWS</id>
+      <enabled>Y</enabled>
+      <name>NR_RESULT_ROWS</name>
+    </field>
+    <field>
+      <id>NR_RESULT_FILES</id>
+      <enabled>Y</enabled>
+      <name>NR_RESULT_FILES</name>
+    </field>
+    <field>
+      <id>LOG_FIELD</id>
+      <enabled>N</enabled>
+      <name>LOG_FIELD</name>
+    </field>
+    <field>
+      <id>COPY_NR</id>
+      <enabled>N</enabled>
+      <name>COPY_NR</name>
+    </field>
+  </jobentry-log-table>
+  <channel-log-table>
+    <connection/>
+    <schema/>
+    <table/>
+    <timeout_days/>
+    <field>
+      <id>ID_BATCH</id>
+      <enabled>Y</enabled>
+      <name>ID_BATCH</name>
+    </field>
+    <field>
+      <id>CHANNEL_ID</id>
+      <enabled>Y</enabled>
+      <name>CHANNEL_ID</name>
+    </field>
+    <field>
+      <id>LOG_DATE</id>
+      <enabled>Y</enabled>
+      <name>LOG_DATE</name>
+    </field>
+    <field>
+      <id>LOGGING_OBJECT_TYPE</id>
+      <enabled>Y</enabled>
+      <name>LOGGING_OBJECT_TYPE</name>
+    </field>
+    <field>
+      <id>OBJECT_NAME</id>
+      <enabled>Y</enabled>
+      <name>OBJECT_NAME</name>
+    </field>
+    <field>
+      <id>OBJECT_COPY</id>
+      <enabled>Y</enabled>
+      <name>OBJECT_COPY</name>
+    </field>
+    <field>
+      <id>REPOSITORY_DIRECTORY</id>
+      <enabled>Y</enabled>
+      <name>REPOSITORY_DIRECTORY</name>
+    </field>
+    <field>
+      <id>FILENAME</id>
+      <enabled>Y</enabled>
+      <name>FILENAME</name>
+    </field>
+    <field>
+      <id>OBJECT_ID</id>
+      <enabled>Y</enabled>
+      <name>OBJECT_ID</name>
+    </field>
+    <field>
+      <id>OBJECT_REVISION</id>
+      <enabled>Y</enabled>
+      <name>OBJECT_REVISION</name>
+    </field>
+    <field>
+      <id>PARENT_CHANNEL_ID</id>
+      <enabled>Y</enabled>
+      <name>PARENT_CHANNEL_ID</name>
+    </field>
+    <field>
+      <id>ROOT_CHANNEL_ID</id>
+      <enabled>Y</enabled>
+      <name>ROOT_CHANNEL_ID</name>
+    </field>
+  </channel-log-table>
+  <pass_batchid>N</pass_batchid>
+  <shared_objects_file/>
+  <entries>
+    <entry>
+      <name>Start</name>
+      <description/>
+      <type>SPECIAL</type>
+      <attributes/>
+      <start>Y</start>
+      <dummy>N</dummy>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>60</intervalMinutes>
+      <hour>12</hour>
+      <minutes>0</minutes>
+      <weekDay>1</weekDay>
+      <DayOfMonth>1</DayOfMonth>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>160</xloc>
+      <yloc>608</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>成功</name>
+      <description/>
+      <type>SUCCESS</type>
+      <attributes/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1568</xloc>
+      <yloc>608</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_cust_per_base_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_cust_per_base_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1312</xloc>
+      <yloc>16</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_cust_per_base_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.cust_per_base_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.cust_per_base_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1008</xloc>
+      <yloc>16</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_cust_corp_rel_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_cust_corp_rel_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1312</xloc>
+      <yloc>96</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_cust_corp_rel_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.cust_corp_rel_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d');
+delete from nacga_report.cust_corp_rel_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1008</xloc>
+      <yloc>96</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_cust_corp_base_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_cust_corp_base_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1312</xloc>
+      <yloc>176</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_cust_corp_base_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.cust_corp_base_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.cust_corp_base_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1008</xloc>
+      <yloc>176</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_base_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_base_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1312</xloc>
+      <yloc>256</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_base_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_base_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d');
+delete from nacga_report.proj_base_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1008</xloc>
+      <yloc>256</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_cntr_agmt_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_cntr_agmt_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1312</xloc>
+      <yloc>336</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_cntr_agmt_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_cntr_agmt_info_front where day_id &lt;=date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_cntr_agmt_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1008</xloc>
+      <yloc>336</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_loan_ntc_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_loan_ntc_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1312</xloc>
+      <yloc>416</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_loan_ntc_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_loan_ntc_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_loan_ntc_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1008</xloc>
+      <yloc>416</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_loan_rec_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_loan_rec_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1312</xloc>
+      <yloc>496</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_loan_rec_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_loan_rec_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_loan_rec_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1008</xloc>
+      <yloc>496</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_post_loan_mgmt_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_post_loan_mgmt_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1312</xloc>
+      <yloc>576</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_post_loan_mgmt_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_post_loan_mgmt_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_post_loan_mgmt_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>576</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_rk_wrn_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_rk_wrn_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1296</xloc>
+      <yloc>656</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_rk_wrn_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_rk_wrn_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_rk_wrn_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>656</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_unguar_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_unguar_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1296</xloc>
+      <yloc>752</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_unguar_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_unguar_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d');
+delete from nacga_report.proj_unguar_info_front where day_id = '${v_sdate}';
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>752</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_comp_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_comp_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1296</xloc>
+      <yloc>832</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_comp_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_comp_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_comp_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>832</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_rcvr_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_rcvr_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1296</xloc>
+      <yloc>912</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_rcvr_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_rcvr_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_rcvr_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>912</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_rpmt_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_rpmt_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1296</xloc>
+      <yloc>992</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_rpmt_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_rpmt_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_rpmt_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>992</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_ext_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_ext_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1296</xloc>
+      <yloc>1056</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_ext_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_ext_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_ext_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>1056</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_ovd_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_ovd_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1296</xloc>
+      <yloc>1120</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_ovd_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_ovd_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_ovd_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>1120</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>etl_proj_act_rk_shr_info_front</name>
+      <description/>
+      <type>TRANS</type>
+      <attributes/>
+      <specification_method>filename</specification_method>
+      <trans_object_id/>
+      <filename>${Internal.Entry.Current.Directory}/etl_proj_act_rk_shr_info_front.ktr</filename>
+      <transname/>
+      <arg_from_previous>N</arg_from_previous>
+      <params_from_previous>N</params_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <clear_rows>N</clear_rows>
+      <clear_files>N</clear_files>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <loglevel>Basic</loglevel>
+      <cluster>N</cluster>
+      <slave_server_name/>
+      <set_append_logfile>N</set_append_logfile>
+      <wait_until_finished>N</wait_until_finished>
+      <follow_abort_remote>N</follow_abort_remote>
+      <create_parent_folder>N</create_parent_folder>
+      <logging_remote_work>N</logging_remote_work>
+      <run_configuration>Pentaho local</run_configuration>
+      <parameters>
+        <pass_all_parameters>Y</pass_all_parameters>
+      </parameters>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1296</xloc>
+      <yloc>1184</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_act_rk_shr_info_front</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_act_rk_shr_info_front where day_id &lt;= date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+delete from nacga_report.proj_act_rk_shr_info_front where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>1024</xloc>
+      <yloc>1184</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_cust_per_base_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.cust_per_base_info_front_his
+(
+cust_no_nacga
+,cert_no_typ_cd
+,cust_main_typ_cd
+,cust_name
+,cert_no
+,gender_cd
+,cert_valid_start_dt
+,cert_valid_end_dt
+,tel_no
+,educ_cd
+,mail_addr
+,mgr_stt_cd
+,coup_name
+,coup_cert_typ_cd
+,coup_cert_no
+-- ,coup_area_cd
+,coup_tel_no
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+
+)
+select
+cust_no_nacga
+,cert_no_typ_cd
+,cust_main_typ_cd
+,cust_name
+,cert_no
+,gender_cd
+,cert_valid_start_dt
+,cert_valid_end_dt
+,tel_no
+,educ_cd
+,mail_addr
+,mgr_stt_cd
+,coup_name
+,coup_cert_typ_cd
+,coup_cert_no
+-- ,coup_area_cd
+,coup_tel_no
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.cust_per_base_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>16</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_cust_per_base_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.cust_per_base_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>16</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_cust_corp_rel_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.cust_corp_rel_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>96</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_cust_corp_rel_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.cust_corp_rel_info_front_his
+(
+cust_corp_cd
+,cert_no
+,cust_corp_rel_no
+,cust_no_nacga
+,own_comp_name
+,own_comp_cert_no_typ_cd
+,own_comp_cert_no
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+cust_corp_cd
+,cert_no
+,cust_corp_rel_no
+,cust_no_nacga
+,own_comp_name
+,own_comp_cert_no_typ_cd
+,own_comp_cert_no
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.cust_corp_rel_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>96</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_cust_corp_base_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.cust_corp_base_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>176</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_cust_corp_base_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.cust_corp_base_info_front_his
+(
+cust_no_nacga
+,cert_no_typ_cd
+,cust_main_typ_cd
+,corp_name
+,corp_cert_no
+,corp_typ_cd
+,lgpr_name
+,lgpr_cert_typ_cd
+,lgpr_cert_no
+,lgpr_tel_no
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+cust_no_nacga
+,cert_no_typ_cd
+,cust_main_typ_cd
+,corp_name
+,corp_cert_no
+,corp_typ_cd
+,lgpr_name
+,lgpr_cert_typ_cd
+,lgpr_cert_no
+,lgpr_tel_no
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.cust_corp_base_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>176</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_base_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_base_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>256</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_base_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_base_info_front_his
+(
+proj_no_nacga
+,cust_no_nacga
+,proj_no_prov
+,cert_no
+,cust_name
+,cert_typ_cd
+,cust_cert_no
+,proj_rsue_cd
+,proj_typ_cd
+,proj_blogto_area_cd
+,proj_blogto_org_no
+,proj_main_typ_cd
+,proj_blog_busntp_no_nacga
+,proj_blog_busntp_prov_cd
+,proj_nation_econ_cd
+,proj_fin_sup_typ_cd
+,proj_fin_sup_link_cd
+,proj_prod_name
+,is_frst_guar
+,is_policy_biz
+,is_guar_upon_loan_apply
+,is_comp_limit_rate
+,limit_rate
+,fin_org_risk_share_ratio
+,gov_risk_share_ratio
+,other_risk_share_ratio
+,is_buy_ag_ins
+,subsidy_cls
+,subsidy_amt
+,core_corp_name
+,proj_stt_cd
+,count_guar_cls_cd
+,on_guared_dt
+,proj_onguar_amt_totl
+,biz_scale
+,biz_year
+,biz_lcal_typ_cd
+,opr_income
+,opr_debts
+,create_jobs_num
+,create_income_amt
+,biz_lcal_addr
+,apply_dt
+,apply_amt
+,apply_period
+,is_in_litigation
+,is_in_judgment
+,is_in_regulatory
+,aprv_dt
+,loan_cont_no
+,loan_begin_dt
+,loan_bank_no
+,loan_bank_br_name
+,loan_amt
+,loan_period
+,loan_cont_intr
+,is_self_renewal
+,loan_repay_typ
+,guar_fee_rate
+,gtee_bank_no
+,gtee_agmt_no
+,gtee_scp_cd
+,gtee_expd_cd
+,gtee_mhd_cd
+,gtee_eff_dt
+,gtee_expr_dt
+,comp_duran
+,comp_rmv_amt
+,comp_rmv_dt
+,gtee_cont_amt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,ag_cnty_cd
+,day_id
+,batch_id
+,core_corp_cert_no
+)
+select
+proj_no_nacga
+,cust_no_nacga
+,proj_no_prov
+,cert_no
+,cust_name
+,cert_typ_cd
+,cust_cert_no
+,proj_rsue_cd
+,proj_typ_cd
+,proj_blogto_area_cd
+,proj_blogto_org_no
+,proj_main_typ_cd
+,proj_blog_busntp_no_nacga
+,proj_blog_busntp_prov_cd
+,proj_nation_econ_cd
+,proj_fin_sup_typ_cd
+,proj_fin_sup_link_cd
+,proj_prod_name
+,is_frst_guar
+,is_policy_biz
+,is_guar_upon_loan_apply
+,is_comp_limit_rate
+,limit_rate
+,fin_org_risk_share_ratio
+,gov_risk_share_ratio
+,other_risk_share_ratio
+,is_buy_ag_ins
+,subsidy_cls
+,subsidy_amt
+,core_corp_name
+,proj_stt_cd
+,count_guar_cls_cd
+,on_guared_dt
+,proj_onguar_amt_totl
+,biz_scale
+,biz_year
+,biz_lcal_typ_cd
+,opr_income
+,opr_debts
+,create_jobs_num
+,create_income_amt
+,biz_lcal_addr
+,apply_dt
+,apply_amt
+,apply_period
+,is_in_litigation
+,is_in_judgment
+,is_in_regulatory
+,aprv_dt
+,loan_cont_no
+,loan_begin_dt
+,loan_bank_no
+,loan_bank_br_name
+,loan_amt
+,loan_period
+,loan_cont_intr
+,is_self_renewal
+,loan_repay_typ
+,guar_fee_rate
+,gtee_bank_no
+,gtee_agmt_no
+,gtee_scp_cd
+,gtee_expd_cd
+,gtee_mhd_cd
+,gtee_eff_dt
+,gtee_expr_dt
+,comp_duran
+,comp_rmv_amt
+,comp_rmv_dt
+,gtee_cont_amt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,ag_cnty_cd
+,day_id
+,batch_id
+,core_corp_cert_no
+from nacga_report.proj_base_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>256</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_cntr_agmt_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_cntr_agmt_info_front_his
+(
+cntr_cont_no_nacga
+,proj_no_nacga
+,cntr_cont_no
+,proj_no_prov
+,cntr_cont_typ_cd
+,main_signer_name
+,main_signer_cert_typ_cd
+,main_signer_cert_no
+,cntr_cont_begin_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+cntr_cont_no_nacga
+,proj_no_nacga
+,cntr_cont_no
+,proj_no_prov
+,cntr_cont_typ_cd
+,main_signer_name
+,main_signer_cert_typ_cd
+,main_signer_cert_no
+,cntr_cont_begin_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_cntr_agmt_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>336</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_cntr_agmt_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_cntr_agmt_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>336</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_loan_ntc_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_loan_ntc_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>416</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_loan_ntc_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_loan_ntc_info_front_his
+(
+loan_ntc_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,loan_ntc_no
+,loan_ntc_amt
+,loan_ntc_eff_dt
+,loan_ntc_period
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+loan_ntc_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,loan_ntc_no
+,loan_ntc_amt
+,loan_ntc_eff_dt
+,loan_ntc_period
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_loan_ntc_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>416</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_loan_rec_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_loan_rec_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>496</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_loan_rec_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_loan_rec_info_front_his
+(
+loan_rcd_nacga
+,proj_no_nacga
+,proj_no_prov
+,loan_doc_no
+,loan_bank_no
+,loan_bank_br_name
+,loan_amt
+,loan_rate
+,loan_strt_dt
+,loan_end_dt
+,loan_reg_dt
+,afg_voucher_id
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+loan_rcd_nacga
+,proj_no_nacga
+,proj_no_prov
+,loan_doc_no
+,loan_bank_no
+,loan_bank_br_name
+,loan_amt
+,loan_rate
+,loan_strt_dt
+,loan_end_dt
+,loan_reg_dt
+,afg_voucher_id
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_loan_rec_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>496</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_post_loan_mgmt_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_post_loan_mgmt_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>576</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_post_loan_mgmt_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_post_loan_mgmt_front_his
+(
+proj_chk_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,loan_chk_mhd_cd
+,loan_chk_dt
+,loan_chk_opinion
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+proj_chk_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,loan_chk_mhd_cd
+,loan_chk_dt
+,loan_chk_opinion
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_post_loan_mgmt_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>576</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_rk_wrn_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_rk_wrn_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d');
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>656</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_rk_wrn_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_rk_wrn_info_front_his
+(
+proj_rk_wrn_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,rk_wrn_src_cd
+,rk_mgmt_rslt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+proj_rk_wrn_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,rk_wrn_src_cd
+,rk_mgmt_rslt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_rk_wrn_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>656</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_act_rk_shr_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_act_rk_shr_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>1184</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_act_rk_shr_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_act_rk_shr_info_front_his
+(
+proj_no_prov
+,proj_act_rk_shr_no_nacga
+,proj_no_nacga
+,act_rk_shr_typ
+,act_rk_shr_amt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+proj_no_prov
+,proj_act_rk_shr_no_nacga
+,proj_no_nacga
+,act_rk_shr_typ
+,act_rk_shr_amt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_act_rk_shr_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>1184</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_ovd_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_ovd_info_front_his where day_id =  date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d');
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>1120</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_ovd_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_ovd_info_front_his
+(
+proj_ovd_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,ovd_dt
+,ovd_amt
+,other_ovd_amt
+,other_ovd_bal
+,ovd_prin_rmv_bank_rk_seg_amt
+,other_ovd_rmv_bank_rk_seg_amt
+,ovd_prin_rmv_bank_rk_seg_bal
+,other_ovd_rmv_bank_rk_seg_bal
+,subj_rk_rsn_cd
+,obj_rk_rsn_cd
+,ovd_rsn_desc
+,rk_mtg_meas
+,ovd_prin_bal
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+proj_ovd_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,ovd_dt
+,ovd_amt
+,other_ovd_amt
+,other_ovd_bal
+,ovd_prin_rmv_bank_rk_seg_amt
+,other_ovd_rmv_bank_rk_seg_amt
+,ovd_prin_rmv_bank_rk_seg_bal
+,other_ovd_rmv_bank_rk_seg_bal
+,subj_rk_rsn_cd
+,obj_rk_rsn_cd
+,ovd_rsn_desc
+,rk_mtg_meas
+,ovd_prin_bal
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_ovd_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>1120</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_ext_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_ext_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>1056</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_ext_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_ext_info_front_his
+(
+proj_ext_no_nacga
+,proj_no_nacga
+,ext_amt
+,ext_sbmt_dt
+,ext_exp_dt
+,ext_rsn
+,proj_no_prov
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+proj_ext_no_nacga
+,proj_no_nacga
+,ext_amt
+,ext_sbmt_dt
+,ext_exp_dt
+,ext_rsn
+,proj_no_prov
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_ext_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>1056</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_rpmt_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_rpmt_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>992</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_rpmt_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_rpmt_info_front_his
+(
+proj_rpmt_no_nacga
+,proj_no_nacga
+,proj_rpmt_cd
+,proj_no_prov
+,rpmt_amt
+,rpmt_prin_amt
+,rpmt_dt
+,rpmt_reg_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+proj_rpmt_no_nacga
+,proj_no_nacga
+,proj_rpmt_cd
+,proj_no_prov
+,rpmt_amt
+,rpmt_prin_amt
+,rpmt_dt
+,rpmt_reg_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_rpmt_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>992</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_rcvr_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_rcvr_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d') ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>912</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_rcvr_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_rcvr_info_front_his
+(
+proj_rcvr_no_nacga
+,proj_no_nacga
+,proj_rcvr_cd
+,proj_no_prov
+,rcvr_rcpt_amt
+,rcvr_rcpt_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+proj_rcvr_no_nacga
+,proj_no_nacga
+,proj_rcvr_cd
+,proj_no_prov
+,rcvr_rcpt_amt
+,rcvr_rcpt_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_rcvr_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>912</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_comp_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_comp_info_front_his where day_id = '${v_sdate}' ;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>832</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_comp_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_comp_info_front_his
+(
+proj_comp_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,comp_fst_comp_ntc_dt
+,subj_comp_rsn_cd
+,obj_comp_rsn_cd
+,comp_rsn_desc
+,comp_duran
+,rcvg_meas
+,comp_unguar_dt
+,rbl_rk_shr_amt_br_gov
+,rbl_rk_shr_amt_br_other
+,acc_comp_fee
+,comp_pmt_dt
+,comp_pmt_amt
+,comp_cert_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+proj_comp_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,comp_fst_comp_ntc_dt
+,subj_comp_rsn_cd
+,obj_comp_rsn_cd
+,comp_rsn_desc
+,comp_duran
+,rcvg_meas
+,comp_unguar_dt
+,rbl_rk_shr_amt_br_gov
+,rbl_rk_shr_amt_br_other
+,acc_comp_fee
+,comp_pmt_dt
+,comp_pmt_amt
+,comp_cert_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_comp_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>832</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>del_proj_unguar_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>delete from nacga_report.proj_unguar_info_front_his where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d');
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>592</xloc>
+      <yloc>752</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>load_proj_unguar_info_front_his</name>
+      <description/>
+      <type>SQL</type>
+      <attributes/>
+      <sql>insert into nacga_report.proj_unguar_info_front_his
+(
+proj_unguar_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,unguar_amt
+,unguar_dt
+,unguar_reg_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+)
+select
+proj_unguar_no_nacga
+,proj_no_nacga
+,proj_no_prov
+,unguar_amt
+,unguar_dt
+,unguar_reg_dt
+,version
+,create_name
+,update_name
+,creator
+,updator
+,create_time
+,update_time
+,db_update_time
+,day_id
+,batch_id
+from nacga_report.proj_unguar_info_front
+where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
+;
+commit;</sql>
+      <useVariableSubstitution>T</useVariableSubstitution>
+      <sqlfromfile>F</sqlfromfile>
+      <sqlfilename/>
+      <sendOneStatement>F</sendOneStatement>
+      <connection>nacga_report</connection>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>816</xloc>
+      <yloc>752</yloc>
+      <attributes_kjc/>
+    </entry>
+  </entries>
+  <hops>
+    <hop>
+      <from>del_cust_per_base_info_front</from>
+      <to>etl_cust_per_base_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_cust_per_base_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_cust_corp_rel_info_front</from>
+      <to>etl_cust_corp_rel_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_cust_corp_rel_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_cust_corp_base_info_front</from>
+      <to>etl_cust_corp_base_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_cust_corp_base_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_base_info_front</from>
+      <to>etl_proj_base_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_base_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_cntr_agmt_info_front</from>
+      <to>etl_proj_cntr_agmt_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_cntr_agmt_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_loan_ntc_info_front</from>
+      <to>etl_proj_loan_ntc_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_loan_ntc_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_loan_rec_info_front</from>
+      <to>etl_proj_loan_rec_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_loan_rec_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_post_loan_mgmt_front</from>
+      <to>etl_proj_post_loan_mgmt_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_rk_wrn_info_front</from>
+      <to>etl_proj_rk_wrn_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_unguar_info_front</from>
+      <to>etl_proj_unguar_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_comp_info_front</from>
+      <to>etl_proj_comp_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_rcvr_info_front</from>
+      <to>etl_proj_rcvr_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_ext_info_front</from>
+      <to>etl_proj_ext_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_rpmt_info_front</from>
+      <to>etl_proj_rpmt_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_ovd_info_front</from>
+      <to>etl_proj_ovd_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_act_rk_shr_info_front</from>
+      <to>etl_proj_act_rk_shr_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_act_rk_shr_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_ext_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_rpmt_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_rcvr_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_unguar_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_post_loan_mgmt_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_rk_wrn_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_comp_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_cust_per_base_info_front_his</from>
+      <to>del_cust_per_base_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_cust_per_base_info_front_his</from>
+      <to>load_cust_per_base_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_cust_corp_rel_info_front_his</from>
+      <to>del_cust_corp_rel_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_cust_corp_rel_info_front_his</from>
+      <to>load_cust_corp_rel_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_cust_corp_base_info_front_his</from>
+      <to>del_cust_corp_base_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_cust_corp_base_info_front_his</from>
+      <to>load_cust_corp_base_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_base_info_front_his</from>
+      <to>load_proj_base_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_base_info_front_his</from>
+      <to>del_proj_base_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_cntr_agmt_info_front_his</from>
+      <to>del_proj_cntr_agmt_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_cntr_agmt_info_front_his</from>
+      <to>load_proj_cntr_agmt_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_loan_ntc_info_front_his</from>
+      <to>del_proj_loan_ntc_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_loan_ntc_info_front_his</from>
+      <to>load_proj_loan_ntc_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_loan_rec_info_front_his</from>
+      <to>del_proj_loan_rec_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_loan_rec_info_front_his</from>
+      <to>load_proj_loan_rec_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_post_loan_mgmt_front_his</from>
+      <to>load_proj_post_loan_mgmt_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_post_loan_mgmt_front_his</from>
+      <to>del_proj_post_loan_mgmt_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_rk_wrn_info_front_his</from>
+      <to>del_proj_rk_wrn_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_rk_wrn_info_front_his</from>
+      <to>load_proj_rk_wrn_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_act_rk_shr_info_front_his</from>
+      <to>load_proj_act_rk_shr_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_act_rk_shr_info_front_his</from>
+      <to>del_proj_act_rk_shr_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_ovd_info_front_his</from>
+      <to>load_proj_ovd_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_ovd_info_front_his</from>
+      <to>del_proj_ovd_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_ext_info_front_his</from>
+      <to>del_proj_ext_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_ext_info_front_his</from>
+      <to>load_proj_ext_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_rpmt_info_front_his</from>
+      <to>load_proj_rpmt_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_rpmt_info_front_his</from>
+      <to>del_proj_rpmt_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_rcvr_info_front_his</from>
+      <to>del_proj_rcvr_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_rcvr_info_front_his</from>
+      <to>load_proj_rcvr_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_comp_info_front_his</from>
+      <to>load_proj_comp_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_comp_info_front_his</from>
+      <to>del_proj_comp_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>del_proj_unguar_info_front_his</from>
+      <to>load_proj_unguar_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>load_proj_unguar_info_front_his</from>
+      <to>del_proj_unguar_info_front</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>etl_proj_ovd_info_front</from>
+      <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_cust_per_base_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_cust_corp_rel_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_cust_corp_base_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_base_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_cntr_agmt_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_loan_ntc_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_loan_rec_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_post_loan_mgmt_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_rk_wrn_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_unguar_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_comp_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_rcvr_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_rpmt_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_ext_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_ovd_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Start</from>
+      <to>del_proj_act_rk_shr_info_front_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+  </hops>
+  <notepads>
+  </notepads>
+  <attributes>
+    <group>
+      <name>METASTORE.pentaho</name>
+      <attribute>
+        <key>Default Run Configuration</key>
+        <value>{"namespace":"pentaho","id":"Default Run Configuration","name":"Default Run Configuration","description":"Defines a default run configuration","metaStoreName":null}</value>
+      </attribute>
+    </group>
+    <group>
+      <name>{"_":"Embedded MetaStore Elements","namespace":"pentaho","type":"Default Run Configuration"}</name>
+      <attribute>
+        <key>Pentaho local</key>
+        <value>{"children":[{"children":[],"id":"server","value":null},{"children":[],"id":"clustered","value":"N"},{"children":[],"id":"name","value":"Pentaho local"},{"children":[],"id":"description","value":null},{"children":[],"id":"pentaho","value":"N"},{"children":[],"id":"readOnly","value":"Y"},{"children":[],"id":"sendResources","value":"N"},{"children":[],"id":"logRemoteExecutionLocally","value":"N"},{"children":[],"id":"remote","value":"N"},{"children":[],"id":"local","value":"Y"},{"children":[],"id":"showTransformations","value":"N"}],"id":"Pentaho local","value":null,"name":"Pentaho local","owner":null,"ownerPermissionsList":[]}</value>
+      </attribute>
+    </group>
+  </attributes>
+</job>
