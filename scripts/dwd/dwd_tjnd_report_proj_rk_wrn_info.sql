@@ -9,27 +9,29 @@
 -- 变更记录 ：
 -- ----------------------------------------
 -- 日增量加载
-delete from dw_base.dwd_tjnd_report_proj_rk_wrn_info where day_id = '${v_sdate}' ;
+delete
+from dw_base.dwd_tjnd_report_proj_rk_wrn_info
+where day_id = '${v_sdate}';
 commit;
 
 insert into dw_base.dwd_tjnd_report_proj_rk_wrn_info
-(
-day_id
-,proj_no_prov	-- 省农担担保项目编号
-,rk_wrn_src_cd	-- 风险预警来源代码
-,rk_mgmt_rslt	-- 风险处置结论
-,wrn_id
-)
-select	distinct '${v_sdate}'                   						as day_id
-		,t1.biz_no                              						as proj_no_prov
-		,t3.alert_source                        						as rk_wrn_src_cd
-		,regexp_replace(t3.processing_result,'\n','')                   as rk_mgmt_rslt
-		,t3.id								as wrn_id
-from dw_base.dwd_nacga_report_guar_info_base_info t1     -- 国担上报范围表
-inner join dw_nd.ods_tjnd_yw_bh_early_contract_detail t2 -- 预警业务详情表
-on t1.biz_id = t2.id_cfbiz_underwriting
-inner join dw_nd.ods_tjnd_yw_z_report_bh_early_warning t3         -- 预警表
-on t2.id_early_warning = t3.id
+( day_id
+, proj_no_prov -- 省农担担保项目编号
+, rk_wrn_src_cd -- 风险预警来源代码
+, rk_mgmt_rslt -- 风险处置结论
+, wrn_id
+, dict_flag)
+select distinct '${v_sdate}'                                   as day_id
+              , t1.biz_no                                      as proj_no_prov
+              , t3.alert_source                                as rk_wrn_src_cd
+              , regexp_replace(t3.processing_result, '\n', '') as rk_mgmt_rslt
+              , t3.id                                          as wrn_id
+              , 0                                              as dict_Flag
+from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
+         inner join dw_nd.ods_tjnd_yw_bh_early_contract_detail t2 -- 预警业务详情表
+                    on t1.biz_id = t2.id_cfbiz_underwriting
+         inner join dw_nd.ods_tjnd_yw_z_report_bh_early_warning t3 -- 预警表
+                    on t2.id_early_warning = t3.id
 where t1.day_id = '${v_sdate}'
 ;
 commit;

@@ -30,6 +30,7 @@ insert into dw_base.dwd_tjnd_report_cust_per_base_info
 , coup_cert_typ_cd -- 配偶证件类型代码
 , coup_cert_no -- 配偶证件号码
 , coup_tel_no -- 配偶手机号码
+,dict_flag
 )
 select '${v_sdate}' as day_id
      , cert_type                           -- 证件类型
@@ -50,6 +51,7 @@ select '${v_sdate}' as day_id
     end             as coup_cert_typ_cd    -- 配偶证件类型代码
      , spouse_id_no                        -- 配偶证件号码
      , spouse_tel                          -- 配偶手机号码
+    , 0 as dict_flag
 from (
          select a.cert_type                                                                           -- 证件类型
               , a.mainbody_type_corp                                                                  -- 客户主体类型代码
@@ -95,6 +97,7 @@ insert into dw_base.dwd_tjnd_report_cust_per_base_info
 ,coup_cert_no	      -- 配偶证件号码
 -- ,coup_area_cd	      -- 配偶国家/地区代码
 ,coup_tel_no	      -- 配偶手机号码
+,dict_flag
 )
 select '${v_sdate}' as day_id
 	,'10' as cert_no_typ_cd          -- 证件类型代码 /*固定值为“身份证号”*/
@@ -117,6 +120,7 @@ select '${v_sdate}' as day_id
 	,t2.coup_cert_no	              -- 配偶证件号码
 	-- ,null as coup_area_cd	          -- 配偶国家/地区代码
 	,if(trim(t2.coup_tel_no)=0 or length(trim(t2.coup_tel_no))!=11,null,trim(t2.coup_tel_no)) as coup_tel_no -- 配偶手机号码 /*配偶手机号码不符合校验规则的置空*/
+    ,1 as dict_flag
 from
 (
 	select	t1.cert_no
@@ -155,7 +159,7 @@ left join
           or date(substr(coup_cert_no,7,8)) is null                             -- 生日字段填写不正确
           or (substr(coup_cert_no,1,2)+0<11 or substr(coup_cert_no,1,2)+0>82)   -- 身份证省份字段不在11-82之间
           or regexp_like(substr(coup_cert_no,1,17),'[^0-9]')                    -- 身份证前17位置包含非数字
-          or 
+          or
           mod(substr(coup_cert_no,1,1)*7+
           substr(coup_cert_no,2,1)*9+
           substr(coup_cert_no,3,1)*10+
@@ -174,7 +178,7 @@ left join
           substr(coup_cert_no,16,1)*4+
           substr(coup_cert_no,17,1)*2
           ,11)<>
-          (case 
+          (case
           when substr(coup_cert_no,18,1)='1' then '0'
           when substr(coup_cert_no,18,1)='0' then '1'
           when substr(coup_cert_no,18,1) in ('X','x') then '2'
@@ -186,7 +190,7 @@ left join
           when substr(coup_cert_no,18,1)='4' then '8'
           when substr(coup_cert_no,18,1)='3' then '9'
           when substr(coup_cert_no,18,1)='2' then '10'
-          else -99 end) then null 
+          else -99 end) then null
           else coup_cert_no end as coup_cert_no
     ,coup_tel_no
 	from
@@ -306,7 +310,7 @@ left join
 				select	t1.cust_code                               -- '客户编号'
 						,t1.id_no                                  -- '证件号码'
 						,t1.gender                                 -- '性别'
-						,t1.id_card_validity as cert_expd          -- '身份证有效期' -- 20240913 mdy wyx             
+						,t1.id_card_validity as cert_expd          -- '身份证有效期' -- 20240913 mdy wyx
 						,row_number()over(partition by t1.id order by t1.update_time desc) rn
 				from dw_nd.ods_crm_cust_certification_info t1      -- 客户认证信息
 				where t1.cust_type = '01'                          -- 个人客户
@@ -314,7 +318,7 @@ left join
 			where t1.rn = 1
 		) t2                                                  -- 客户认证信息补充部分客户信息
 		on t1.cust_code = t2.cust_code                        -- 业务系统客户号关联
-		
+
 		left join
 		(
 			select	t1.main_id_no as cert_no                  -- 证件号码
@@ -328,11 +332,11 @@ left join
 						,row_number()over(partition by t1.main_id_no order by t1.create_time desc, t1.update_time desc) as rn
 				from dw_nd.ods_wxapp_cust_login_info t1       -- 客户注册信息
 				where t1.login_type = '1'                     -- 个人客户
-			) t1                                         
-			where rn = 1                                 
+			) t1
+			where rn = 1
 		) t3                                                  -- 用户注册信息表取客户最新手机号
 		on t1.id_no = t3.cert_no
-		
+
 	) t1
 	where t1.rk = 1
 ) t3

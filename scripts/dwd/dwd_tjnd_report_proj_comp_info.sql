@@ -32,14 +32,14 @@ insert into dw_base.dwd_tjnd_report_proj_comp_info
 , comp_pmt_dt -- 代偿拨付日期
 , comp_pmt_amt -- 代偿拨付金额
 , comp_cert_dt -- 代偿证明开具日期
-)
+, dict_flag)
 select distinct '${v_sdate}'                                               as day_id
               , t1.biz_no                                                  as proj_no_prov
               , date_format(t2.compenstation_application_date, '%Y-%m-%d') as comp_fst_comp_ntc_dt
               , t2.overdue_reason                                          as subj_comp_rsn_cd
               , t2.overdue_sub_reason                                      as obj_comp_rsn_cd
               , t2.pla_describe                                            as comp_rsn_desc
-              , cast(t4.compensation_period as SIGNED)                        as comp_duran
+              , cast(t4.compensation_period as signed)                     as comp_duran
               , t2.proposed_way_of_recovery                                as rcvg_meas
               , date_format(t5.date_of_set, '%Y-%m-%d')                    as comp_unguar_dt
               , 0                                                          as rbl_rk_shr_amt_br_gov   -- 目前天津农担不涉及, 默认为0，后续根据不同协议约定的分险方式计算
@@ -48,6 +48,7 @@ select distinct '${v_sdate}'                                               as da
               , date_format(t2.payment_date, '%Y-%m-%d')                   as comp_pmt_dt
               , coalesce(t2.total_compensation, 0)                         as comp_pmt_amt
               , null                                                       as comp_cert_dt
+              , 0                                                          as dict_flag
 from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
          inner join dw_nd.ods_tjnd_yw_z_report_bh_compensatory t2 -- 代偿表
                     on t1.biz_id = t2.id_cfbiz_underwriting

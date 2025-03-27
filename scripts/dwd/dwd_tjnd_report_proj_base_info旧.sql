@@ -86,7 +86,7 @@ insert into dw_base.dwd_tjnd_report_proj_base_info
 , gtee_cont_amt -- 保证合同金额
 , ag_cnty_cd -- 农业大县代码
 , core_corp_cert_no -- 合作核心企业统一社会信用代码
-)
+, dict_flag)
 select '${v_sdate}'                                                 as day_id
      , a.GUARANTEE_CODE                                             as proj_no_prov              -- 省农担担保项目编号
      , a.ID_NUMBER                                                  as cert_no                   -- 证件号码(用于映射cust_no_nacga)
@@ -95,7 +95,7 @@ select '${v_sdate}'                                                 as day_id
      , a.ID_NUMBER                                                  as cust_cert_no              -- 项目主体证件号码
      , c.ITEM_SOURCE                                                as proj_rsue_cd              -- 项目来源代码，待补充
      , c.ITEM_TYPE                                                  as proj_typ_cd               -- 项目类型代码，待补充
-     , JSON_UNQUOTE(JSON_EXTRACT(a.area, '$[1]'))                     as proj_blogto_area_cd       -- 项目所属区域代码
+     , JSON_UNQUOTE(JSON_EXTRACT(a.area, '$[1]'))                   as proj_blogto_area_cd       -- 项目所属区域代码
      , a.enter_code                                                 as proj_blogto_org_no        -- 项目所属机构，待映射
      , a.MAINBODY_TYPE_CORP                                         as proj_main_typ_cd          -- 项目主体类型代码，待映射
      , INDUSTRY_CATEGORY_COMPANY                                    as proj_blog_busntp_no_nacga -- 项目所属行业代码（农担体系），待映射
@@ -114,7 +114,7 @@ select '${v_sdate}'                                                 as day_id
            else '0'
     end                                                             as is_guar_upon_loan_apply   -- 是否见贷即保
      , c.IS_LIMITED_RATE_COMPENSATION                               as is_comp_limit_rate        -- 是否限率代偿，待补充
-     , if(c.IS_LIMITED_RATE_COMPENSATION=1,0.03,null)               as limit_rate                -- 限率
+     , if(c.IS_LIMITED_RATE_COMPENSATION = 1, 0.03, null)           as limit_rate                -- 限率
      , bank_cale_rate                                               as fin_org_risk_share_ratio  -- 金融机构分险比例
      , gov_cale_rate                                                as gov_risk_share_ratio      -- 政府分险比例
      , coop_cale_rate                                               as other_risk_share_ratio    -- 其他机构分险比例
@@ -123,7 +123,7 @@ select '${v_sdate}'                                                 as day_id
      , null                                                         as subsidy_amt               -- 补贴金额，非必填 需除以10000
      , null                                                         as core_corp_name            -- 合作核心企业，非必填
      , a.GUR_STATE                                                  as proj_stt_cd               -- 项目状态代码，待映射
-     , a.COUNTER_GUR_METHOD                                           as count_guar_cls_cd         -- 反担保方式代码，待映射
+     , a.COUNTER_GUR_METHOD                                         as count_guar_cls_cd         -- 反担保方式代码，待映射
      , date_format(lend_reg_dt, '%Y-%m-%d')                         as on_guared_dt              -- 计入在保日期
      , a.GT_AMOUNT / 10000                                          as proj_onguar_amt_totl      -- 项目在保余额
      , null                                                         as biz_scale                 -- 经营规模
@@ -140,7 +140,7 @@ select '${v_sdate}'                                                 as day_id
      , null                                                         as is_in_litigation          -- 涉及司法诉讼，已去除
      , null                                                         as is_in_judgment            -- 涉及司法判决，已去除
      , null                                                         as is_in_regulatory          -- 涉及行政处罚，已去除
-     , date_format(c.RECEIPT_DATE, '%Y-%m-%d')                         as aprv_dt                   -- 农担批复日期
+     , date_format(c.RECEIPT_DATE, '%Y-%m-%d')                      as aprv_dt                   -- 农担批复日期
      , a.LOAN_CONTRACT_NO                                           as loan_cont_no              -- 借款合同编号
      , a.CONTRACR_START_DATE                                        as loan_begin_dt             -- 借款合同生效日期
      , a.COOPERATIVE_BANK_FIRST                                     as loan_bank_no              -- 签约金融机构代码，待映射
@@ -158,12 +158,13 @@ select '${v_sdate}'                                                 as day_id
      , d.GUARANTEE_WAY                                              as gtee_mhd_cd               -- 保证方式代码，待补充
      , d.GUARANTEE_START_DATE                                       as gtee_eff_dt               -- 保证责任生效日期，待补充
      , d.GUARANTEE_END_DATE                                         as gtee_expr_dt              -- 保证责任失效日期，待补充
-     , cast(COMPENSATION_PERIOD  as SIGNED)                         as comp_duran                -- 代偿宽限期
+     , cast(COMPENSATION_PERIOD as signed)                          as comp_duran                -- 代偿宽限期
      , null                                                         as comp_rmv_amt              -- 项目核销金额，非必填
      , null                                                         as comp_rmv_dt               -- 项目核销日期，非必填
      , GUARANTEE_CONTRACT_AMOUNT / 10000                            as gtee_cont_amt             -- 保证合同金额，待补充 需除以10000
      , '999999'                                                     as ag_cnty_cd                -- 农业大县代码，不涉及
      , null                                                         as core_corp_cert_no         -- 合作核心企业统一社会信用代码，非必填
+     , 0                                                            as dict_flag
 from dw_base.dwd_tjnd_yw_guar_info_all_qy a
          inner join dw_base.dwd_nacga_report_guar_info_base_info b
                     on a.guarantee_code = b.biz_no

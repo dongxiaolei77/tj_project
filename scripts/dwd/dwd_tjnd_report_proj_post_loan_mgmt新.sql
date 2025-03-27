@@ -20,13 +20,14 @@ insert into dw_base.dwd_tjnd_report_proj_post_loan_mgmt
 ,loan_chk_mhd_cd	-- 保后检查方式代码
 ,loan_chk_dt	    -- 保后检查执行日期
 ,loan_chk_opinion	-- 保后检查意见
+,dict_flag
 )
 select	distinct '${v_sdate}'                   		as day_id
 		,t1.biz_no                              		as proj_no_prov
 		,t2.check_method                        		as loan_chk_mhd_cd
 		,date_format(t3.spot_time, '%Y-%m-%d')  		as loan_chk_dt
 		,regexp_replace(t3.busi_proposal,'\n','')    	as loan_chk_opinion
-
+        ,0 as dict_flag
 from dw_base.dwd_nacga_report_guar_info_base_info t1     -- 国担上报范围表
 inner join dw_nd.ods_tjnd_yw_z_report_bh_batch_inspection_detail t2-- 保后检查详情表
 on t1.biz_id = t2.id_cfbiz_underwriting
@@ -35,9 +36,9 @@ on t2.id_batch_inspection = t3.id
 where t1.day_id = '${v_sdate}'
 ;
 commit;
+
+
 -- 日增量加载
-
-
 insert into dw_base.dwd_tjnd_report_proj_post_loan_mgmt
 (
  day_id
@@ -45,6 +46,7 @@ insert into dw_base.dwd_tjnd_report_proj_post_loan_mgmt
 ,loan_chk_mhd_cd	-- 保后检查方式代码
 ,loan_chk_dt	    -- 保后检查执行日期
 ,loan_chk_opinion	-- 保后检查意见
+,dict_flag
 )
 select	distinct '${v_sdate}'       as day_id
 		,t3.guar_id				    as proj_no_prov	        -- 省农担担保项目编号
@@ -55,6 +57,7 @@ select	distinct '${v_sdate}'       as day_id
 			when '50' then '风险'
 			else t1.task_status
 		 end as loan_chk_opinion		-- 保后检查意见
+        ,1 as dict_flag
 from
 (
 	select a1.proj_id
@@ -92,11 +95,11 @@ from
 		select inst_id
 		from (
 			select inst_id
-				,row_number() over(partition by inst_id order by end_tm desc ) as rn 
+				,row_number() over(partition by inst_id order by end_tm desc ) as rn
 			from dw_base.dwd_evt_wf_task_info -- 工作流审批表
 			where day_id = '${v_sdate}'
 			and task_name = '市管中心主任'
-			and end_tm > date('2024-07-01') 
+			and end_tm > date('2024-07-01')
 		)  t
 		where rn = 1
 	) a2

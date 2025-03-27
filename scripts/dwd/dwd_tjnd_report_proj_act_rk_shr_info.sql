@@ -10,31 +10,35 @@
 -- ----------------------------------------
 
 -- 日增量加载
-delete from dw_base.dwd_tjnd_report_proj_act_rk_shr_info where day_id = '${v_sdate}';
+delete
+from dw_base.dwd_tjnd_report_proj_act_rk_shr_info
+where day_id = '${v_sdate}';
 commit;
 
 insert into dw_base.dwd_tjnd_report_proj_act_rk_shr_info
-select	distinct '${v_sdate}'								as day_id
-		,t3.biz_no 											as proj_no_prov	    -- 省农担担保项目编号
-		,'1' 												as act_rk_shr_typ	-- 实收分险类型
-		,t1.gov_risk_pay_amt 								as act_rk_shr_amt	-- 实收分险金额
-from 
-(	
-	select	t1.project_id as proj_id
-			,sum(t1.risk_shar_district_totl) as gov_risk_pay_amt
-	from
-	(
-		select	t1.id, t1.project_id, t1.risk_shar_district_totl, t1.is_delete
-				,row_number()over(partition by t1.id order by t1.db_update_time desc, t1.update_time desc) rn
-		from dw_nd.ods_t_proj_comp_risk_show t1 -- 分险信息台账数据展示
-	) t1
-	where t1.rn = 1
-	and t1.is_delete = 0
-	group by t1.project_id
-	having sum(t1.risk_shar_district_totl)>0
-)t1
-inner join dw_base.dwd_sdnd_report_biz_no_base t3 -- 国担上报范围表
-on t1.proj_id = t3.biz_id
-and t3.day_id = '${v_sdate}'
+select distinct '${v_sdate}'        as day_id
+              , t3.biz_no           as proj_no_prov   -- 省农担担保项目编号
+              , '1'                 as act_rk_shr_typ -- 实收分险类型
+              , t1.gov_risk_pay_amt as act_rk_shr_amt -- 实收分险金额
+              , 1                   as dict_flag
+from (
+         select t1.project_id                   as proj_id
+              , sum(t1.risk_shar_district_totl) as gov_risk_pay_amt
+         from (
+                  select t1.id
+                       , t1.project_id
+                       , t1.risk_shar_district_totl
+                       , t1.is_delete
+                       , row_number() over (partition by t1.id order by t1.db_update_time desc, t1.update_time desc) rn
+                  from dw_nd.ods_t_proj_comp_risk_show t1 -- 分险信息台账数据展示
+              ) t1
+         where t1.rn = 1
+           and t1.is_delete = 0
+         group by t1.project_id
+         having sum(t1.risk_shar_district_totl) > 0
+     ) t1
+         inner join dw_base.dwd_tjnd_report_biz_no_base t3 -- 国担上报范围表
+                    on t1.proj_id = t3.biz_id
+                        and t3.day_id = '${v_sdate}'
 ;
 commit;

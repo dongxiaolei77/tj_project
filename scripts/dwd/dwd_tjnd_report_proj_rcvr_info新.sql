@@ -23,12 +23,13 @@ insert into dw_base.dwd_tjnd_report_proj_rcvr_info
 , proj_no_prov -- 省农担担保项目编号
 , rcvr_rcpt_amt -- 追偿入账金额
 , rcvr_rcpt_dt -- 追偿入账日期
-)
+, dict_flag)
 select distinct '${v_sdate}'                           as day_id
               , t2.recovery_no                         as proj_rcvr_cd
               , t1.biz_no                              as proj_no_prov
               , t4.cur_recovery                        as rcvr_rcpt_amt
               , date_format(t4.entry_data, '%Y-%m-%d') as rcvr_rcpt_dt
+              , 0                                      as dict_flag
 from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
          inner join dw_nd.ods_tjnd_yw_bh_recovery t2 -- 追偿表
                     on t1.biz_id = t2.id_cfbiz_underwriting
@@ -47,12 +48,13 @@ insert into dw_base.dwd_tjnd_report_proj_rcvr_info
 , proj_no_prov -- 省农担担保项目编号
 , rcvr_rcpt_amt -- 追偿入账金额
 , rcvr_rcpt_dt -- 追偿入账日期
-)
+, dict_flag)
 select '${v_sdate}'                                as day_id,
        t1.detail_id                                as proj_rcvr_cd,
        t1.record_id                                as proj_no_prov,
        t1.shou_comp_amt                            as rcvr_rcpt_amt,
-       date_format(t1.real_repay_date, '%Y-%m-%d') as rcvr_rcpt_dt
+       date_format(t1.real_repay_date, '%Y-%m-%d') as rcvr_rcpt_dt,
+       1                                           as dict_flag
 from (select *, row_number() over (partition by id order by db_update_time desc) rn
       from dw_nd.ods_t_biz_proj_recovery_repay_detail_record) t1 -- 登记还款记录
          inner join dw_base.dwd_tjnd_report_biz_no_base t2 -- 国担上报采集范围表

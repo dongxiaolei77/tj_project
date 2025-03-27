@@ -29,7 +29,7 @@ insert into dw_base.dwd_tjnd_report_proj_ovd_info
 , ovd_rsn_desc -- 项目逾期原因详述
 , rk_mtg_meas -- 风险化解措施
 , ovd_prin_bal -- 逾期本金余额
-)
+, dict_flag)
 select distinct '${v_sdate}'                                 as day_id
               , t1.biz_no                                    as proj_no_prov
               , date_format(t2.overdue_pri_time, '%Y-%m-%d') as ovd_dt
@@ -45,6 +45,7 @@ select distinct '${v_sdate}'                                 as day_id
               , t2.pla_describe                              as ovd_rsn_desc
               , t2.manage_plan                               as rk_mtg_meas
               , null                                         as ovd_prin_bal
+              , 0                                            as dict_flag
 from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
          inner join dw_nd.ods_tjnd_yw_z_report_bh_overdue_plan t2 -- 逾期登记表
                     on t1.biz_id = t2.id_cfbiz_underwriting

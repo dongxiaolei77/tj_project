@@ -644,6 +644,10 @@
         <column_name>unguar_id</column_name>
         <stream_name>unguar_id</stream_name>
       </field>
+      <field>
+        <column_name>dict_flag</column_name>
+        <stream_name>dict_flag</stream_name>
+      </field>
     </fields>
     <attributes/>
     <cluster_schema/>

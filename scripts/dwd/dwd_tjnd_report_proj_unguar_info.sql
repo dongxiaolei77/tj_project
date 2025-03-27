@@ -20,13 +20,14 @@ insert into dw_base.dwd_tjnd_report_proj_unguar_info
 , unguar_amt -- 解保金额
 , unguar_dt -- 解保日期
 , unguar_reg_dt -- 解保登记日期
-)
+, dict_flag)
 select '${v_sdate}'     as day_id
      , t1.biz_no        as proj_no_prov
      , null             as unguar_id
      , t2.unguar_amt    as unguar_amt
      , t2.unguar_dt     as unguar_dt
      , t2.unguar_reg_dt as unguar_reg_dt
+     , 0                as dict_flag
 from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
          inner join (select ID_BUSINESS_INFORMATION,
                             sum(REPAYMENT_PRINCIPAL)                     as unguar_amt,

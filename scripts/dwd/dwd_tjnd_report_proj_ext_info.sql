@@ -21,19 +21,21 @@ insert into dw_base.dwd_tjnd_report_proj_ext_info
 , ext_sbmt_dt -- 展期确认日期
 , ext_exp_dt -- 展期到期日期
 , ext_rsn -- 展期原因
-)
+, dict_flag)
 select distinct '${v_sdate}'                             as day_id
-	      , t1.biz_no				 as proj_no_prov
-	      , t2.id					 as afg_survey_id
+              , t1.biz_no                                as proj_no_prov
+              , t2.id                                    as afg_survey_id
               , coalesce(t2.amount, 0) / 10000           as ext_amt
               , date_format(t2.over_time, '%Y-%m-%d')    as gur_due_date
               , date_format(t2.GUR_DUE_DATE, '%Y-%m-%d') as ext_exp_dt
               , t2.integrated_opinion                    as ext_rsn
+              , 0                                        as dict_flag
 from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
          inner join dw_nd.ods_tjnd_yw_z_report_afg_survey t2 -- 担保解除表
                     on t1.biz_id = t2.f_id
 where t1.day_id = '${v_sdate}'
   and t2.application_type = 'ZQ' -- ZQ展期 YQ延期
-  and t2.over_tag='BJ' and t2.submit_status='1'
+  and t2.over_tag = 'BJ'
+  and t2.submit_status = '1'
 ;
 commit;

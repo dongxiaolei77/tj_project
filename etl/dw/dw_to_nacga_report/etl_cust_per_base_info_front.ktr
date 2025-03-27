@@ -431,7 +431,7 @@
     <created_date>2023/02/08 16:06:59.325</created_date>
     <modified_user>-</modified_user>
     <modified_date>2023/02/08 16:06:59.325</modified_date>
-    <key_for_session_key>H4sIAAAAAAAA/wMAAAAAAAAAAAA=</key_for_session_key>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -683,6 +683,10 @@
       <field>
         <column_name>day_id</column_name>
         <stream_name>day_id</stream_name>
+      </field>
+      <field>
+        <column_name>dict_flag</column_name>
+        <stream_name>dict_flag</stream_name>
       </field>
     </fields>
     <attributes/>

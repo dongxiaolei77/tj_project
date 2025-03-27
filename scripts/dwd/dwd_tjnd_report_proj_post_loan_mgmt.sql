@@ -21,13 +21,13 @@ insert into dw_base.dwd_tjnd_report_proj_post_loan_mgmt
 , loan_chk_mhd_cd -- 保后检查方式代码
 , loan_chk_dt -- 保后检查执行日期
 , loan_chk_opinion -- 保后检查意见
-)
+, dict_flag)
 select distinct '${v_sdate}'     as day_id
               , proj_no_prov     as proj_no_prov
               , loan_chk_mhd_cd  as loan_chk_mhd_cd
               , loan_chk_dt      as loan_chk_dt
               , loan_chk_opinion as loan_chk_opinion
-
+              , 0                as dict_flag
 from (select t1.biz_no                                  as                                                  proj_no_prov
            , t2.check_method                            as                                                  loan_chk_mhd_cd
            , date_format(t3.spot_time, '%Y-%m-%d')      as                                                  loan_chk_dt

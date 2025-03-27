@@ -30,7 +30,7 @@ insert into dw_base.dwd_tjnd_report_cust_per_base_info
 , coup_cert_typ_cd -- 配偶证件类型代码
 , coup_cert_no -- 配偶证件号码
 , coup_tel_no -- 配偶手机号码
-)
+, dict_flag)
 select '${v_sdate}' as day_id
      , cert_type                           -- 证件类型
      , mainbody_type_corp                  -- 客户主体类型代码
@@ -50,6 +50,7 @@ select '${v_sdate}' as day_id
     end             as coup_cert_typ_cd    -- 配偶证件类型代码
      , spouse_id_no                        -- 配偶证件号码
      , spouse_tel                          -- 配偶手机号码
+     , 0            as dict_flag
 from (
          select a.cert_type                                                                           -- 证件类型
               , a.mainbody_type_corp                                                                  -- 客户主体类型代码
@@ -59,7 +60,7 @@ from (
               , a.marriage_sta                                                                        -- 婚姻状况代码
               , a.spouse_name                                                                         -- 配偶姓名
               , a.spouse_id_no                                                                        -- 配偶证件号码
-              , if(length(a.spouse_tel) > 11, null, a.spouse_tel)                           as spouse_tel -- 配偶手机号码
+              , if(length(a.spouse_tel) > 11, null, a.spouse_tel)                       as spouse_tel -- 配偶手机号码
               , row_number() over (partition by a.id_number order by lend_reg_dt desc ) as rk
               , c.SEX                                                                                 -- 性别代码
               , c.MARRIAGE_STATUS                                                                     -- 婚姻状况代码

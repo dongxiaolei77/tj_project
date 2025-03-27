@@ -21,24 +21,26 @@ insert into dw_base.dwd_tjnd_report_proj_loan_ntc_info
 , loan_ntc_amt -- 放款通知书金额
 , loan_ntc_eff_dt -- 放款通知书生效日期
 , loan_ntc_period -- 放款通知书有效期限
-)
+, dict_flag)
 select distinct '${v_sdate}'                           as day_id
               , t1.biz_no                              as proj_no_prov
               , t2.letter_of_guarante_no               as loan_ntc_no
-              , t2.loan_contract_amount / 10000              as loan_ntc_amt
+              , t2.loan_contract_amount / 10000        as loan_ntc_amt
               , date_format(t3.creat_time, '%Y-%m-%d') as loan_ntc_eff_dt
               , t3.GUARANTEE_LETTER_END_DATE           as loan_ntc_period
+              , 0                                      as dict_flag
 from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
-inner join dw_nd.ods_tjnd_yw_z_report_afg_business_approval t2 -- 审批信息
-on t1.biz_id = t2.id_business_information
-left join 
-(
-	select *
-	,row_number()over(partition by id_approval order by creat_time desc) as rk
-	from dw_nd.ods_tjnd_yw_z_report_afg_guarantee_letter 
-	where letter_type = '0' -- 保函类型 0.放款通知书4.担保意向函5银行保证合同
-)t3 -- 保函生成记录表
- on t2.id = t3.id_approval
- where t3.rk = 1 and t1.day_id = '${v_sdate}'
+         inner join dw_nd.ods_tjnd_yw_z_report_afg_business_approval t2 -- 审批信息
+                    on t1.biz_id = t2.id_business_information
+         left join
+     (
+         select *
+              , row_number() over (partition by id_approval order by creat_time desc) as rk
+         from dw_nd.ods_tjnd_yw_z_report_afg_guarantee_letter
+         where letter_type = '0' -- 保函类型 0.放款通知书4.担保意向函5银行保证合同
+     ) t3 -- 保函生成记录表
+     on t2.id = t3.id_approval
+where t3.rk = 1
+  and t1.day_id = '${v_sdate}'
 ;
 commit;

@@ -1,7 +1,7 @@
 -- ----------------------------------------
 -- 开发人   : WangYX
 -- 开发时间 ：20240831
--- 目标表   ：dwd_sdnd_report_biz_no_base   国担上报范围表
+-- 目标表   ：dwd_tjnd_report_biz_no_base   国担上报范围表
 -- 源表     ：dw_nd.ods_t_biz_project_main  主项目表（进件表）
 --           dw_nd.ods_t_biz_proj_xz       续支项目表
 --           dw_nd.ods_t_biz_proj_loan_check 贷后检查表（自主续支项目）

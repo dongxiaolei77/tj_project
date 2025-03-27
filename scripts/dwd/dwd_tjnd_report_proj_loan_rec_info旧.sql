@@ -26,7 +26,7 @@ insert into dw_base.dwd_tjnd_report_proj_loan_rec_info
 , loan_end_dt -- 放款到期日期
 , loan_reg_dt -- 放款登记日期
 , afg_voucher_id -- 放款凭证信息id
-)
+, dict_flag)
 select distinct '${v_sdate}'                                as day_id
               , t1.biz_no                                   as proj_no_prov
               , t3.receipt_no                               as loan_doc_no
@@ -38,12 +38,13 @@ select distinct '${v_sdate}'                                as day_id
               , date_format(t3.loan_end_date, '%Y-%m-%d')   as loan_end_dt
               , date_format(t3.created_time, '%Y-%m-%d')    as loan_reg_dt
               , t3.id                                       as afg_voucher_id
+              , 0                                           as dict_flag
 from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
          inner join dw_nd.ods_tjnd_yw_z_report_afg_business_infomation t2 -- 业务申请表
                     on t1.biz_id = t2.id
          inner join dw_nd.ods_tjnd_yw_z_report_afg_voucher_infomation t3 -- 放款凭证信息
                     on t1.biz_id = t3.id_business_information
 where t1.day_id = '${v_sdate}'
-and t3.DELETE_FLAG = 1
+  and t3.DELETE_FLAG = 1
 ;
 commit;
