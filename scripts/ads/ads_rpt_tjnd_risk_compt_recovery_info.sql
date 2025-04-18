@@ -79,4 +79,5 @@ from (
                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
                             on t1.id = t2.ID_RECOVERY_TRACKING
          group by t1.ID_CFBIZ_UNDERWRITING
-     ) t5 on t1.id = t5.ID_CFBIZ_UNDERWRITING
+     ) t5 on t1.id = t5.ID_CFBIZ_UNDERWRITING;
+commit;

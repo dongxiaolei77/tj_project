@@ -125,7 +125,12 @@ insert into dw_base.dwd_tjnd_report_proj_base_info
 , gtee_cont_amt -- 保证合同金额
 , ag_cnty_cd -- 农业大县代码
 , core_corp_cert_no -- 合作核心企业统一社会信用代码
-, dict_flag)
+, dict_flag
+, is_credit_auth -- 是否已授权征信上报
+, is_comp_notice_credit -- 是否已通知上报代偿信息
+, is_direct_guar -- 是否直接承担担保责任
+, is_coop_cd -- 项目合作情况代码
+)
 select '${v_sdate}'                                                 as day_id
      , a.GUARANTEE_CODE                                             as proj_no_prov              -- 省农担担保项目编号
      , a.ID_NUMBER                                                  as cert_no                   -- 证件号码(用于映射cust_no_nacga)
@@ -204,6 +209,10 @@ select '${v_sdate}'                                                 as day_id
      , '999999'                                                     as ag_cnty_cd                -- 农业大县代码，不涉及
      , null                                                         as core_corp_cert_no         -- 合作核心企业统一社会信用代码，非必填
      , 0                                                            as dict_flag
+     , null                                                         as is_credit_auth            -- 是否已授权征信上报
+     , null                                                         as is_comp_notice_credit     -- 是否已通知上报代偿信息
+     , '1'                                                          as is_direct_guar            -- 是否直接承担担保责任
+     , '00'                                                         as is_coop_cd                -- 项目合作情况代码
 from dw_base.dwd_tjnd_yw_guar_info_all_qy a
          inner join dw_base.dwd_nacga_report_guar_info_base_info b
                     on a.guarantee_code = b.biz_no
@@ -385,7 +394,12 @@ insert into dw_base.dwd_tjnd_report_proj_base_info
 , comp_rmv_dt -- 项目核销日期
 , gtee_cont_amt -- 保证合同金额
 , ag_cnty_cd -- 农业大县代码
-, dict_flag)
+, dict_flag
+, is_credit_auth -- 是否已授权征信上报
+, is_comp_notice_credit -- 是否已通知上报代偿信息
+, is_direct_guar -- 是否直接承担担保责任
+, is_coop_cd -- 项目合作情况代码
+)
 select distinct '${v_sdate}'                              as day_id
               , t1.guar_id                                as proj_no_prov              -- 省农担担保项目编号
               , t1.cert_no                                                             -- 证件号码
@@ -408,7 +422,7 @@ select distinct '${v_sdate}'                              as day_id
                     else null
     end                                                   as proj_typ_cd               -- 项目类型代码 /*通过业务编号判断，风险化解业务类型为风险续保；其他业务通过“是否首保”判断是新增或续保*/
               , coalesce(t0.country_code, t0.city_code)   as proj_blogto_area_cd       -- 项目所属区域代码 /*业务系统出，优先取县区级别，没有取市级别*/
-              , t18.table_no_nacga                                                     -- 项目所属机构 /*上报系统映射*/ -- mdy 20241209 wyx
+              , t18.table_no_nacga                        as proj_blogto_org_no        -- 项目所属机构 /*上报系统映射*/ -- mdy 20241209 wyx
               , t0.cust_class_code                        as proj_main_typ_cd          -- 项目主体类型代码 /*关联国担上报个人、企业客户基本信息表,获取主体类型代码*/
               , case
                     when t1.guar_prod = '农耕e贷' then '01' /*农耕e贷转为粮食种植*/
@@ -594,7 +608,7 @@ select distinct '${v_sdate}'                              as day_id
               , case
                     when t6.dept_name in ('农村商业银行', '村镇银行') or (t1.guar_prod = '农耕e贷' and t6.bank_name = '农村商业银行') or
                          t6.dept_id is null then t1.guar_id
-                    else t6.dept_id
+                    else t6.gnd_dept_id
     end                                                   as loan_bank_no              -- 签约金融机构代码 /*为 农商银行、村镇银行的、为空的，根据银行简称映射，并将代码赋值为业务编号*/
               , coalesce(t6.bank_name, t6.dept_name)      as loan_bank_br_name         -- 签约金融机构（分支机构）
               , t1.loan_amt                               as loan_amt                  -- 借款合同额度
@@ -612,7 +626,7 @@ select distinct '${v_sdate}'                              as day_id
               , case
                     when t6.dept_name in ('农村商业银行', '村镇银行') or (t1.guar_prod = '农耕e贷' and t6.bank_name = '农村商业银行') or
                          t6.dept_id is null then t1.guar_id
-                    else t6.dept_id
+                    else t6.gnd_dept_id
     end                                                   as gtee_bank_no              -- 保证合同金融机构代码 /*为 农商银行、村镇银行的、为空的，根据银行简称映射，并将代码赋值为业务编号*/
               , regexp_replace(trim(coalesce(t11.loan_notice_no, t5.loan_notice_no)), '\\(|\\（|\\)|\\）',
                                '')                        as gtee_agmt_no              -- 保证合同编号 /*进件续支--放款通知书编号、自主续支--进件放款通知书、线上--电子签章*/
@@ -642,6 +656,10 @@ select distinct '${v_sdate}'                              as day_id
               , t1.guar_amt                               as gtee_cont_amt             -- 保证合同金额
               , '999999'                                  as ag_cnty_cd                -- 农业大县代码
               , 1                                         as dict_flag
+              , null                                      as is_credit_auth            -- 是否已授权征信上报
+              , null                                      as is_comp_notice_credit     -- 是否已通知上报代偿信息
+              , '1'                                       as is_direct_guar            -- 是否直接承担担保责任
+              , '00'                                      as is_coop_cd                -- 项目合作情况代码
 from dw_base.dwd_guar_info_all t1 -- 业务信息宽表--项目域
          inner join dw_base.dwd_guar_info_stat t0 -- 业务信息宽表--项目域
                     on t1.guar_id = t0.guar_id

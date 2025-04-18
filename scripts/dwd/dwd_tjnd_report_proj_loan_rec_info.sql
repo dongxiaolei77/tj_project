@@ -71,18 +71,18 @@ select distinct '${v_sdate}'                         as day_id
                     when t4.dept_name in ('农村商业银行', '村镇银行') or (t1.guar_prod = '农耕e贷' and t4.bank_name = '农村商业银行') or
                          t4.dept_id is null
                         then t1.guar_id -- 省端机构名称为农村商业银行、村镇银行，或者产品名称为农耕e贷且银行名称为农村商业银行，或者省端机构为空值的，将放款金融机构代码映射为业务编号--
-                    else t4.dept_id
+                    else t4.gnd_dept_id
     end                                              as loan_bank_no      -- 放款金融机构代码
               , coalesce(t4.bank_name, t4.dept_name) as loan_bank_br_name -- 放款金融机构（分支机构） -- 银行名称空值的，用省端机构名称补充--
               , t1.loan_amt                          as loan_amt          -- 放款金额
               , t1.loan_rate / 100                   as loan_rate         -- 放款利率
               , date(t1.loan_begin_dt)               as loan_strt_dt      -- 放款日期
               , date(t1.loan_end_dt)                 as loan_end_dt       -- 放款到期日期
-              , '1'                                  as afg_voucher_id    -- 放款凭证信息id
               , case
                     when t1.data_source = '标准线上业务台账' then coalesce(date(t1.loan_begin_dt), date(t1.loan_reg_dt))
                     else date(t1.loan_reg_dt) -- 计入在保日期  mdy，改为与内部画像口径一致
     end                                              as loan_reg_dt       -- 放款登记日期
+              , '1'                                  as afg_voucher_id    -- 放款凭证信息id
               , 1                                    as dict_flag
 from dw_base.dwd_guar_info_all t1 -- 业务信息宽表--项目域
          inner join dw_base.dwd_tjnd_report_biz_no_base t2 -- 国担上报范围表

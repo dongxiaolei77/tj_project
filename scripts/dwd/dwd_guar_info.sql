@@ -466,7 +466,8 @@ insert into dw_base.dwd_guar_info_all
 ,is_compensate
 ,is_ovd
 ,ovd_days
-,loan_reg_dt)
+,loan_reg_dt
+)
 select 
 day_id
 ,guar_id

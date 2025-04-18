@@ -43,7 +43,7 @@ select '${v_sdate}'                                                           as
        t2.dept_id                                                             as bank_id,
        t2.dept_name                                                           as bank_name,
        t2.ancestors                                                           as ancestors,
-       t4.序号                                                                  as gnd_dept_id,
+       t4.机构编码                                                                as gnd_dept_id,
        t4.中文全称                                                                as gnd_dept_name,
        t1.bank_class                                                          as bank_class,
        t3.fin_org_risk_share_ratio                                            as bank_risk,
@@ -84,7 +84,7 @@ from (
          left join
      (
          select t1.dept_id,
-                t2.序号,
+                t2.机构编码,
                 t2.中文全称
          from dw_nd.ods_t_sys_dept t1 -- 部门表
                   join dw_base.dwd_imp_tjnd_report_bank_financial_institution t2 -- 国农担机构表
