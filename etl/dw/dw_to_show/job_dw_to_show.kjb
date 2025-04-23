@@ -376,7 +376,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>64</xloc>
-      <yloc>288</yloc>
+      <yloc>352</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -388,7 +388,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>992</xloc>
-      <yloc>336</yloc>
+      <yloc>352</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -464,7 +464,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>752</xloc>
-      <yloc>384</yloc>
+      <yloc>144</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -502,7 +502,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>752</xloc>
-      <yloc>192</yloc>
+      <yloc>224</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -540,7 +540,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>752</xloc>
-      <yloc>320</yloc>
+      <yloc>304</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -578,7 +578,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>656</xloc>
-      <yloc>448</yloc>
+      <yloc>672</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -616,7 +616,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>752</xloc>
-      <yloc>512</yloc>
+      <yloc>720</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -654,7 +654,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>752</xloc>
-      <yloc>128</yloc>
+      <yloc>384</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -692,7 +692,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>752</xloc>
-      <yloc>592</yloc>
+      <yloc>464</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -730,7 +730,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>752</xloc>
-      <yloc>256</yloc>
+      <yloc>544</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -768,7 +768,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>272</xloc>
-      <yloc>288</yloc>
+      <yloc>352</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -808,7 +808,7 @@ COMMIT;</sql>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>560</xloc>
-      <yloc>128</yloc>
+      <yloc>384</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -828,7 +828,7 @@ COMMIT;</sql>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>560</xloc>
-      <yloc>192</yloc>
+      <yloc>224</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -848,7 +848,7 @@ COMMIT;</sql>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>560</xloc>
-      <yloc>256</yloc>
+      <yloc>544</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -868,7 +868,7 @@ COMMIT;</sql>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>560</xloc>
-      <yloc>320</yloc>
+      <yloc>304</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -888,7 +888,7 @@ COMMIT;</sql>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>560</xloc>
-      <yloc>384</yloc>
+      <yloc>144</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -908,7 +908,7 @@ COMMIT;</sql>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>560</xloc>
-      <yloc>512</yloc>
+      <yloc>720</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -930,7 +930,7 @@ COMMIT;</sql>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>560</xloc>
-      <yloc>592</yloc>
+      <yloc>464</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -947,7 +947,7 @@ COMMIT;</sql>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>160</xloc>
-      <yloc>288</yloc>
+      <yloc>352</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
@@ -1039,8 +1039,8 @@ COMMIT;</sql>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>SQL</from>
@@ -1057,8 +1057,8 @@ COMMIT;</sql>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>etl_set_var</from>
@@ -1066,8 +1066,8 @@ COMMIT;</sql>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>SQL 3</from>
@@ -1084,8 +1084,8 @@ COMMIT;</sql>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>etl_set_var</from>
@@ -1093,8 +1093,8 @@ COMMIT;</sql>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>etl_set_var</from>
@@ -1102,8 +1102,8 @@ COMMIT;</sql>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>SQL 2</from>
@@ -1174,8 +1174,8 @@ COMMIT;</sql>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
-      <evaluation>N</evaluation>
-      <unconditional>Y</unconditional>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>etl_set_var</from>
