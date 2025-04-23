@@ -168,14 +168,14 @@ select '${v_sdate}'             as day_id,
        area,
        null                     as remark
 from (
-         select guar_id          as guar_id,         -- 台账编号
-                cust_name        as cust_name,       -- 客户姓名
-                cust_type        as cust_type,       -- 客户类型
-                loan_bank        as full_bank,       -- 贷款银行
-                guar_class       as gnd_indus_class, -- 国担分类
-                loan_amt / 10000 as loan_amt,        -- 放款金额(万元)
-                city_name        as city,            -- 所属地市
-                county_name      as area             -- 所属区县
+         select guar_id     as guar_id,         -- 台账编号
+                cust_name   as cust_name,       -- 客户姓名
+                cust_type   as cust_type,       -- 客户类型
+                loan_bank   as full_bank,       -- 贷款银行
+                guar_class  as gnd_indus_class, -- 国担分类
+                loan_amt    as loan_amt,        -- 放款金额(万元)
+                city_name   as city,            -- 所属地市
+                county_name as area             -- 所属区县
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'

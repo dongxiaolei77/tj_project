@@ -112,8 +112,8 @@ select '${v_sdate}'                         as day_id,
        ind_name,
        main_biz,
        ln_purp,
-       loan_amt / 10000                     as loan_amt,
-       gt_amt / 10000                       as gt_amt,
+       loan_amt                             as loan_amt,
+       gt_amt                               as gt_amt,
        issue_dt,
        exp_dt,
        0                                    as gover_ratio,
@@ -123,7 +123,7 @@ select '${v_sdate}'                         as day_id,
        null                                 as un_guar_abst,
        null                                 as risk_level,
        first_guar_dt,
-       first_guar_amt / 10000               as first_guar_amt,
+       first_guar_amt                       as first_guar_amt,
        guar_cnt - 1                         as renewal_cnt,
        eexit_dt,
        concat('预计', year(eexit_dt), '年底结清') as eexit_plan
@@ -157,12 +157,12 @@ from (
                  left join
              (
                  select guar_id,   -- 台账编号
-                        onguar_amt -- 在保余额
+                        onguar_amt -- 在保余额(万元)
                  from dw_base.dwd_guar_info_onguar
                  where day_id = '${v_sdate}'
              ) t2 on t1.guar_id = t2.guar_id
         group by cust_name
-        having gt_amt > 10000000
+        having gt_amt > 1000
     ) t2 on t1.cust_name = t2.cust_name
          left join
      (

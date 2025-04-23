@@ -278,9 +278,9 @@ from (
      ) t4 on t1.guar_id = t4.guar_id
          left join
      (
-         select project_id,                       -- 项目id
-                sum(refund_amount) as refund_amt, -- 退费金额
-                max(pay_date)      as refund_date -- 缴费日期
+         select project_id,                               -- 项目id
+                sum(refund_amount) * 10000 as refund_amt, -- 退费金额(元)
+                max(pay_date)              as refund_date -- 缴费日期
          from dw_nd.ods_t_biz_proj_refund
          group by project_id
      ) t5 on t4.project_id = t4.project_id

@@ -234,7 +234,9 @@ t1.day_id                    -- 数据日期
 ,null -- 审批结果
 ,null -- 当前节点
 ,coalesce(t16.area_name, t3.sup_area_name) -- 城市 -- 20230224 zhangfl
+,t1.city_cd	-- 城市编码
 ,t3.area_name -- 区县
+,t1.district_cd -- 区县编码
 ,t4.value	  -- 客户类型
 ,t5.value -- 客户分类
 ,cust_name -- 客户名称
@@ -394,7 +396,9 @@ insert into dw_base.dwd_guar_info_all
 ,aprv_result
 ,cur_node_name
 ,city_name
+,city_code
 ,county_name
+,country_code
 ,town_name
 ,village_name
 ,cust_type
@@ -466,8 +470,7 @@ insert into dw_base.dwd_guar_info_all
 ,is_compensate
 ,is_ovd
 ,ovd_days
-,loan_reg_dt
-)
+,loan_reg_dt)
 select 
 day_id
 ,guar_id
@@ -478,7 +481,9 @@ day_id
 ,aprv_result
 ,cur_node_name
 ,city_name
+,city_code
 ,county_name
+,country_code
 ,null as town_name
 ,null as village_name
 ,cust_type
@@ -642,7 +647,9 @@ insert into dw_base.dwd_guar_info_all
 ,aprv_result
 ,cur_node_name
 ,city_name
+,city_code
 ,county_name
+,country_code
 ,town_name
 ,village_name
 ,cust_type
@@ -726,7 +733,9 @@ select
 ,null             -- 审批结果
 ,null             -- 当前节点
 ,t4.sup_area_name -- 城市
+,t4.sup_area_cd
 ,t4.area_name     -- 区县
+,t4.area_cd
 ,t5.sup_area_name -- 乡镇
 ,t5.area_name     -- 村庄
 ,t9.value         -- 客户类型
@@ -871,12 +880,12 @@ commit;
 
 
 -- 更新地市
-update dw_base.dwd_guar_info_all  set city_name = replace(city_name,'市','') ;
-commit;
+-- update dw_base.dwd_guar_info_all  set city_name = replace(city_name,'市','') ;
+-- commit;
 
 -- 更新县区
-update dw_base.dwd_guar_info_all  set city_name = concat(city_name,'市') ;
-commit;
+-- update dw_base.dwd_guar_info_all  set city_name = concat(city_name,'市') ;
+-- commit;
 
 
 
@@ -1533,8 +1542,8 @@ select
 '${v_sdate}'
 ,cust_id -- 客户号
 ,t1.guar_id -- 担保ID
-,coalesce(t2.city_code,'379900') -- 地市
-,t10.area_cd  -- 县区
+,t1.city_code -- 地市
+,t1.country_code  -- 县区
 ,coalesce(t4.code,'99')  -- 客户大类
 ,coalesce(t5.code,'07') -- 客户分类
 ,coalesce(t6.code,'99') -- 农担分类
@@ -1572,8 +1581,8 @@ select
 		end project_no   -- 增加字段   20220511 前业务编号 project_id
 ,t15.project_id -- 增加字段   20220511  项目id
 from dw_base.dwd_guar_info_all t1
-left join dw_tmp.tmp_guar_info_stat_city t2
-on substr(t1.city_name,1,2) = t2.city_name
+-- left join dw_tmp.tmp_guar_info_stat_city t2
+-- on t1.city_name = t2.city_name
 left join dw_base.dim_cust_type t4
 on t1.cust_type = t4.value
 left join dw_base.dim_cust_class t5
@@ -1587,9 +1596,9 @@ left join dw_base.dim_bank_class t8
 on t1.bank_class = t8.value
 left join dw_base.dim_item_stt t9
 on t1.item_stt = t9.value
-left join dw_tmp.tmp_guar_info_stat_city02   t10  -- mdy 20220518 wyx
-on t1.city_name = t10.sup_area_name
-and t1.county_name = t10.area_name
+-- left join dw_tmp.tmp_guar_info_stat_city02   t10  -- mdy 20220518 wyx
+-- on t1.city_name = t10.sup_area_name
+-- and t1.county_name = t10.area_name
 left join dw_base.tmp_dwd_guar_info_all_mid t11       --  关联新建中间表      20211104
 on t1.guar_id = t11.guar_id
 left join dw_base.tmp_ind_clus_gid_code t12           --    关联产业集群临时表    20211123  

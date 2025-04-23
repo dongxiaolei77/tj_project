@@ -228,7 +228,7 @@ from (
          left join
      (
          select guar_id,
-                onguar_amt as on_balance -- 在保余额
+                onguar_amt * 10000 as on_balance -- 在保余额(元)
          from dw_base.dwd_guar_info_onguar
          where day_id = '${v_sdate}'
      ) t5 on t4.guar_id = t5.guar_id;

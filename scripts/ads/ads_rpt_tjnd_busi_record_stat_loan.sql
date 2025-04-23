@@ -651,6 +651,7 @@ from (
 group by BUSINESS_SP_USER_NAME;
 commit;
 
+-- -----------------------------------------------
 -- 新业务系统逻辑
 -- 按银行
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
@@ -680,10 +681,10 @@ select '${v_sdate}'                                                             
        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
        sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
 from (
-         select guar_id,                      -- 业务id
-                guar_amt / 10000 as guar_amt, -- 放款金额(万元)
-                loan_reg_dt,                  -- 放款登记日期
-                loan_bank                     -- 合作银行
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额(万元)
+                loan_reg_dt, -- 放款登记日期
+                loan_bank    -- 合作银行
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -706,8 +707,8 @@ from (
      ) t3 on t2.project_id = t3.project_id
          left join
      (
-         select guar_id,                         -- 业务id
-                guar_amt / 10000 as now_guar_amt -- 放款金额
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -768,9 +769,9 @@ select '${v_sdate}'                                                             
        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
        sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
 from (
-         select guar_id,                      -- 业务id
-                guar_amt / 10000 as guar_amt, -- 放款金额
-                loan_reg_dt,                  -- 放款登记日期
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额
+                loan_reg_dt, -- 放款登记日期
                 guar_prod
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
@@ -794,8 +795,8 @@ from (
      ) t3 on t2.project_id = t3.project_id
          left join
      (
-         select guar_id,                         -- 业务id
-                guar_amt / 10000 as now_guar_amt -- 放款金额
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -849,9 +850,9 @@ select '${v_sdate}'                                                             
        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
        sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
 from (
-         select guar_id,                      -- 业务id
-                guar_amt / 10000 as guar_amt, -- 放款金额
-                loan_reg_dt,                  -- 放款登记日期
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
                 guar_class
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
@@ -875,8 +876,8 @@ from (
      ) t3 on t2.project_id = t3.project_id
          left join
      (
-         select guar_id,                         -- 业务id
-                guar_amt / 10000 as now_guar_amt -- 放款金额
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -937,10 +938,10 @@ select '${v_sdate}'                                                             
        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
        sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
 from (
-         select guar_id,                      -- 业务id
-                guar_amt / 10000 as guar_amt, -- 放款金额
-                loan_reg_dt,                  -- 放款登记日期
-                county_name      as area      -- 区县
+         select guar_id,            -- 业务id
+                guar_amt,           -- 放款金额
+                loan_reg_dt,        -- 放款登记日期
+                county_name as area -- 区县
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -963,8 +964,8 @@ from (
      ) t3 on t2.project_id = t3.project_id
          left join
      (
-         select guar_id,                         -- 业务id
-                guar_amt / 10000 as now_guar_amt -- 放款金额
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -1024,10 +1025,10 @@ select '${v_sdate}'                                                             
        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
        sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
 from (
-         select guar_id,                      -- 业务id
-                guar_amt / 10000 as guar_amt, -- 放款金额
-                loan_reg_dt,                  -- 放款登记日期
-                county_name      as area      -- 区县
+         select guar_id,            -- 业务id
+                guar_amt,           -- 放款金额
+                loan_reg_dt,        -- 放款登记日期
+                county_name as area -- 区县
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -1050,8 +1051,8 @@ from (
      ) t3 on t2.project_id = t3.project_id
          left join
      (
-         select guar_id,                         -- 业务id
-                guar_amt / 10000 as now_guar_amt -- 放款金额
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -1104,10 +1105,10 @@ select '${v_sdate}'                                                             
        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
        sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
 from (
-         select guar_id,                      -- 业务id
-                guar_amt / 10000 as guar_amt, -- 放款金额
-                loan_reg_dt,                  -- 放款登记日期
-                loan_bank                     -- 贷款银行
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                loan_bank             -- 贷款银行
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -1130,8 +1131,8 @@ from (
      ) t3 on t2.project_id = t3.project_id
          left join
      (
-         select guar_id,                         -- 业务id
-                guar_amt / 10000 as now_guar_amt -- 放款金额
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -1184,9 +1185,9 @@ select '${v_sdate}'                                                             
        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
        sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
 from (
-         select guar_id,                      -- 业务id
-                guar_amt / 10000 as guar_amt, -- 放款金额
-                loan_reg_dt                   -- 放款登记日期
+         select guar_id,    -- 业务id
+                guar_amt,   -- 放款金额
+                loan_reg_dt -- 放款登记日期
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -1209,8 +1210,8 @@ from (
      ) t3 on t2.project_id = t3.project_id
          left join
      (
-         select guar_id,                         -- 业务id
-                guar_amt / 10000 as now_guar_amt -- 放款金额
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'

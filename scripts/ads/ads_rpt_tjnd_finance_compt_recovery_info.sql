@@ -125,17 +125,17 @@ from (
      ) t2 on t1.guar_id = t2.guar_id
          left join
      (
-         select t1.project_id,                        -- 项目id
-                sum(t2.shou_comp_amt) as recovery_amt -- 追偿金额
+         select t1.project_id,                                -- 项目id
+                sum(t2.shou_comp_amt) / 10000 as recovery_amt -- 追偿金额
          from dw_nd.ods_t_biz_proj_recovery_record t1
                   left join dw_nd.ods_t_biz_proj_recovery_repay_detail_record t2 on t1.reco_id = t2.record_id
          group by t1.project_id
      ) t3 on t2.project_id = t3.project_id
          left join
      (
-         select t1.project_id,                                -- 项目id
-                sum(t2.shou_comp_amt)   as year_recovery_amt, -- 当年追偿金额
-                max(t2.real_repay_date) as last_recovery_date -- 最近一次还款日期
+         select t1.project_id,                                      -- 项目id
+                sum(t2.shou_comp_amt) / 10000 as year_recovery_amt, -- 当年追偿金额
+                max(t2.real_repay_date)       as last_recovery_date -- 最近一次还款日期
          from dw_nd.ods_t_biz_proj_recovery_record t1
                   left join dw_nd.ods_t_biz_proj_recovery_repay_detail_record t2 on t1.reco_id = t2.record_id
          where year(real_repay_date) = year('${v_sdate}')
