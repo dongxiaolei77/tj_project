@@ -313,7 +313,7 @@ insert into dw_base.ads_rpt_tjnd_busi_record_detail
  is_compt, -- 是否代偿
  is_ovd -- 是否逾期
 )
-select '${v_sdate}'                             as day_id,
+select '${v_sdate}'                                              as day_id,
        t1.guar_id,
        cust_name,
        cust_type,
@@ -331,17 +331,24 @@ select '${v_sdate}'                             as day_id,
        loan_bank_name,
        guar_approved_rate,
        loan_rate,
-       round(guar_approved_rate + loan_rate, 6) as overall_cost,
+       round(guar_approved_rate + loan_rate, 6)                  as overall_cost,
        nd_proj_mgr_name,
        prod_type,
        guar_approved_period,
        gnd_indus_class,
        phone_no,
-       '否'                                      as is_guar_sight,
-       null                                     as is_micro_company,
-       null                                     as is_support_snzt,
-       null                                     as is_support_scsf,
-       null                                     as is_support_emerging_industry,
+       '否'                                                       as is_guar_sight,
+       case when corp_type in ('03', '04') then '是' else '否' end as is_micro_company,
+       is_support_snzt,
+       case
+           when cust_main_label like '%02%' or
+                cust_main_label like '%03%' or
+                cust_main_label like '%04%' or
+                cust_main_label like '%05%' then '是'
+           else '否' end                                          as is_support_scsf,
+       case
+           when cust_main_label like '%06%' then '是'
+           else '否' end                                          as is_support_emerging_industry,
        weibao_cont_no,
        cert_type,
        cert_num,
@@ -354,9 +361,14 @@ select '${v_sdate}'                             as day_id,
            when branch_off = 'XQJHBranch' then '西青静海办事处'
            when branch_off = 'JZBranch' then '蓟州办事处'
            when branch_off = 'BDBranch' then '宝坻办事处'
-           end                                  as branch_off,
+           end                                                   as branch_off,
        guar_status,
-       corp_type,
+       case
+           when corp_type = '01' then '大型企业'
+           when corp_type = '02' then '中型企业'
+           when corp_type = '03' then '小型企业'
+           when corp_type = '04' then '微型企业'
+           end                                                   as corp_type,
        repayment_amt,
        repayment_date,
        is_compt,
@@ -406,6 +418,8 @@ from (
                 main_business_one as main_biz,         -- 经营主业
                 enterprise_scale  as corp_type,        -- 企业规模
                 create_name       as nd_proj_mgr_name, -- 创建者
+                is_farmer         as is_support_snzt,  -- 是否支持三农主体
+                cust_main_label,                       -- 客户主体标签
                 rn
          from (
                   select *, row_number() over (partition by code order by db_update_time desc) as rn

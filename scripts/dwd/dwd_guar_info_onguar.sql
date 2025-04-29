@@ -5,7 +5,10 @@
 -- 源表     ：dw_base.dwd_guar_info_all    担保台账信息
 -- ---------------------------------------
 -- 重跑逻辑
-truncate table dw_base.dwd_guar_info_onguar;
+delete
+from dw_base.dwd_guar_info_onguar
+where day_id = '${v_sdate}';
+commit;
 -- 插入数据
 insert into dw_base.dwd_guar_info_onguar
 select '${v_sdate}'                                 as day_id,
@@ -15,4 +18,4 @@ select '${v_sdate}'                                 as day_id,
        null                                         as repayment_amt,
        case when item_stt = '已放款' then guar_amt end as onguar_amt
 from dw_base.dwd_guar_info_all;
-
+commit;

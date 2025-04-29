@@ -1,20 +1,20 @@
 -- ---------------------------------------
 -- 开发人   : zhangfl
 -- 开发时间 ：20230820
--- 目标表   ：ads_sdnd_guar_busi_dimension_stat
--- 源表     ：da_base.dwd_sdnd_data_report_guar_tag
+-- 目标表   ：ads_tjnd_guar_busi_dimension_stat
+-- 源表     ：da_base.dwd_tjnd_data_report_guar_tag
 --            
 --            
--- 备注     ：国担上报-山东农担业务细分维度情况统计，基于国担上报数据底表数据开发
+-- 备注     ：国担上报-天津农担业务细分维度情况统计，基于国担上报数据底表数据开发
 -- 变更记录 ：
 
 -- ---------------------------------------
 
-delete from dw_base.ads_sdnd_guar_busi_dimension_stat where day_id = '${v_sdate}';
+delete from dw_base.ads_tjnd_guar_busi_dimension_stat where day_id = '${v_sdate}';
 commit;
 
 -- 1.按照政策性划分
-insert into dw_base.ads_sdnd_guar_busi_dimension_stat
+insert into dw_base.ads_tjnd_guar_busi_dimension_stat
 ( day_id            -- 数据日期
  ,divid_method      -- 划分方式
  ,class_type_code   -- 分类小项code
@@ -65,7 +65,7 @@ select '${v_sdate}' as day_id
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then t1.loan_amt else 0 end ) as month_guar_amt
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then 1 else 0 end ) as month_guar_qty
        
-  from dw_base.dwd_sdnd_data_report_guar_tag t1
+  from dw_base.dwd_tjnd_data_report_guar_tag t1
  where day_id = '${v_sdate}' and '${v_sdate}' = date_format(last_day('${v_sdate}'),'%Y%m%d') -- 月底跑批
  group by case when t1.policy_type = '政策性业务：[10-300]' then
                case when t1.is_add_curryear = '1' and t1.is_unguar_curryear = '1' and t1.loan_term_type <> '6个月以下' then '1'
@@ -82,7 +82,7 @@ select '${v_sdate}' as day_id
 commit;
 
 -- 2.按行业划分
-insert into dw_base.ads_sdnd_guar_busi_dimension_stat
+insert into dw_base.ads_tjnd_guar_busi_dimension_stat
 ( day_id            -- 数据日期
  ,divid_method      -- 划分方式
  ,class_type_code   -- 分类小项code
@@ -100,7 +100,7 @@ insert into dw_base.ads_sdnd_guar_busi_dimension_stat
  )
 select '${v_sdate}' as day_id
        ,'按行业划分' as divid_method
-       ,case t1.guar_class_type 
+       ,case t1.guar_class_type
             when '非农项目' then '12'  -- 非农项目暂时归入其他农业项目里
             when '粮食种植' then '2'
             when '特色农产品种植' then '3'
@@ -114,13 +114,13 @@ select '${v_sdate}' as day_id
             when '农业新业态' then '11'
             when '其他农业项目' then '12'
           end as class_type_code
-       ,case t1.guar_class_type 
+       ,case t1.guar_class_type
 	        when '非农项目' then '其他农业项目'
             when '粮食种植' then '农林业生产-粮食种植'
             when '特色农产品种植' then '农林业生产-重要特色农产品种植'
             when '生猪养殖' then '畜牧业生产-生猪养殖'
             when '其他畜牧业' then '畜牧业生产-其他畜牧业'
-            else t1.guar_class_type 
+            else t1.guar_class_type
           end  as class_type_name
        ,sum(case when t1.item_stt = '已放款' then t1.loan_amt else 0 end) as guar_amt
        ,sum(case when t1.item_stt = '已放款' then 1 else 0 end) as guar_qty
@@ -132,10 +132,10 @@ select '${v_sdate}' as day_id
        ,sum(case when t1.is_compt = '1' and t1.compt_dt between concat(year('${v_sdate}'), '0101') and '${v_sdate}' then '1' else '0' end) as year_comp_qty
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then t1.loan_amt else 0 end ) as month_guar_amt
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then 1 else 0 end ) as month_guar_qty
-       
-  from dw_base.dwd_sdnd_data_report_guar_tag t1
+
+  from dw_base.dwd_tjnd_data_report_guar_tag t1
  where day_id = '${v_sdate}' and '${v_sdate}' = date_format(last_day('${v_sdate}'),'%Y%m%d') -- 月底跑批
- group by case t1.guar_class_type 
+ group by case t1.guar_class_type
             when '非农项目' then '12'  -- 非农项目暂时归入其他农业项目里
             when '粮食种植' then '2'
             when '特色农产品种植' then '3'
@@ -153,7 +153,7 @@ select '${v_sdate}' as day_id
 commit;
 
 -- 3.按贷款期限划分
-insert into dw_base.ads_sdnd_guar_busi_dimension_stat
+insert into dw_base.ads_tjnd_guar_busi_dimension_stat
 ( day_id            -- 数据日期
  ,divid_method      -- 划分方式
  ,class_type_code   -- 分类小项code
@@ -171,7 +171,7 @@ insert into dw_base.ads_sdnd_guar_busi_dimension_stat
  )
 select '${v_sdate}' as day_id
        ,'按贷款期限划分' as divid_method
-       ,case t1.loan_term_type 
+       ,case t1.loan_term_type
             when '6个月以下' then '1'
             when '6(含)-12个月(含)' then '2'
             when '12-36个月(含)' then '3'
@@ -188,10 +188,10 @@ select '${v_sdate}' as day_id
        ,sum(case when t1.is_compt = '1' and t1.compt_dt between concat(year('${v_sdate}'), '0101') and '${v_sdate}' then '1' else '0' end) as year_comp_qty
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then t1.loan_amt else 0 end ) as month_guar_amt
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then 1 else 0 end ) as month_guar_qty
-       
-  from dw_base.dwd_sdnd_data_report_guar_tag t1
+
+  from dw_base.dwd_tjnd_data_report_guar_tag t1
  where day_id = '${v_sdate}' and '${v_sdate}' = date_format(last_day('${v_sdate}'),'%Y%m%d') -- 月底跑批
- group by case t1.loan_term_type 
+ group by case t1.loan_term_type
             when '6个月以下' then '1'
             when '6(含)-12个月(含)' then '2'
             when '12-36个月(含)' then '3'
@@ -201,7 +201,7 @@ select '${v_sdate}' as day_id
 commit;
 
 -- 4.本年新增实际担保期限6个月及以上的项目
-insert into dw_base.ads_sdnd_guar_busi_dimension_stat
+insert into dw_base.ads_tjnd_guar_busi_dimension_stat
 ( day_id            -- 数据日期
  ,divid_method      -- 划分方式
  ,class_type_code   -- 分类小项code
@@ -231,15 +231,15 @@ select '${v_sdate}' as day_id
        ,sum(case when t1.is_compt = '1' and t1.compt_dt between concat(year('${v_sdate}'), '0101') and '${v_sdate}' then '1' else '0' end) as year_comp_qty
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then t1.loan_amt else 0 end ) as month_guar_amt
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then 1 else 0 end ) as month_guar_qty
-       
-  from dw_base.dwd_sdnd_data_report_guar_tag t1
+
+  from dw_base.dwd_tjnd_data_report_guar_tag t1
  where day_id = '${v_sdate}' and '${v_sdate}' = date_format(last_day('${v_sdate}'),'%Y%m%d') -- 月底跑批
    and t1.is_add_curryear = '1' and t1.loan_term_type <> '6个月以下'
 ;
 commit;
 
 -- 5.按支持经营主题类型划分
-insert into dw_base.ads_sdnd_guar_busi_dimension_stat
+insert into dw_base.ads_tjnd_guar_busi_dimension_stat
 ( day_id            -- 数据日期
  ,divid_method      -- 划分方式
  ,class_type_code   -- 分类小项code
@@ -257,7 +257,7 @@ insert into dw_base.ads_sdnd_guar_busi_dimension_stat
  )
 select '${v_sdate}' as day_id
        ,'按支持经营主体类型划分' as divid_method
-       ,case t1.cust_class_type 
+       ,case t1.cust_class_type
             when '家庭农场（种养大户）' then '1'
             when '家庭农场' then '2'
             when '农民专业合作社' then '3'
@@ -274,8 +274,8 @@ select '${v_sdate}' as day_id
        ,sum(case when t1.is_compt = '1' and t1.compt_dt between concat(year('${v_sdate}'), '0101') and '${v_sdate}' then '1' else '0' end) as year_comp_qty
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then t1.loan_amt else 0 end ) as month_guar_amt
        ,sum(case when t1.loan_reg_dt between concat(date_format('${v_sdate}', '%Y%m'), '01') and '${v_sdate}' then 1 else 0 end ) as month_guar_qty
-       
-  from dw_base.dwd_sdnd_data_report_guar_tag t1
+
+  from dw_base.dwd_tjnd_data_report_guar_tag t1
  where day_id = '${v_sdate}' and '${v_sdate}' = date_format(last_day('${v_sdate}'),'%Y%m%d') -- 月底跑批
  group by case t1.cust_class_type 
             when '家庭农场（种养大户）' then '1'

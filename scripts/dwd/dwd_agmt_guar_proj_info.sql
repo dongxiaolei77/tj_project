@@ -209,8 +209,8 @@ id	                        -- 主键自增
 ,province	                -- 所属省份
 ,city	                    -- 所属地市
 ,district	                -- 所属区县
-,national_guar_type	        -- 国家农担分类
-,national_econ_type	        -- 国民经济分类
+,COALESCE(national_guar_type,national_guar_type_one) as national_guar_type	        -- 国家农担分类
+,COALESCE(national_econ_type,national_econ_type_one) as national_econ_type	        -- 国民经济分类
 ,main_business	            -- 经营主业
 ,case when proj_type ='续保项目' then '02'
       when proj_type ='首保项目' then '01'

@@ -605,6 +605,8 @@ where date_format(db_update_time,'%Y%m%d')  ='${v_sdate}'
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta/>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -803,6 +805,30 @@ where date_format(db_update_time,'%Y%m%d')  ='${v_sdate}'
       <field>
         <column_name>is_agency</column_name>
         <stream_name>is_agency</stream_name>
+      </field>
+      <field>
+        <column_name>is_history</column_name>
+        <stream_name>is_history</stream_name>
+      </field>
+      <field>
+        <column_name>is_personal</column_name>
+        <stream_name>is_personal</stream_name>
+      </field>
+      <field>
+        <column_name>action_object</column_name>
+        <stream_name>action_object</stream_name>
+      </field>
+      <field>
+        <column_name>case_no</column_name>
+        <stream_name>case_no</stream_name>
+      </field>
+      <field>
+        <column_name>judge</column_name>
+        <stream_name>judge</stream_name>
+      </field>
+      <field>
+        <column_name>register_time</column_name>
+        <stream_name>register_time</stream_name>
       </field>
     </fields>
     <attributes/>
