@@ -281,7 +281,7 @@ t1.day_id                    -- 数据日期
 ,date_format(loan_beg_dt,'%Y%m%d') -- 贷款开始时间
 ,date_format(loan_end_dt,'%Y%m%d') -- 贷款结束时间
 ,t10.value -- 合同还款类型
-,null -- 委保合同编号
+,t17.contract_name -- 委保合同编号
 ,guar_cont_id -- 保证合同编号（最高额担保合同）
 ,t1.guar_rate -- 担保费率
 ,loan_letter_no -- 放款通知书编号
@@ -363,6 +363,30 @@ left join dw_base.tmp_dwd_guar_info_new_busi_fee t15
 on t1.proj_dtl_no = t15.guar_id
 left join dw_base.dim_area_info t16  -- mdy 20230224 zhangfl
 on t1.city_cd = t16.area_cd and t16.area_lvl = '2'
+left join (
+	select tt.contract_name , 
+	  t1.code
+	from (
+	  select 
+		a1.biz_id
+		,substr(a1.contract_name,instr(a1.contract_name,'-')+1) as contract_name
+		,ROW_NUMBER() over(PARTITION by a1.biz_id order by a1.UPDATE_TIME desc) as rn
+	  from dw_nd.ods_comm_cont_comm_contract_info a1
+	  inner join dw_nd.ods_comm_cont_comm_contract_template_info a2
+		on a1.contract_template_id = a2.id
+	  where a1.status = '2' 
+		and a2.template_name REGEXP'委保|委托担保' > 0 
+	) tt 
+	left join (
+	  select apply_id
+		,code
+		,ROW_NUMBER() over(PARTITION by apply_id order by UPDATE_TIME desc) as rn
+	  from dw_nd.ods_t_biz_project_main
+	) t1 
+	  on tt.biz_id = t1.apply_id and t1.rn = 1
+	where tt.rn = 1
+)t17
+	on t1.proj_no = t17.code
 ;
 commit;
 

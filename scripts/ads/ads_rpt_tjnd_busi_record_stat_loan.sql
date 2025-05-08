@@ -37,619 +37,619 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
     end_cnt           int            null comment '期末笔数'
 ) comment '临时-业务部-业务状况-放款' collate = utf8mb4_bin;
 
--- 旧系统逻辑
--- 按银行
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_guar_amt, -- 当期放款金额(万元)
- now_guar_cnt, -- 当期放款笔数
- now_repayment_amt, -- 当期还款金额(万元)
- now_repayment_cnt, -- 当期还款笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                                as day_id,
-       '银行'                                                                                        as group_type,
-       bank_name,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
-from (
-         select ID,                    -- 业务id
-                COOPERATIVE_BANK_FIRST -- 银行对应编码
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-         where GUR_STATE in ('GT', 'ED')
-     ) t1
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                 -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
-                max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                           -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
-                max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                    -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                              -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
-         from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
-         where DELETED_FLAG = '1'
-           and IS_RELIEVE_FLAG = '0'
-           and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
-     ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select fieldcode,                 -- 银行对应编码
-                enterfullname as bank_name -- 银行名称
-         from dw_nd.ods_tjnd_yw_base_enterprise
-         where parentid = 200
-     ) t7 on t1.COOPERATIVE_BANK_FIRST = t7.fieldcode
-group by bank_name;
-commit;
-
-
--- 按产品
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_guar_amt, -- 当期放款金额(万元)
- now_guar_cnt, -- 当期放款笔数
- now_repayment_amt, -- 当期还款金额
- now_repayment_cnt, -- 当期还款笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                                as day_id,
-       '产品'                                                                                        as group_type,
-       PRODUCT_NAME,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
-from (
-         select ID,           -- 业务id
-                PRODUCT_GRADE -- 产品对应编码
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-         where GUR_STATE in ('GT', 'ED')
-     ) t1
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                 -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
-                max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                           -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
-                max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                    -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                              -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
-         left join
-
-     (
-         select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
-         from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
-         where DELETED_FLAG = '1'
-           and IS_RELIEVE_FLAG = '0'
-           and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
-     ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select fieldcode,   -- 产品编码
-                PRODUCT_NAME -- 产品名称
-         from dw_nd.ods_tjnd_yw_base_product_management
-     ) t7 on t1.PRODUCT_GRADE = t7.fieldcode
-group by PRODUCT_NAME;
-commit;
-
--- 按行业归类
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_guar_amt, -- 当期放款金额(万元)
- now_guar_cnt, -- 当期放款笔数
- now_repayment_amt, -- 当期还款金额
- now_repayment_cnt, -- 当期还款笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                                as day_id,
-       '行业归类'                                                                                      as group_type,
-       case
-           when INDUSTRY_CATEGORY_COMPANY = '0' then '农产品初加工'
-           when INDUSTRY_CATEGORY_COMPANY = '1' then '粮食种植'
-           when INDUSTRY_CATEGORY_COMPANY = '2' then '重要、特色农产品种植'
-           when INDUSTRY_CATEGORY_COMPANY = '3' then '其他畜牧业'
-           when INDUSTRY_CATEGORY_COMPANY = '4' then '生猪养殖'
-           when INDUSTRY_CATEGORY_COMPANY = '5' then '农产品流通'
-           when INDUSTRY_CATEGORY_COMPANY = '6' then '渔业生产'
-           when INDUSTRY_CATEGORY_COMPANY = '7' then '农资、农机、农技等农业社会化服务'
-           when INDUSTRY_CATEGORY_COMPANY = '8' then '农业新业态'
-           when INDUSTRY_CATEGORY_COMPANY = '9' then '农田建设'
-           when INDUSTRY_CATEGORY_COMPANY = '10' then '其他农业项目'
-           end                                                                                     as INDUSTRY_CATEGORY_COMPANY,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
-from (
-         select ID,         -- 业务id
-                ID_CUSTOMER -- 客户对应id
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-         where GUR_STATE in ('GT', 'ED')
-     ) t1
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                 -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
-                max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                           -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
-                max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                    -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                              -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
-         left join
-
-     (
-         select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
-         from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
-         where DELETED_FLAG = '1'
-           and IS_RELIEVE_FLAG = '0'
-           and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
-     ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select id,                       -- 客户id
-                INDUSTRY_CATEGORY_COMPANY -- 行业分类（公司）
-         from dw_nd.ods_tjnd_yw_base_customers_history
-     ) t7 on t1.ID_CUSTOMER = t7.ID
-group by INDUSTRY_CATEGORY_COMPANY;
-commit;
-
-
--- 按办事处
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_guar_amt, -- 当期放款金额(万元)
- now_guar_cnt, -- 当期放款笔数
- now_repayment_amt, -- 当期还款金额
- now_repayment_cnt, -- 当期还款笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                                as day_id,
-       '办事处'                                                                                       as group_type,
-       case
-           when branch_off = 'YW_NHDLBSC' then '宁河东丽办事处'
-           when branch_off = 'YW_JNBHXQBSC' then '津南滨海新区办事处'
-           when branch_off = 'YW_WQBCBSC' then '武清北辰办事处'
-           when branch_off = 'YW_XQJHBSC' then '西青静海办事处'
-           when branch_off = 'YW_JZBSC' then '蓟州办事处'
-           when branch_off = 'YW_BDBSC' then '宝坻办事处'
-           end                                                                                     as branch_off,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
-from (
-         select ID,                      -- 业务id
-                enter_code as branch_off -- 部门编码
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-         where GUR_STATE in ('GT', 'ED')
-     ) t1
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                 -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
-                max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                           -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
-                max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                    -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                              -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
-         from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
-         where DELETED_FLAG = '1'
-           and IS_RELIEVE_FLAG = '0'
-           and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
-     ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
-group by branch_off;
-commit;
-
-
--- 按区域
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_guar_amt, -- 当期放款金额(万元)
- now_guar_cnt, -- 当期放款笔数
- now_repayment_amt, -- 当期还款金额
- now_repayment_cnt, -- 当期还款笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                                as day_id,
-       '区域'                                                                                        as group_type,
-       area_name,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
-from (
-         select ID,                                              -- 业务id
-                JSON_UNQUOTE(JSON_EXTRACT(area, '$[1]')) as area -- 转换为区县
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-         where GUR_STATE in ('GT', 'ED')
-     ) t1
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                 -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
-                max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                           -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
-                max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                    -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                              -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
-         from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
-         where DELETED_FLAG = '1'
-           and IS_RELIEVE_FLAG = '0'
-           and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
-     ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
-         left join
-     dw_base.dim_area_info t7 on t1.area = t7.area_cd
-group by area_name;
-commit;
-
--- 按一级支行
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_guar_amt, -- 当期放款金额(万元)
- now_guar_cnt, -- 当期放款笔数
- now_repayment_amt, -- 当期还款金额
- now_repayment_cnt, -- 当期还款笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                                as day_id,
-       '银行一级支行'                                                                                    as group_type,
-       bank_name,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
-from (
-         select ID,                     -- 业务id
-                COOPERATIVE_BANK_SECOND -- 二级支行编码
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-         where GUR_STATE in ('GT', 'ED')
-     ) t1
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                 -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
-                max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                           -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
-                max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                    -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                              -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
-         from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
-         where DELETED_FLAG = '1'
-           and IS_RELIEVE_FLAG = '0'
-           and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
-     ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select t1.fieldcode,
-                concat(t2.enterfullname, t1.enterfullname) as bank_name
-         from dw_nd.ods_tjnd_yw_base_enterprise t1
-                  left join dw_nd.ods_tjnd_yw_base_enterprise t2 on t1.parentid = t2.enterid
-     ) t7 on t1.COOPERATIVE_BANK_SECOND = t7.fieldcode
-group by bank_name;
-commit;
-
-
--- 按项目经理核算
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_guar_amt, -- 当期放款金额(万元)
- now_guar_cnt, -- 当期放款笔数
- now_repayment_amt, -- 当期还款金额
- now_repayment_cnt, -- 当期还款笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                                as day_id,
-       '项目经理'                                                                                      as group_type,
-       BUSINESS_SP_USER_NAME,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
-from (
-         select ID,                   -- 业务id
-                BUSINESS_SP_USER_NAME -- 项目经理
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-         where GUR_STATE in ('GT', 'ED')
-     ) t1
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                 -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
-                max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                           -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
-                max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                    -- 业务id
-                sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                              -- 业务id
-                sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
-         from dw_nd.ods_tjnd_yw_afg_voucher_repayment
-         where DELETE_FLAG = 1
-           and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by ID_BUSINESS_INFORMATION
-     ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
-         from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
-         where DELETED_FLAG = '1'
-           and IS_RELIEVE_FLAG = '0'
-           and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
-     ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
-group by BUSINESS_SP_USER_NAME;
-commit;
+# -- 旧系统逻辑
+# -- 按银行
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_guar_amt, -- 当期放款金额(万元)
+#  now_guar_cnt, -- 当期放款笔数
+#  now_repayment_amt, -- 当期还款金额(万元)
+#  now_repayment_cnt, -- 当期还款笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                                as day_id,
+#        '银行'                                                                                        as group_type,
+#        bank_name,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
+#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
+#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
+# from (
+#          select ID,                    -- 业务id
+#                 COOPERATIVE_BANK_FIRST -- 银行对应编码
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#          where GUR_STATE in ('GT', 'ED')
+#      ) t1
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                 -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
+#                 max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                           -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
+#                 max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                    -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                              -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
+#          from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
+#          where DELETED_FLAG = '1'
+#            and IS_RELIEVE_FLAG = '0'
+#            and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
+#      ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select fieldcode,                 -- 银行对应编码
+#                 enterfullname as bank_name -- 银行名称
+#          from dw_nd.ods_tjnd_yw_base_enterprise
+#          where parentid = 200
+#      ) t7 on t1.COOPERATIVE_BANK_FIRST = t7.fieldcode
+# group by bank_name;
+# commit;
+#
+#
+# -- 按产品
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_guar_amt, -- 当期放款金额(万元)
+#  now_guar_cnt, -- 当期放款笔数
+#  now_repayment_amt, -- 当期还款金额
+#  now_repayment_cnt, -- 当期还款笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                                as day_id,
+#        '产品'                                                                                        as group_type,
+#        PRODUCT_NAME,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
+#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
+#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
+# from (
+#          select ID,           -- 业务id
+#                 PRODUCT_GRADE -- 产品对应编码
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#          where GUR_STATE in ('GT', 'ED')
+#      ) t1
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                 -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
+#                 max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                           -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
+#                 max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                    -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                              -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
+#          left join
+#
+#      (
+#          select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
+#          from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
+#          where DELETED_FLAG = '1'
+#            and IS_RELIEVE_FLAG = '0'
+#            and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
+#      ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select fieldcode,   -- 产品编码
+#                 PRODUCT_NAME -- 产品名称
+#          from dw_nd.ods_tjnd_yw_base_product_management
+#      ) t7 on t1.PRODUCT_GRADE = t7.fieldcode
+# group by PRODUCT_NAME;
+# commit;
+#
+# -- 按行业归类
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_guar_amt, -- 当期放款金额(万元)
+#  now_guar_cnt, -- 当期放款笔数
+#  now_repayment_amt, -- 当期还款金额
+#  now_repayment_cnt, -- 当期还款笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                                as day_id,
+#        '行业归类'                                                                                      as group_type,
+#        case
+#            when INDUSTRY_CATEGORY_COMPANY = '0' then '农产品初加工'
+#            when INDUSTRY_CATEGORY_COMPANY = '1' then '粮食种植'
+#            when INDUSTRY_CATEGORY_COMPANY = '2' then '重要、特色农产品种植'
+#            when INDUSTRY_CATEGORY_COMPANY = '3' then '其他畜牧业'
+#            when INDUSTRY_CATEGORY_COMPANY = '4' then '生猪养殖'
+#            when INDUSTRY_CATEGORY_COMPANY = '5' then '农产品流通'
+#            when INDUSTRY_CATEGORY_COMPANY = '6' then '渔业生产'
+#            when INDUSTRY_CATEGORY_COMPANY = '7' then '农资、农机、农技等农业社会化服务'
+#            when INDUSTRY_CATEGORY_COMPANY = '8' then '农业新业态'
+#            when INDUSTRY_CATEGORY_COMPANY = '9' then '农田建设'
+#            when INDUSTRY_CATEGORY_COMPANY = '10' then '其他农业项目'
+#            end                                                                                     as INDUSTRY_CATEGORY_COMPANY,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
+#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
+#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
+# from (
+#          select ID,         -- 业务id
+#                 ID_CUSTOMER -- 客户对应id
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#          where GUR_STATE in ('GT', 'ED')
+#      ) t1
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                 -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
+#                 max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                           -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
+#                 max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                    -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                              -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
+#          left join
+#
+#      (
+#          select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
+#          from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
+#          where DELETED_FLAG = '1'
+#            and IS_RELIEVE_FLAG = '0'
+#            and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
+#      ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select id,                       -- 客户id
+#                 INDUSTRY_CATEGORY_COMPANY -- 行业分类（公司）
+#          from dw_nd.ods_tjnd_yw_base_customers_history
+#      ) t7 on t1.ID_CUSTOMER = t7.ID
+# group by INDUSTRY_CATEGORY_COMPANY;
+# commit;
+#
+#
+# -- 按办事处
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_guar_amt, -- 当期放款金额(万元)
+#  now_guar_cnt, -- 当期放款笔数
+#  now_repayment_amt, -- 当期还款金额
+#  now_repayment_cnt, -- 当期还款笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                                as day_id,
+#        '办事处'                                                                                       as group_type,
+#        case
+#            when branch_off = 'YW_NHDLBSC' then '宁河东丽办事处'
+#            when branch_off = 'YW_JNBHXQBSC' then '津南滨海新区办事处'
+#            when branch_off = 'YW_WQBCBSC' then '武清北辰办事处'
+#            when branch_off = 'YW_XQJHBSC' then '西青静海办事处'
+#            when branch_off = 'YW_JZBSC' then '蓟州办事处'
+#            when branch_off = 'YW_BDBSC' then '宝坻办事处'
+#            end                                                                                     as branch_off,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
+#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
+#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
+# from (
+#          select ID,                      -- 业务id
+#                 enter_code as branch_off -- 部门编码
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#          where GUR_STATE in ('GT', 'ED')
+#      ) t1
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                 -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
+#                 max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                           -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
+#                 max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                    -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                              -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
+#          from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
+#          where DELETED_FLAG = '1'
+#            and IS_RELIEVE_FLAG = '0'
+#            and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
+#      ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
+# group by branch_off;
+# commit;
+#
+#
+# -- 按区域
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_guar_amt, -- 当期放款金额(万元)
+#  now_guar_cnt, -- 当期放款笔数
+#  now_repayment_amt, -- 当期还款金额
+#  now_repayment_cnt, -- 当期还款笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                                as day_id,
+#        '区域'                                                                                        as group_type,
+#        area_name,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
+#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
+#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
+# from (
+#          select ID,                                              -- 业务id
+#                 JSON_UNQUOTE(JSON_EXTRACT(area, '$[1]')) as area -- 转换为区县
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#          where GUR_STATE in ('GT', 'ED')
+#      ) t1
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                 -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
+#                 max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                           -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
+#                 max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                    -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                              -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
+#          from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
+#          where DELETED_FLAG = '1'
+#            and IS_RELIEVE_FLAG = '0'
+#            and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
+#      ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
+#          left join
+#      dw_base.dim_area_info t7 on t1.area = t7.area_cd
+# group by area_name;
+# commit;
+#
+# -- 按一级支行
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_guar_amt, -- 当期放款金额(万元)
+#  now_guar_cnt, -- 当期放款笔数
+#  now_repayment_amt, -- 当期还款金额
+#  now_repayment_cnt, -- 当期还款笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                                as day_id,
+#        '银行一级支行'                                                                                    as group_type,
+#        bank_name,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
+#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
+#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
+# from (
+#          select ID,                     -- 业务id
+#                 COOPERATIVE_BANK_SECOND -- 二级支行编码
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#          where GUR_STATE in ('GT', 'ED')
+#      ) t1
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                 -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
+#                 max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                           -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
+#                 max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                    -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                              -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
+#          from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
+#          where DELETED_FLAG = '1'
+#            and IS_RELIEVE_FLAG = '0'
+#            and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
+#      ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select t1.fieldcode,
+#                 concat(t2.enterfullname, t1.enterfullname) as bank_name
+#          from dw_nd.ods_tjnd_yw_base_enterprise t1
+#                   left join dw_nd.ods_tjnd_yw_base_enterprise t2 on t1.parentid = t2.enterid
+#      ) t7 on t1.COOPERATIVE_BANK_SECOND = t7.fieldcode
+# group by bank_name;
+# commit;
+#
+#
+# -- 按项目经理核算
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_guar_amt, -- 当期放款金额(万元)
+#  now_guar_cnt, -- 当期放款笔数
+#  now_repayment_amt, -- 当期还款金额
+#  now_repayment_cnt, -- 当期还款笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                                as day_id,
+#        '项目经理'                                                                                      as group_type,
+#        BUSINESS_SP_USER_NAME,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
+#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
+#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
+# from (
+#          select ID,                   -- 业务id
+#                 BUSINESS_SP_USER_NAME -- 项目经理
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#          where GUR_STATE in ('GT', 'ED')
+#      ) t1
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                 -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as guar_amt, -- 放款金额
+#                 max(CREATED_TIME)           as guar_date -- 放款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t2 on t1.ID = t2.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                           -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as repayment_amt, -- 还款金额
+#                 max(CREATED_TIME)                as repayment_date -- 还款日期(取最近一天)
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t3 on t1.ID = t3.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                    -- 业务id
+#                 sum(RECEIPT_AMOUNT) / 10000 as now_guar_amt -- 当期放款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t4 on t1.ID = t4.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                              -- 业务id
+#                 sum(REPAYMENT_PRINCIPAL) / 10000 as now_repayment_amt -- 当期还款金额
+#          from dw_nd.ods_tjnd_yw_afg_voucher_repayment
+#          where DELETE_FLAG = 1
+#            and date_format(CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by ID_BUSINESS_INFORMATION
+#      ) t5 on t1.ID = t5.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION -- 业务id  解保日期为当天的业务
+#          from dw_nd.ods_tjnd_yw_afg_guarantee_relieve
+#          where DELETED_FLAG = '1'
+#            and IS_RELIEVE_FLAG = '0'
+#            and date_format(DATE_OF_SET, '%Y%m%d') = '${v_sdate}'
+#      ) t6 on t1.ID = t6.ID_BUSINESS_INFORMATION
+# group by BUSINESS_SP_USER_NAME;
+# commit;
 
 -- -----------------------------------------------
 -- 新业务系统逻辑

@@ -16,83 +16,83 @@
 truncate table dw_base.ads_rpt_tjnd_finance_refund_detail;
 commit;
 -- 旧业务系统逻辑
-insert into dw_base.ads_rpt_tjnd_finance_refund_detail
-(day_id, -- 数据日期
- guar_id, -- 业务id(可能多笔)
- cust_name, -- 客户姓名
- cert_num, -- 证件号码
- weibao_cont_no, -- 委托保证合同编号
- product_name, -- 产品
- product_system, -- 产品体系
- refund_amt, -- 审批金额
- loan_cont_amt, -- 合同金额
- apply_term, -- 申请期限
- loan_start_date, -- 合同起始日期
- loan_end_date, -- 合同到期日期
- clear_date, -- 结清日期
- nd_proj_mgr -- 项目经理
-)
-select '${v_sdate}'               as day_id,
-       t1.ID_BUSINESS_INFORMATION as guar_id,
-       cust_name,
-       cert_num,
-       weibao_cont_no,
-       product_name,
-       product_system,
-       refund_amt,
-       loan_cont_amt,
-       apply_term,
-       loan_start_date,
-       loan_end_date,
-       clear_date,
-       nd_proj_mgr
-from (
-         select ID_BUSINESS_INFORMATION,         -- 业务id
-                CUSTOMER_NAME     as cust_name,  -- 客户姓名
-                ID_NUMBER         as cert_num,   -- 证件号码
-                REFUNDABLE_AMOUNT as refund_amt, -- 应退费金额
-                CLEAR_DATE        as clear_date, -- 结清日期
-                TRANSFEROR,                      -- 用户id
-                PRODUCT_CODE                     -- 产品编码
-         from dw_nd.ods_tjnd_yw_afg_refund_details
-         where DELETE_FLAG = 1
-     ) t1
-         left join
-     (
-         select ID,                              -- 业务id
-                BUSI_MODE_NAME as product_system -- 业务模式名称
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-     ) t2 on t1.ID_BUSINESS_INFORMATION = t2.ID
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                -- 业务id
-                WTBZHT_NO            as weibao_cont_no, -- 委托保证合同编号
-                LOAN_CONTRACT_AMOUNT as loan_cont_amt,  -- 借款合同金额
-                APPROVED_TERM        as apply_term      -- 本次审批期限
-         from dw_nd.ods_tjnd_yw_afg_business_approval
-     ) t3 on t1.ID_BUSINESS_INFORMATION = t3.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select ID_BUSINESS_INFORMATION,                 -- 业务id
-                min(loan_start_date) as loan_start_date, -- 贷款起始日期
-                max(loan_end_date)   as loan_end_date    -- 贷款结束日期
-         from dw_nd.ods_tjnd_yw_afg_voucher_infomation
-         where DELETE_FLAG = 1
-         group by ID_BUSINESS_INFORMATION
-     ) t4 on t1.ID_BUSINESS_INFORMATION = t4.ID_BUSINESS_INFORMATION
-         left join
-     (
-         select fieldcode,   -- 产品编码
-                product_name -- 产品名称
-         from dw_nd.ods_tjnd_yw_base_product_management
-     ) t5 on t1.PRODUCT_CODE = t5.fieldcode
-         left join
-     (
-         select userid,                 -- 项目经理id
-                username as nd_proj_mgr -- 项目经理姓名
-         from dw_nd.ods_tjnd_yw_base_operator
-     ) t6 on t1.TRANSFEROR = t6.userid;
-commit;
+# insert into dw_base.ads_rpt_tjnd_finance_refund_detail
+# (day_id, -- 数据日期
+#  guar_id, -- 业务id(可能多笔)
+#  cust_name, -- 客户姓名
+#  cert_num, -- 证件号码
+#  weibao_cont_no, -- 委托保证合同编号
+#  product_name, -- 产品
+#  product_system, -- 产品体系
+#  refund_amt, -- 审批金额
+#  loan_cont_amt, -- 合同金额
+#  apply_term, -- 申请期限
+#  loan_start_date, -- 合同起始日期
+#  loan_end_date, -- 合同到期日期
+#  clear_date, -- 结清日期
+#  nd_proj_mgr -- 项目经理
+# )
+# select '${v_sdate}'               as day_id,
+#        t1.ID_BUSINESS_INFORMATION as guar_id,
+#        cust_name,
+#        cert_num,
+#        weibao_cont_no,
+#        product_name,
+#        product_system,
+#        refund_amt,
+#        loan_cont_amt,
+#        apply_term,
+#        loan_start_date,
+#        loan_end_date,
+#        clear_date,
+#        nd_proj_mgr
+# from (
+#          select ID_BUSINESS_INFORMATION,         -- 业务id
+#                 CUSTOMER_NAME     as cust_name,  -- 客户姓名
+#                 ID_NUMBER         as cert_num,   -- 证件号码
+#                 REFUNDABLE_AMOUNT as refund_amt, -- 应退费金额
+#                 CLEAR_DATE        as clear_date, -- 结清日期
+#                 TRANSFEROR,                      -- 用户id
+#                 PRODUCT_CODE                     -- 产品编码
+#          from dw_nd.ods_tjnd_yw_afg_refund_details
+#          where DELETE_FLAG = 1
+#      ) t1
+#          left join
+#      (
+#          select ID,                              -- 业务id
+#                 BUSI_MODE_NAME as product_system -- 业务模式名称
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#      ) t2 on t1.ID_BUSINESS_INFORMATION = t2.ID
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                -- 业务id
+#                 WTBZHT_NO            as weibao_cont_no, -- 委托保证合同编号
+#                 LOAN_CONTRACT_AMOUNT as loan_cont_amt,  -- 借款合同金额
+#                 APPROVED_TERM        as apply_term      -- 本次审批期限
+#          from dw_nd.ods_tjnd_yw_afg_business_approval
+#      ) t3 on t1.ID_BUSINESS_INFORMATION = t3.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select ID_BUSINESS_INFORMATION,                 -- 业务id
+#                 min(loan_start_date) as loan_start_date, -- 贷款起始日期
+#                 max(loan_end_date)   as loan_end_date    -- 贷款结束日期
+#          from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+#          where DELETE_FLAG = 1
+#          group by ID_BUSINESS_INFORMATION
+#      ) t4 on t1.ID_BUSINESS_INFORMATION = t4.ID_BUSINESS_INFORMATION
+#          left join
+#      (
+#          select fieldcode,   -- 产品编码
+#                 product_name -- 产品名称
+#          from dw_nd.ods_tjnd_yw_base_product_management
+#      ) t5 on t1.PRODUCT_CODE = t5.fieldcode
+#          left join
+#      (
+#          select userid,                 -- 项目经理id
+#                 username as nd_proj_mgr -- 项目经理姓名
+#          from dw_nd.ods_tjnd_yw_base_operator
+#      ) t6 on t1.TRANSFEROR = t6.userid;
+# commit;
 
 -- --------------------------------------------------
 -- 新业务系统逻辑
@@ -164,3 +164,4 @@ from (
                   from dw_nd.ods_t_biz_project_main) t1
          where rn = 1
      ) t4 on t1.guar_id = t4.code;
+commit;

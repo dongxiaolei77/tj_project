@@ -514,8 +514,7 @@
       <description/>
       <type>SQL</type>
       <attributes/>
-      <sql>delete from dw_nd.ods_nacga_report_prov_nacga_code_dict
-where date_format(db_update_time,'%Y%m%d') = '${v_sdate}'   ;
+      <sql>truncate table dw_nd.ods_nacga_report_prov_nacga_code_dict;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
@@ -572,8 +571,7 @@ commit;</sql>
       <description/>
       <type>SQL</type>
       <attributes/>
-      <sql>delete from dw_nd.ods_nacga_report_prov_nacga_code_mapping
-where date_format(db_update_time,'%Y%m%d') = '${v_sdate}'   ;
+      <sql>delete from dw_nd.ods_nacga_report_prov_nacga_code_mapping where date_format(db_update_time,'%Y%m%d') = '${v_sdate}' ;;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>

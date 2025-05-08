@@ -7,7 +7,7 @@
 --            dw_nd.ods_org_manage_contract_info        合同基础信息表
 --            dw_nd.ods_org_manage_comp_info            分险比例详情表
 -- 备注     ：
--- 变更记录 ：
+-- 变更记录 ：20250505 修改t4逻辑 避免重复数据
 -- ----------------------------------------
 -- step0:重跑策略
 truncate table dw_base.dwd_tjnd_report_biz_loan_bank;
@@ -86,7 +86,11 @@ from (
          select t1.dept_id,
                 t2.机构编码,
                 t2.中文全称
-         from dw_nd.ods_t_sys_dept t1 -- 部门表
+         from (select *
+               from (select *, row_number() over (partition by dept_id order by update_time desc) as rn
+                     from dw_nd.ods_t_sys_dept
+                     where del_flag = 0) t1
+               where rn = 1) t1 -- 部门表
                   join dw_base.dwd_imp_tjnd_report_bank_financial_institution t2 -- 国农担机构表
                        on t2.中文全称 = if(t1.dept_name like '中国农业发展银行%', '中国农业发展银行', t1.dept_name)
      ) t4 on FIND_IN_SET(t4.dept_id, t2.ancestors) > 0 or t2.dept_id = t4.dept_id

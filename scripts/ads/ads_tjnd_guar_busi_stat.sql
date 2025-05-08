@@ -6,7 +6,7 @@
 --
 --
 -- 备注     ：国担上报-天津农担业务发展情况统计，基于国担上报数据底表数据开发
--- 变更记录 ：
+-- 变更记录 ：20250505 修改了被除数逻辑 避免报错
 
 -- ---------------------------------------
 
@@ -41,9 +41,9 @@ insert into dw_base.ads_tjnd_guar_busi_stat
  ,comp_rate             -- 累计代偿率(%)
 )
 select  day_id
-       ,round(coalesce(year_guar_rate/year_guar_qty, 0), 4) as avg_guar_rate  -- 平均担保费率 = 本年担保费率的和/业务笔数
-       ,round(coalesce(year_loan_rate/year_guar_qty, 0), 4) as avg_bank_rate  -- 平均贷款利率 = 本年贷款利率的和/业务笔数
-       ,round(coalesce((year_guar_rate + year_loan_rate)/year_guar_qty, 0), 4) as finance_rate   -- 平均担保费率+平均贷款利率
+       ,round(coalesce(year_guar_rate/nullif(year_guar_qty,0), 0), 4) as avg_guar_rate  -- 平均担保费率 = 本年担保费率的和/业务笔数
+       ,round(coalesce(year_loan_rate/nullif(year_guar_qty,0), 0), 4) as avg_bank_rate  -- 平均贷款利率 = 本年贷款利率的和/业务笔数
+       ,round(coalesce((year_guar_rate + year_loan_rate)/nullif(year_guar_qty,0), 0), 4) as finance_rate   -- 平均担保费率+平均贷款利率
        ,guar_amt
        ,guar_qty
        ,year_guar_amt
@@ -64,8 +64,8 @@ select  day_id
        ,month_uncomp_qty
        ,underway_comp_amt
        ,underway_comp_qty
-       ,round(coalesce(year_comp_amt/year_unguar_amt*100, 0), 2) as year_comp_rate   -- 本年代偿率 = 本年代偿金额/本年累计解保金额
-       ,round(coalesce(accum_comp_amt/accum_unguar_amt*100, 0), 2) as comp_rate      -- 累计代偿率 = 累计代偿金额/累计累计解保金额
+       ,round(coalesce(year_comp_amt/nullif(year_unguar_amt,0)*100, 0), 2) as year_comp_rate   -- 本年代偿率 = 本年代偿金额/本年累计解保金额
+       ,round(coalesce(accum_comp_amt/nullif(accum_unguar_amt,0)*100, 0), 2) as comp_rate      -- 累计代偿率 = 累计代偿金额/累计累计解保金额
   from(
         select '${v_sdate}' as day_id
                ,sum(case when t1.is_add_curryear = '1' then t1.guar_rate else 0 end) as year_guar_rate  -- 当年累保业务的担保费率和
@@ -94,7 +94,7 @@ select  day_id
                ,sum(case when t1.item_stt = '已放款' and t1.compt_aply_stt in ('申请中', '审核中', '拨付申请中', '拨付审核中', '待拨付') and t1.overdue_days > 90 then 1 else 0 end) as underway_comp_qty
           from dw_base.dwd_tjnd_data_report_guar_tag t1
 		  where day_id = '${v_sdate}'
-  
+
   ) t1
  where '${v_sdate}' = date_format(last_day('${v_sdate}'),'%Y%m%d') -- 月底跑批
 

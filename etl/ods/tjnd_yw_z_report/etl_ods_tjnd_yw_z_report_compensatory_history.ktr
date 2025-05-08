@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>etl_ods_nacga_report_prov_nacga_code_mapping</name>
+    <name>etl_ods_tjnd_yw_z_report_compensatory_history</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -437,14 +437,14 @@
   <notepads>
   </notepads>
   <connection>
-    <name>${busi_db_name}</name>
-    <server>${busi_db_ip}</server>
+    <name>dw_nd</name>
+    <server>${dw_ip}</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>${busi_db_name}</database>
+    <database>${dw_host}</database>
     <port>3306</port>
-    <username>${busi_db_user}</username>
-    <password>${busi_db_pass}</password>
+    <username>${dw_user}</username>
+    <password>${dw_pass}</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
@@ -472,10 +472,6 @@
       <attribute>
         <code>QUOTE_ALL_FIELDS</code>
         <attribute>N</attribute>
-      </attribute>
-      <attribute>
-        <code>SQL_CONNECT</code>
-        <attribute>set names utf8mb4;</attribute>
       </attribute>
       <attribute>
         <code>STREAM_RESULTS</code>
@@ -496,18 +492,26 @@
     </attributes>
   </connection>
   <connection>
-    <name>${ods_db_name}</name>
-    <server>${ods_db_ip}</server>
+    <name>tjnd_yw</name>
+    <server>${tjnd_yw_ip}</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>${ods_db_name}</database>
-    <port>3306</port>
-    <username>${ods_db_user}</username>
-    <password>${ods_db_pass}</password>
+    <database>${tjnd_yw_host}</database>
+    <port>8417</port>
+    <username>${tjnd_yw_user}</username>
+    <password>${tjnd_yw_pass}</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
     <attributes>
+      <attribute>
+        <code>EXTRA_OPTION_MYSQL.defaultFetchSize</code>
+        <attribute>500</attribute>
+      </attribute>
+      <attribute>
+        <code>EXTRA_OPTION_MYSQL.useCursorFetch</code>
+        <attribute>true</attribute>
+      </attribute>
       <attribute>
         <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
         <attribute>N</attribute>
@@ -522,7 +526,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>8417</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -531,6 +535,10 @@
       <attribute>
         <code>QUOTE_ALL_FIELDS</code>
         <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>SQL_CONNECT</code>
+        <attribute>set names utf8mb4;</attribute>
       </attribute>
       <attribute>
         <code>STREAM_RESULTS</code>
@@ -568,8 +576,8 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>${busi_db_name}</connection>
-    <sql>SELECT * FROM prov_nacga_code_mapping where date_format(db_update_time,'%Y%m%d') = '${v_sdate}' ;</sql>
+    <connection>tjnd_yw</connection>
+    <sql>SELECT * FROM ${tjnd_yw_host}.z_report_compensatory_history;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -602,14 +610,14 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>${ods_db_name}</connection>
+    <connection>dw_nd</connection>
     <schema/>
-    <table>ods_nacga_report_prov_nacga_code_mapping</table>
+    <table>ods_tjnd_yw_z_report_compensatory_history</table>
     <commit>1000</commit>
     <truncate>N</truncate>
     <ignore_errors>N</ignore_errors>
     <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
+    <specify_fields>N</specify_fields>
     <partitioning_enabled>N</partitioning_enabled>
     <partitioning_field/>
     <partitioning_daily>N</partitioning_daily>
@@ -620,82 +628,6 @@
     <return_keys>N</return_keys>
     <return_field/>
     <fields>
-      <field>
-        <column_name>id</column_name>
-        <stream_name>id</stream_name>
-      </field>
-      <field>
-        <column_name>table_name</column_name>
-        <stream_name>table_name</stream_name>
-      </field>
-      <field>
-        <column_name>table_no_nacga</column_name>
-        <stream_name>table_no_nacga</stream_name>
-      </field>
-      <field>
-        <column_name>cust_no_nacga</column_name>
-        <stream_name>cust_no_nacga</stream_name>
-      </field>
-      <field>
-        <column_name>corp_cert_no</column_name>
-        <stream_name>corp_cert_no</stream_name>
-      </field>
-      <field>
-        <column_name>cust_corp_cd</column_name>
-        <stream_name>cust_corp_cd</stream_name>
-      </field>
-      <field>
-        <column_name>cert_no</column_name>
-        <stream_name>cert_no</stream_name>
-      </field>
-      <field>
-        <column_name>proj_no_prov</column_name>
-        <stream_name>proj_no_prov</stream_name>
-      </field>
-      <field>
-        <column_name>proj_rcvr_cd</column_name>
-        <stream_name>proj_rcvr_cd</stream_name>
-      </field>
-      <field>
-        <column_name>proj_rpmt_cd</column_name>
-        <stream_name>proj_rpmt_cd</stream_name>
-      </field>
-      <field>
-        <column_name>cntr_cont_no</column_name>
-        <stream_name>cntr_cont_no</stream_name>
-      </field>
-      <field>
-        <column_name>version</column_name>
-        <stream_name>version</stream_name>
-      </field>
-      <field>
-        <column_name>create_name</column_name>
-        <stream_name>create_name</stream_name>
-      </field>
-      <field>
-        <column_name>update_name</column_name>
-        <stream_name>update_name</stream_name>
-      </field>
-      <field>
-        <column_name>creator</column_name>
-        <stream_name>creator</stream_name>
-      </field>
-      <field>
-        <column_name>updator</column_name>
-        <stream_name>updator</stream_name>
-      </field>
-      <field>
-        <column_name>create_time</column_name>
-        <stream_name>create_time</stream_name>
-      </field>
-      <field>
-        <column_name>update_time</column_name>
-        <stream_name>update_time</stream_name>
-      </field>
-      <field>
-        <column_name>db_update_time</column_name>
-        <stream_name>db_update_time</stream_name>
-      </field>
     </fields>
     <attributes/>
     <cluster_schema/>

@@ -21,69 +21,69 @@ truncate table dw_base.ads_rpt_tjnd_finance_compt_recovery_info;
 commit;
 
 -- 旧系统逻辑
-insert into dw_base.ads_rpt_tjnd_finance_compt_recovery_info
-(day_id, -- 数据日期
- guar_id, -- 业务id
- cust_name, -- 客户名称
- compt_date, -- 代偿日期
- compt_amt, -- 代偿金额
- recovery_amt, -- 累计追偿金额
- un_recovery_amt, -- 未收回金额
- recovery_fee, -- 追偿费用
- year_recovery_amt, -- 当年追偿金额
- last_recovery_date -- 最近一次还款日期
-)
-select '${v_sdate}'                                as day_id,
-       t1.id                                       as guar_id,
-       cust_name,
-       compt_date,
-       compt_amt,
-       recovery_amt,
-       case
-           when (compt_amt - recovery_amt) < 0 then 0
-           else (compt_amt - recovery_amt)
-           end                                     as un_recovery_amt,
-       lawyer_fee                                  as recovery_fee,
-       year_recovery_amt,
-       date_format(last_recovery_date, '%Y-%m-%d') as last_recovery_date
-from (
-         select id,                        -- 业务id
-                CUSTOMER_NAME as cust_name -- 客户姓名
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-     ) t1
-         inner join
-     (
-         select ID_CFBIZ_UNDERWRITING,           -- 业务id
-                TOTAL_COMPENSATION as compt_amt, -- 代偿金额
-                PAYMENT_DATE       as compt_date -- 代偿日期
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-     ) t2
-     on t1.id = t2.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,             -- 业务id
-                sum(CUR_RECOVERY)    as recovery_amt, -- 追偿金额
-                sum(LAWYER_FEE_PAID) as lawyer_fee    -- 追偿费用
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,               -- 业务id
-                sum(CUR_RECOVERY) as year_recovery_amt, -- 当年追偿金额
-                max(ENTRY_DATA)   as last_recovery_date -- 最近一次还款日期
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING
-         where year(t2.ENTRY_DATA) = year('${v_sdate}')
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING;
-commit;
+# insert into dw_base.ads_rpt_tjnd_finance_compt_recovery_info
+# (day_id, -- 数据日期
+#  guar_id, -- 业务id
+#  cust_name, -- 客户名称
+#  compt_date, -- 代偿日期
+#  compt_amt, -- 代偿金额
+#  recovery_amt, -- 累计追偿金额
+#  un_recovery_amt, -- 未收回金额
+#  recovery_fee, -- 追偿费用
+#  year_recovery_amt, -- 当年追偿金额
+#  last_recovery_date -- 最近一次还款日期
+# )
+# select '${v_sdate}'                                as day_id,
+#        t1.id                                       as guar_id,
+#        cust_name,
+#        compt_date,
+#        compt_amt,
+#        recovery_amt,
+#        case
+#            when (compt_amt - recovery_amt) < 0 then 0
+#            else (compt_amt - recovery_amt)
+#            end                                     as un_recovery_amt,
+#        lawyer_fee                                  as recovery_fee,
+#        year_recovery_amt,
+#        date_format(last_recovery_date, '%Y-%m-%d') as last_recovery_date
+# from (
+#          select id,                        -- 业务id
+#                 CUSTOMER_NAME as cust_name -- 客户姓名
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#      ) t1
+#          inner join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,           -- 业务id
+#                 TOTAL_COMPENSATION as compt_amt, -- 代偿金额
+#                 PAYMENT_DATE       as compt_date -- 代偿日期
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#      ) t2
+#      on t1.id = t2.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,             -- 业务id
+#                 sum(CUR_RECOVERY)    as recovery_amt, -- 追偿金额
+#                 sum(LAWYER_FEE_PAID) as lawyer_fee    -- 追偿费用
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,               -- 业务id
+#                 sum(CUR_RECOVERY) as year_recovery_amt, -- 当年追偿金额
+#                 max(ENTRY_DATA)   as last_recovery_date -- 最近一次还款日期
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING
+#          where year(t2.ENTRY_DATA) = year('${v_sdate}')
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING;
+# commit;
 
 -- 新业务系统逻辑
 insert into dw_base.ads_rpt_tjnd_finance_compt_recovery_info

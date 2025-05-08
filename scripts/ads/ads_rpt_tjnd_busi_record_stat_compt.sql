@@ -39,598 +39,598 @@ create table dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 ) comment '临时-业务部-业务状况-代偿' collate = utf8mb4_bin;
 commit;
 
--- 旧系统逻辑
--- 按银行
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_compt_amt, -- 当期代偿金额(万元)
- now_compt_cnt, -- 当期代偿笔数
- now_recovery_amt, -- 当期收回金额(万元)
- now_recovery_cnt, -- 当期收回笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                              as day_id,
-       '银行'                                                                                      as group_type,
-       bank_name                                                                                 as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
-       sum(if(compt_amt -
-              (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
-from (
-         select id,                    -- 业务id
-                COOPERATIVE_BANK_FIRST -- 银行对应编码
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-     ) t1
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                   -- 业务id
-                TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
-                PAYMENT_DATE               as compt_date -- 代偿日期
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-     ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
-                sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
-                max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
-                TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-           and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
-     ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
-                sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select fieldcode,                 -- 银行对应编码
-                enterfullname as bank_name -- 银行名称
-         from dw_nd.ods_tjnd_yw_base_enterprise
-         where parentid = 200
-     ) t6 on t1.COOPERATIVE_BANK_FIRST = t6.fieldcode
-;
-commit;
-
--- 按产品
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_compt_amt, -- 当期代偿金额(万元)
- now_compt_cnt, -- 当期代偿笔数
- now_recovery_amt, -- 当期收回金额(万元)
- now_recovery_cnt, -- 当期收回笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                              as day_id,
-       '产品'                                                                                      as group_type,
-       PRODUCT_NAME                                                                              as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
-       sum(if(compt_amt -
-              (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
-from (
-         select id,           -- 业务id
-                PRODUCT_GRADE -- 产品对应编码
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-     ) t1
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                   -- 业务id
-                TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
-                PAYMENT_DATE               as compt_date -- 代偿日期
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-     ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
-                sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
-                max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
-                TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-           and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
-     ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
-                sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select fieldcode,   -- 产品编码
-                PRODUCT_NAME -- 产品名称
-         from dw_nd.ods_tjnd_yw_base_product_management
-     ) t6 on t1.PRODUCT_GRADE = t6.fieldcode
-group by PRODUCT_NAME
-;
-commit;
-
--- 行业归类
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_compt_amt, -- 当期代偿金额(万元)
- now_compt_cnt, -- 当期代偿笔数
- now_recovery_amt, -- 当期收回金额(万元)
- now_recovery_cnt, -- 当期收回笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                              as day_id,
-       '行业归类'                                                                                    as group_type,
-       case
-           when INDUSTRY_CATEGORY_COMPANY = '0' then '农产品初加工'
-           when INDUSTRY_CATEGORY_COMPANY = '1' then '粮食种植'
-           when INDUSTRY_CATEGORY_COMPANY = '2' then '重要、特色农产品种植'
-           when INDUSTRY_CATEGORY_COMPANY = '3' then '其他畜牧业'
-           when INDUSTRY_CATEGORY_COMPANY = '4' then '生猪养殖'
-           when INDUSTRY_CATEGORY_COMPANY = '5' then '农产品流通'
-           when INDUSTRY_CATEGORY_COMPANY = '6' then '渔业生产'
-           when INDUSTRY_CATEGORY_COMPANY = '7' then '农资、农机、农技等农业社会化服务'
-           when INDUSTRY_CATEGORY_COMPANY = '8' then '农业新业态'
-           when INDUSTRY_CATEGORY_COMPANY = '9' then '农田建设'
-           when INDUSTRY_CATEGORY_COMPANY = '10' then '其他农业项目'
-           end                                                                                   as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
-       sum(if(compt_amt -
-              (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
-from (
-         select id,         -- 业务id
-                ID_CUSTOMER -- 客户id
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-     ) t1
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                   -- 业务id
-                TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
-                PAYMENT_DATE               as compt_date -- 代偿日期
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-     ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
-                sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
-                max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
-                TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-           and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
-     ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
-                sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select id,                       -- 客户id
-                INDUSTRY_CATEGORY_COMPANY -- 行业分类（公司）
-         from dw_nd.ods_tjnd_yw_base_customers_history
-     ) t6 on t1.ID_CUSTOMER = t6.ID
-group by INDUSTRY_CATEGORY_COMPANY
-;
-commit;
-
--- 按办事处
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_compt_amt, -- 当期代偿金额(万元)
- now_compt_cnt, -- 当期代偿笔数
- now_recovery_amt, -- 当期收回金额(万元)
- now_recovery_cnt, -- 当期收回笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                              as day_id,
-       '办事处'                                                                                     as group_type,
-       case
-           when branch_off = 'YW_NHDLBSC' then '宁河东丽办事处'
-           when branch_off = 'YW_JNBHXQBSC' then '津南滨海新区办事处'
-           when branch_off = 'YW_WQBCBSC' then '武清北辰办事处'
-           when branch_off = 'YW_XQJHBSC' then '西青静海办事处'
-           when branch_off = 'YW_JZBSC' then '蓟州办事处'
-           when branch_off = 'YW_BDBSC' then '宝坻办事处'
-           end                                                                                   as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
-       sum(if(compt_amt -
-              (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
-from (
-         select id,                      -- 业务id
-                enter_code as branch_off -- 办事处编码
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-     ) t1
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                   -- 业务id
-                TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
-                PAYMENT_DATE               as compt_date -- 代偿日期
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-     ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
-                sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
-                max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
-                TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-           and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
-     ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
-                sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
-group by branch_off
-;
-commit;
-
--- 按区域
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_compt_amt, -- 当期代偿金额(万元)
- now_compt_cnt, -- 当期代偿笔数
- now_recovery_amt, -- 当期收回金额(万元)
- now_recovery_cnt, -- 当期收回笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                              as day_id,
-       '区域'                                                                                      as group_type,
-       area_name                                                                                 as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
-       sum(if(compt_amt -
-              (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
-from (
-         select id,                                              -- 业务id
-                JSON_UNQUOTE(JSON_EXTRACT(area, '$[1]')) as area -- 转换为区县
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-     ) t1
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                   -- 业务id
-                TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
-                PAYMENT_DATE               as compt_date -- 代偿日期
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-     ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
-                sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
-                max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
-                TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-           and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
-     ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
-                sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
-         left join
-     dw_base.dim_area_info t6 on t1.area = t6.area_cd
-group by area_name
-;
-commit;
-
--- 按一级支行
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_compt_amt, -- 当期代偿金额(万元)
- now_compt_cnt, -- 当期代偿笔数
- now_recovery_amt, -- 当期收回金额(万元)
- now_recovery_cnt, -- 当期收回笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                              as day_id,
-       '银行一级支行'                                                                                  as group_type,
-       bank_name                                                                                 as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
-       sum(if(compt_amt -
-              (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
-from (
-         select id,                     -- 业务id
-                COOPERATIVE_BANK_SECOND -- 二级支行编码
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-     ) t1
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                   -- 业务id
-                TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
-                PAYMENT_DATE               as compt_date -- 代偿日期
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-     ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
-                sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
-                max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
-                TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-           and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
-     ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
-                sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.fieldcode,
-                concat(t2.enterfullname, t1.enterfullname) as bank_name
-         from dw_nd.ods_tjnd_yw_base_enterprise t1
-                  left join dw_nd.ods_tjnd_yw_base_enterprise t2 on t1.parentid = t2.enterid
-     ) t6 on t1.COOPERATIVE_BANK_SECOND = t6.fieldcode
-group by bank_name
-;
-commit;
-
--- 按项目经理核算
-insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
-(day_id, -- 数据日期
- group_type, -- 统计类型
- group_name, -- 分组名称
- start_balance, -- 期初余额(万元)
- start_cnt, -- 期初笔数
- now_compt_amt, -- 当期代偿金额(万元)
- now_compt_cnt, -- 当期代偿笔数
- now_recovery_amt, -- 当期收回金额(万元)
- now_recovery_cnt, -- 当期收回笔数
- end_balance, -- 期末余额(万元)
- end_cnt -- 期末笔数
-)
-select '${v_sdate}'                                                                              as day_id,
-       '项目经理'                                                                                    as group_type,
-       BUSINESS_SP_USER_NAME                                                                     as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
-       sum(if(compt_amt -
-              (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
-from (
-         select id,                   -- 业务id
-                BUSINESS_SP_USER_NAME -- 农担项目经理
-         from dw_nd.ods_tjnd_yw_afg_business_infomation
-     ) t1
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                   -- 业务id
-                TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
-                PAYMENT_DATE               as compt_date -- 代偿日期
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-     ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
-                sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
-                max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
-                TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
-         from dw_nd.ods_tjnd_yw_bh_compensatory
-         where status = 1
-           and over_tag = 'BJ'
-           and DELETED_BY is null
-           and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
-     ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
-         left join
-     (
-         select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
-                sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
-         where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
-         group by t1.ID_CFBIZ_UNDERWRITING
-     ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
-group by BUSINESS_SP_USER_NAME
-;
-commit;
+# -- 旧系统逻辑
+# -- 按银行
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_compt_amt, -- 当期代偿金额(万元)
+#  now_compt_cnt, -- 当期代偿笔数
+#  now_recovery_amt, -- 当期收回金额(万元)
+#  now_recovery_cnt, -- 当期收回笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                              as day_id,
+#        '银行'                                                                                      as group_type,
+#        bank_name                                                                                 as group_name,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
+#        sum(now_compt_amt)                                                                        as now_compt_amt,
+#        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
+#        sum(now_recovery_amt)                                                                     as now_recovery_amt,
+#        sum(if(compt_amt -
+#               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
+#                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+# from (
+#          select id,                    -- 业务id
+#                 COOPERATIVE_BANK_FIRST -- 银行对应编码
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#      ) t1
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                   -- 业务id
+#                 TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
+#                 PAYMENT_DATE               as compt_date -- 代偿日期
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#      ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
+#                 max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
+#                 TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#            and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
+#      ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select fieldcode,                 -- 银行对应编码
+#                 enterfullname as bank_name -- 银行名称
+#          from dw_nd.ods_tjnd_yw_base_enterprise
+#          where parentid = 200
+#      ) t6 on t1.COOPERATIVE_BANK_FIRST = t6.fieldcode
+# ;
+# commit;
+#
+# -- 按产品
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_compt_amt, -- 当期代偿金额(万元)
+#  now_compt_cnt, -- 当期代偿笔数
+#  now_recovery_amt, -- 当期收回金额(万元)
+#  now_recovery_cnt, -- 当期收回笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                              as day_id,
+#        '产品'                                                                                      as group_type,
+#        PRODUCT_NAME                                                                              as group_name,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
+#        sum(now_compt_amt)                                                                        as now_compt_amt,
+#        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
+#        sum(now_recovery_amt)                                                                     as now_recovery_amt,
+#        sum(if(compt_amt -
+#               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
+#                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+# from (
+#          select id,           -- 业务id
+#                 PRODUCT_GRADE -- 产品对应编码
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#      ) t1
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                   -- 业务id
+#                 TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
+#                 PAYMENT_DATE               as compt_date -- 代偿日期
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#      ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
+#                 max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
+#                 TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#            and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
+#      ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select fieldcode,   -- 产品编码
+#                 PRODUCT_NAME -- 产品名称
+#          from dw_nd.ods_tjnd_yw_base_product_management
+#      ) t6 on t1.PRODUCT_GRADE = t6.fieldcode
+# group by PRODUCT_NAME
+# ;
+# commit;
+#
+# -- 行业归类
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_compt_amt, -- 当期代偿金额(万元)
+#  now_compt_cnt, -- 当期代偿笔数
+#  now_recovery_amt, -- 当期收回金额(万元)
+#  now_recovery_cnt, -- 当期收回笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                              as day_id,
+#        '行业归类'                                                                                    as group_type,
+#        case
+#            when INDUSTRY_CATEGORY_COMPANY = '0' then '农产品初加工'
+#            when INDUSTRY_CATEGORY_COMPANY = '1' then '粮食种植'
+#            when INDUSTRY_CATEGORY_COMPANY = '2' then '重要、特色农产品种植'
+#            when INDUSTRY_CATEGORY_COMPANY = '3' then '其他畜牧业'
+#            when INDUSTRY_CATEGORY_COMPANY = '4' then '生猪养殖'
+#            when INDUSTRY_CATEGORY_COMPANY = '5' then '农产品流通'
+#            when INDUSTRY_CATEGORY_COMPANY = '6' then '渔业生产'
+#            when INDUSTRY_CATEGORY_COMPANY = '7' then '农资、农机、农技等农业社会化服务'
+#            when INDUSTRY_CATEGORY_COMPANY = '8' then '农业新业态'
+#            when INDUSTRY_CATEGORY_COMPANY = '9' then '农田建设'
+#            when INDUSTRY_CATEGORY_COMPANY = '10' then '其他农业项目'
+#            end                                                                                   as group_name,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
+#        sum(now_compt_amt)                                                                        as now_compt_amt,
+#        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
+#        sum(now_recovery_amt)                                                                     as now_recovery_amt,
+#        sum(if(compt_amt -
+#               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
+#                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+# from (
+#          select id,         -- 业务id
+#                 ID_CUSTOMER -- 客户id
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#      ) t1
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                   -- 业务id
+#                 TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
+#                 PAYMENT_DATE               as compt_date -- 代偿日期
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#      ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
+#                 max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
+#                 TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#            and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
+#      ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select id,                       -- 客户id
+#                 INDUSTRY_CATEGORY_COMPANY -- 行业分类（公司）
+#          from dw_nd.ods_tjnd_yw_base_customers_history
+#      ) t6 on t1.ID_CUSTOMER = t6.ID
+# group by INDUSTRY_CATEGORY_COMPANY
+# ;
+# commit;
+#
+# -- 按办事处
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_compt_amt, -- 当期代偿金额(万元)
+#  now_compt_cnt, -- 当期代偿笔数
+#  now_recovery_amt, -- 当期收回金额(万元)
+#  now_recovery_cnt, -- 当期收回笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                              as day_id,
+#        '办事处'                                                                                     as group_type,
+#        case
+#            when branch_off = 'YW_NHDLBSC' then '宁河东丽办事处'
+#            when branch_off = 'YW_JNBHXQBSC' then '津南滨海新区办事处'
+#            when branch_off = 'YW_WQBCBSC' then '武清北辰办事处'
+#            when branch_off = 'YW_XQJHBSC' then '西青静海办事处'
+#            when branch_off = 'YW_JZBSC' then '蓟州办事处'
+#            when branch_off = 'YW_BDBSC' then '宝坻办事处'
+#            end                                                                                   as group_name,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
+#        sum(now_compt_amt)                                                                        as now_compt_amt,
+#        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
+#        sum(now_recovery_amt)                                                                     as now_recovery_amt,
+#        sum(if(compt_amt -
+#               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
+#                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+# from (
+#          select id,                      -- 业务id
+#                 enter_code as branch_off -- 办事处编码
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#      ) t1
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                   -- 业务id
+#                 TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
+#                 PAYMENT_DATE               as compt_date -- 代偿日期
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#      ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
+#                 max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
+#                 TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#            and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
+#      ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
+# group by branch_off
+# ;
+# commit;
+#
+# -- 按区域
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_compt_amt, -- 当期代偿金额(万元)
+#  now_compt_cnt, -- 当期代偿笔数
+#  now_recovery_amt, -- 当期收回金额(万元)
+#  now_recovery_cnt, -- 当期收回笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                              as day_id,
+#        '区域'                                                                                      as group_type,
+#        area_name                                                                                 as group_name,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
+#        sum(now_compt_amt)                                                                        as now_compt_amt,
+#        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
+#        sum(now_recovery_amt)                                                                     as now_recovery_amt,
+#        sum(if(compt_amt -
+#               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
+#                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+# from (
+#          select id,                                              -- 业务id
+#                 JSON_UNQUOTE(JSON_EXTRACT(area, '$[1]')) as area -- 转换为区县
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#      ) t1
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                   -- 业务id
+#                 TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
+#                 PAYMENT_DATE               as compt_date -- 代偿日期
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#      ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
+#                 max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
+#                 TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#            and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
+#      ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
+#          left join
+#      dw_base.dim_area_info t6 on t1.area = t6.area_cd
+# group by area_name
+# ;
+# commit;
+#
+# -- 按一级支行
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_compt_amt, -- 当期代偿金额(万元)
+#  now_compt_cnt, -- 当期代偿笔数
+#  now_recovery_amt, -- 当期收回金额(万元)
+#  now_recovery_cnt, -- 当期收回笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                              as day_id,
+#        '银行一级支行'                                                                                  as group_type,
+#        bank_name                                                                                 as group_name,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
+#        sum(now_compt_amt)                                                                        as now_compt_amt,
+#        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
+#        sum(now_recovery_amt)                                                                     as now_recovery_amt,
+#        sum(if(compt_amt -
+#               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
+#                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+# from (
+#          select id,                     -- 业务id
+#                 COOPERATIVE_BANK_SECOND -- 二级支行编码
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#      ) t1
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                   -- 业务id
+#                 TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
+#                 PAYMENT_DATE               as compt_date -- 代偿日期
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#      ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
+#                 max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
+#                 TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#            and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
+#      ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.fieldcode,
+#                 concat(t2.enterfullname, t1.enterfullname) as bank_name
+#          from dw_nd.ods_tjnd_yw_base_enterprise t1
+#                   left join dw_nd.ods_tjnd_yw_base_enterprise t2 on t1.parentid = t2.enterid
+#      ) t6 on t1.COOPERATIVE_BANK_SECOND = t6.fieldcode
+# group by bank_name
+# ;
+# commit;
+#
+# -- 按项目经理核算
+# insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
+# (day_id, -- 数据日期
+#  group_type, -- 统计类型
+#  group_name, -- 分组名称
+#  start_balance, -- 期初余额(万元)
+#  start_cnt, -- 期初笔数
+#  now_compt_amt, -- 当期代偿金额(万元)
+#  now_compt_cnt, -- 当期代偿笔数
+#  now_recovery_amt, -- 当期收回金额(万元)
+#  now_recovery_cnt, -- 当期收回笔数
+#  end_balance, -- 期末余额(万元)
+#  end_cnt -- 期末笔数
+# )
+# select '${v_sdate}'                                                                              as day_id,
+#        '项目经理'                                                                                    as group_type,
+#        BUSINESS_SP_USER_NAME                                                                     as group_name,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
+#        sum(now_compt_amt)                                                                        as now_compt_amt,
+#        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
+#        sum(now_recovery_amt)                                                                     as now_recovery_amt,
+#        sum(if(compt_amt -
+#               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
+#                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+# from (
+#          select id,                   -- 业务id
+#                 BUSINESS_SP_USER_NAME -- 农担项目经理
+#          from dw_nd.ods_tjnd_yw_afg_business_infomation
+#      ) t1
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                   -- 业务id
+#                 TOTAL_COMPENSATION / 10000 as compt_amt, -- 代偿金额
+#                 PAYMENT_DATE               as compt_date -- 代偿日期
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#      ) t2 on t1.id = t2.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                  -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as recovery_amt, -- 追偿金额
+#                 max(t2.CREATED_TIME)      as recovery_date -- 追偿登记日期
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select ID_CFBIZ_UNDERWRITING,                      -- 业务id 当期代偿笔数
+#                 TOTAL_COMPENSATION / 10000 as now_compt_amt -- 当期代偿金额
+#          from dw_nd.ods_tjnd_yw_bh_compensatory
+#          where status = 1
+#            and over_tag = 'BJ'
+#            and DELETED_BY is null
+#            and date_format(PAYMENT_DATE, '%Y%m%d') = '${v_sdate}'
+#      ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING
+#          left join
+#      (
+#          select t1.ID_CFBIZ_UNDERWRITING,                     -- 业务id
+#                 sum(CUR_RECOVERY) / 10000 as now_recovery_amt -- 当期追偿金额
+#          from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
+#                   left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
+#                             on t1.id = t2.ID_RECOVERY_TRACKING and t1.STATUS = 1 and t2.STATUS = 1
+#          where date_format(t2.CREATED_TIME, '%Y%m%d') = '${v_sdate}'
+#          group by t1.ID_CFBIZ_UNDERWRITING
+#      ) t5 on t1.ID = t5.ID_CFBIZ_UNDERWRITING
+# group by BUSINESS_SP_USER_NAME
+# ;
+# commit;
 
 -- --------------------------------------
 -- 新系统逻辑

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>etl_ods_nacga_report_prov_nacga_code_mapping</name>
+    <name>etl_proj_old_comp_rcvr_info</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -437,14 +437,14 @@
   <notepads>
   </notepads>
   <connection>
-    <name>${busi_db_name}</name>
-    <server>${busi_db_ip}</server>
+    <name>dw_base</name>
+    <server>${dw_ip}</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>${busi_db_name}</database>
+    <database>${dw_host}</database>
     <port>3306</port>
-    <username>${busi_db_user}</username>
-    <password>${busi_db_pass}</password>
+    <username>${dw_user}</username>
+    <password>${dw_pass}</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
@@ -496,14 +496,14 @@
     </attributes>
   </connection>
   <connection>
-    <name>${ods_db_name}</name>
-    <server>${ods_db_ip}</server>
+    <name>nacga_report</name>
+    <server>${nacga_report_ip}</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>${ods_db_name}</database>
+    <database>${nacga_report_host}</database>
     <port>3306</port>
-    <username>${ods_db_user}</username>
-    <password>${ods_db_pass}</password>
+    <username>${nacga_report_user}</username>
+    <password>${nacga_report_pass}</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
@@ -568,15 +568,269 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>${busi_db_name}</connection>
-    <sql>SELECT * FROM prov_nacga_code_mapping where date_format(db_update_time,'%Y%m%d') = '${v_sdate}' ;</sql>
+    <connection>dw_base</connection>
+    <sql>select * from dw_base.dwd_tjnd_report_proj_old_comp_rcvr_info where day_id = '${v_sdate}' ;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
     <cached_row_meta_active>N</cached_row_meta_active>
-    <row-meta/>
+    <row-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>day_id</name>
+        <length>8</length>
+        <precision>-1</precision>
+        <origin>表输入</origin>
+        <comments>day_id</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>old_comp_no_nacga</name>
+        <length>19</length>
+        <precision>-1</precision>
+        <origin>表输入</origin>
+        <comments>old_comp_no_nacga</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>cust_name</name>
+        <length>50</length>
+        <precision>-1</precision>
+        <origin>表输入</origin>
+        <comments>cust_name</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>is_comp_comp</name>
+        <length>1</length>
+        <precision>-1</precision>
+        <origin>表输入</origin>
+        <comments>is_comp_comp</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>comp_comp_poli_cd</name>
+        <length>1</length>
+        <precision>-1</precision>
+        <origin>表输入</origin>
+        <comments>comp_comp_poli_cd</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>rcvr_rcpt_dt</name>
+        <length>10</length>
+        <precision>-1</precision>
+        <origin>表输入</origin>
+        <comments>rcvr_rcpt_dt</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>BigNumber</type>
+        <storagetype>normal</storagetype>
+        <name>act_arrl_amt_comp</name>
+        <length>18</length>
+        <precision>6</precision>
+        <origin>表输入</origin>
+        <comments>act_arrl_amt_comp</comments>
+        <conversion_Mask>######0.0###################;-######0.0###################</conversion_Mask>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>BigNumber</type>
+        <storagetype>normal</storagetype>
+        <name>act_arrl_amt_cntr</name>
+        <length>18</length>
+        <precision>6</precision>
+        <origin>表输入</origin>
+        <comments>act_arrl_amt_cntr</comments>
+        <conversion_Mask>######0.0###################;-######0.0###################</conversion_Mask>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>BigNumber</type>
+        <storagetype>normal</storagetype>
+        <name>act_arrl_amt_gov</name>
+        <length>18</length>
+        <precision>6</precision>
+        <origin>表输入</origin>
+        <comments>act_arrl_amt_gov</comments>
+        <conversion_Mask>######0.0###################;-######0.0###################</conversion_Mask>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>BigNumber</type>
+        <storagetype>normal</storagetype>
+        <name>act_arrl_amt_org</name>
+        <length>18</length>
+        <precision>6</precision>
+        <origin>表输入</origin>
+        <comments>act_arrl_amt_org</comments>
+        <conversion_Mask>######0.0###################;-######0.0###################</conversion_Mask>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>BigNumber</type>
+        <storagetype>normal</storagetype>
+        <name>act_arrl_amt_other</name>
+        <length>18</length>
+        <precision>6</precision>
+        <origin>表输入</origin>
+        <comments>act_arrl_amt_other</comments>
+        <conversion_Mask>######0.0###################;-######0.0###################</conversion_Mask>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>zh_CN</date_format_locale>
+        <date_format_timezone>Asia/Taipei</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+    </row-meta>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -586,7 +840,7 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>304</xloc>
+      <xloc>288</xloc>
       <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
@@ -602,13 +856,13 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>${ods_db_name}</connection>
+    <connection>nacga_report</connection>
     <schema/>
-    <table>ods_nacga_report_prov_nacga_code_mapping</table>
+    <table>proj_old_comp_rcvr_info_front</table>
     <commit>1000</commit>
     <truncate>N</truncate>
     <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
+    <use_batch>N</use_batch>
     <specify_fields>Y</specify_fields>
     <partitioning_enabled>N</partitioning_enabled>
     <partitioning_field/>
@@ -621,80 +875,48 @@
     <return_field/>
     <fields>
       <field>
-        <column_name>id</column_name>
-        <stream_name>id</stream_name>
+        <column_name>day_id</column_name>
+        <stream_name>day_id</stream_name>
       </field>
       <field>
-        <column_name>table_name</column_name>
-        <stream_name>table_name</stream_name>
+        <column_name>old_comp_no_nacga</column_name>
+        <stream_name>old_comp_no_nacga</stream_name>
       </field>
       <field>
-        <column_name>table_no_nacga</column_name>
-        <stream_name>table_no_nacga</stream_name>
+        <column_name>cust_name</column_name>
+        <stream_name>cust_name</stream_name>
       </field>
       <field>
-        <column_name>cust_no_nacga</column_name>
-        <stream_name>cust_no_nacga</stream_name>
+        <column_name>is_comp_comp</column_name>
+        <stream_name>is_comp_comp</stream_name>
       </field>
       <field>
-        <column_name>corp_cert_no</column_name>
-        <stream_name>corp_cert_no</stream_name>
+        <column_name>comp_comp_poli_cd</column_name>
+        <stream_name>comp_comp_poli_cd</stream_name>
       </field>
       <field>
-        <column_name>cust_corp_cd</column_name>
-        <stream_name>cust_corp_cd</stream_name>
+        <column_name>rcvr_rcpt_dt</column_name>
+        <stream_name>rcvr_rcpt_dt</stream_name>
       </field>
       <field>
-        <column_name>cert_no</column_name>
-        <stream_name>cert_no</stream_name>
+        <column_name>act_arrl_amt_comp</column_name>
+        <stream_name>act_arrl_amt_comp</stream_name>
       </field>
       <field>
-        <column_name>proj_no_prov</column_name>
-        <stream_name>proj_no_prov</stream_name>
+        <column_name>act_arrl_amt_cntr</column_name>
+        <stream_name>act_arrl_amt_cntr</stream_name>
       </field>
       <field>
-        <column_name>proj_rcvr_cd</column_name>
-        <stream_name>proj_rcvr_cd</stream_name>
+        <column_name>act_arrl_amt_gov</column_name>
+        <stream_name>act_arrl_amt_gov</stream_name>
       </field>
       <field>
-        <column_name>proj_rpmt_cd</column_name>
-        <stream_name>proj_rpmt_cd</stream_name>
+        <column_name>act_arrl_amt_org</column_name>
+        <stream_name>act_arrl_amt_org</stream_name>
       </field>
       <field>
-        <column_name>cntr_cont_no</column_name>
-        <stream_name>cntr_cont_no</stream_name>
-      </field>
-      <field>
-        <column_name>version</column_name>
-        <stream_name>version</stream_name>
-      </field>
-      <field>
-        <column_name>create_name</column_name>
-        <stream_name>create_name</stream_name>
-      </field>
-      <field>
-        <column_name>update_name</column_name>
-        <stream_name>update_name</stream_name>
-      </field>
-      <field>
-        <column_name>creator</column_name>
-        <stream_name>creator</stream_name>
-      </field>
-      <field>
-        <column_name>updator</column_name>
-        <stream_name>updator</stream_name>
-      </field>
-      <field>
-        <column_name>create_time</column_name>
-        <stream_name>create_time</stream_name>
-      </field>
-      <field>
-        <column_name>update_time</column_name>
-        <stream_name>update_time</stream_name>
-      </field>
-      <field>
-        <column_name>db_update_time</column_name>
-        <stream_name>db_update_time</stream_name>
+        <column_name>act_arrl_amt_other</column_name>
+        <stream_name>act_arrl_amt_other</stream_name>
       </field>
     </fields>
     <attributes/>

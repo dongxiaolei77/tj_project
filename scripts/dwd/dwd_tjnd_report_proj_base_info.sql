@@ -829,12 +829,26 @@ from dw_base.dwd_guar_info_all t1 -- 业务信息宽表--项目域
          select distinct t1.nacga_key
                        , coalesce(t2.table_no_nacga, t3.table_no_nacga) as table_no_nacga
          from dw_nd.ods_nacga_report_prov_nacga_code_dict t1
-                  left join dw_nd.ods_nacga_report_prov_nacga_code_mapping t2
-                            on t1.prov_key = t2.proj_no_prov
-                                and t2.table_name = 'corp_br_org_info_front'
-                  left join dw_nd.ods_nacga_report_prov_nacga_code_mapping t3
-                            on left(prov_key, 3) = t3.proj_no_prov
-                                and t3.table_name = 'corp_br_org_info_front'
+                  left join
+              (
+                  select *
+                  from (
+                           select *, row_number() over (partition by table_no_nacga order by db_update_time desc) rn
+                           from dw_nd.ods_nacga_report_prov_nacga_code_mapping) t1
+                  where rn = 1
+              ) t2
+              on t1.prov_key = t2.proj_no_prov
+                  and t2.table_name = 'corp_br_org_info_front'
+                  left join
+              (
+                  select *
+                  from (
+                           select *, row_number() over (partition by table_no_nacga order by db_update_time desc) rn
+                           from dw_nd.ods_nacga_report_prov_nacga_code_mapping) t1
+                  where rn = 1
+              ) t3
+              on left(prov_key, 3) = t3.proj_no_prov
+                  and t3.table_name = 'corp_br_org_info_front'
          where t1.table_name = 'CORP_BR_ORG_INFO'
            and t1.field_name = 'BLOGTO_CNTY_CD'
      ) t18

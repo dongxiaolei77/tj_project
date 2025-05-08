@@ -3,6 +3,7 @@
 -- 开发时间 ：dw_base.dwd_guar_info_onguar   担保台账在保信息
 -- 目标表   ：
 -- 源表     ：dw_base.dwd_guar_info_all    担保台账信息
+-- 变更记录: 20250505 将truncate修改为 delete
 -- ---------------------------------------
 -- 重跑逻辑
 delete

@@ -41,7 +41,7 @@ from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
      ) t3 -- 保函生成记录表
      on t2.id = t3.id_approval
 where t3.rk = 1
-  and t1.day_id = '20250115'
+  and t1.day_id = '${v_sdate}'
 ;
 commit;
 

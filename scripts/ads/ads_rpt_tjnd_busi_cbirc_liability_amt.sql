@@ -1,7 +1,7 @@
 -- ---------------------------------------
 -- 开发人   : dxl
 -- 开发时间 ：20250427
--- 目标表   ：dw_base.ads_rpt_tjnd_busi_cbirc_guar_stat   业务部-担保业务状况统计表(金融局报表)
+-- 目标表   ：dw_base.ads_rpt_tjnd_busi_cbirc_liability_amt   业务部-融资担保责任余额计量表(金融局报表)
 -- 源表     ：
 --          新业务系统
 --          dw_base.dwd_guar_info_all_his           担保台账信息

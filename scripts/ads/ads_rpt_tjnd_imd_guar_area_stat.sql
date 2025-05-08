@@ -45,7 +45,6 @@ from (
          where day_id = '${v_sdate}'
      ) t2 on t1.guar_id = t2.guar_id;
 commit;
-commit;
 
 -- 2.插入地区合计
 insert into dw_base.ads_rpt_tjnd_imd_guar_area_stat
