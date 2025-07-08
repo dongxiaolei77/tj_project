@@ -483,14 +483,16 @@ select
 ,t1.guar_id -- 担保ID
 ,t1.cust_id -- 客户号
 ,'G1' -- 账户类型
-,CONCAT('X3701010000337',replace(t1.guar_id,'-','')) -- 账户标识码
+-- ,CONCAT('X3701010000337',replace(t1.guar_id,'-','')) -- 账户标识码
+,replace(t1.guar_id,'-','') -- 账户标识码
 ,DATE_FORMAT('${v_sdate}','%Y-%m-%d') -- 信息报告日期
 -- ,case when acct_status = '1' then '10' else '20' end -- 报告时点说明代码
 ,''
 ,t2.name -- 债务人姓名
 ,t2.id_type -- 债务人证件类型
 ,t2.id_num -- 债务人证件号码
-,'X3701010000337' -- 业务管理机构代码
+-- ,'X3701010000337' -- 业务管理机构代码
+,'9999999' -- 业务管理机构代码
 ,'1' -- 担保业务大类
 ,'01' -- 担保业务种类细分
 ,DATE_FORMAT(t1.open_date,'%Y-%m-%d') -- 开户日期
@@ -846,7 +848,8 @@ from (
 select biz_id
        ,contract_id  -- 合同编号
 	   ,customer_id -- 签署人客户号
-	   ,concat('X3701010000337',contract_template_id) as contract_template_id -- 合同模板id
+	   -- ,concat('X3701010000337',contract_template_id) as contract_template_id -- 合同模板id
+	   ,contract_template_id as contract_template_id -- 合同模板id
        ,status
 from 
 (
@@ -1195,6 +1198,7 @@ from dw_base.exp_credit_per_guar_info_ready t1
 where t1.day_id = '${v_sdate}'  
 -- and t1.close_date <> ''
 and t1.close_date is not null
+and length(t1.close_date) >0
 and t1.close_date <= DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d')   
 and t1.open_date < DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d')
 and t1.close_date > DATE_FORMAT(t1.open_date,'%Y-%m-%d')

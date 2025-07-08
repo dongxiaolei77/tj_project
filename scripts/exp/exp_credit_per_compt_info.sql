@@ -80,14 +80,16 @@ select
 ,t1.seq_id -- 贷款ID
 ,t2.CUST_ID -- 客户号
 ,'C1' as acct_type -- 账户类型
-,concat('X3701010000337',replace(replace(t1.seq_id,'-',''),'贷','D')) as acct_code -- 账户标识码
+-- ,concat('X3701010000337',replace(replace(t1.seq_id,'-',''),'贷','D')) as acct_code -- 账户标识码
+,replace(replace(t1.seq_id,'-',''),'贷','D') as acct_code -- 账户标识码
 ,DATE_FORMAT('${v_sdate}','%Y-%m-%d') as rpt_date-- 信息报告日期
 -- ,date_add(t1.compt_dt,interval 1 day) -- 信息报告日期
 ,''as rpt_date_code  -- 报告时点说明代码  账户开立 收回逾期款项 账户关闭
 ,t1.cust_name -- 借款人姓名
 ,'10' as id_type -- 借款人证件类型
 ,t1.cert_no -- 借款人证件号码
-,'X3701010000337' as mngmt_org_code -- 业务管理机构代码
+-- ,'X3701010000337' as mngmt_org_code -- 业务管理机构代码
+,'9999999' as mngmt_org_code -- 业务管理机构代码
 ,'6' as busi_lines-- 借贷业务大类
 ,'B1' as busi_dtl_lines -- 借贷业务种类细分
 ,t4.compt_time -- 开户日期
@@ -363,7 +365,8 @@ from (
 select biz_id
        ,contract_id  -- 合同编号
 	   ,customer_id  -- 签署人客户号
-	   ,concat('X3701010000337',contract_template_id) as contract_template_id -- 合同模板id
+	   -- ,concat('X3701010000337',contract_template_id) as contract_template_id -- 合同模板id
+	   ,contract_template_id as contract_template_id -- 合同模板id
        ,status
 from 
 (
@@ -674,7 +677,7 @@ ln_id     --
 from dw_base.exp_credit_per_compt_info_ready t1
 where t1.day_id = '${v_sdate}'  
 and t1.open_date <= DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d')     -- 放款日期为当天即新增
-and datediff(DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d'),open_date) < 30  -- 检验规则：开户日期和报送日期间隔要小于30天
+and datediff(DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d'),open_date) < 300  -- 检验规则：开户日期和报送日期间隔要小于30天
 and t1.close_date = ''
 and not exists (         -- 新开客户
 select 1
@@ -711,6 +714,7 @@ where day_id = '${v_sdate}'
 and  close_date <= DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d')    -- mdy 20221009 增加结清的数据
 -- and close_date <>''
 and close_date is not null
+and length(close_date)>0
 ) t1
 where exists (
  select 1 from dw_pbc.exp_credit_per_compt_info t2 --   之前开户

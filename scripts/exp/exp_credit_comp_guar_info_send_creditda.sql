@@ -1,10 +1,10 @@
 
 -- ------------- 拆分
 -- 企业担保-基本信息段
-delete from dw_pbc.t_en_guar_acct_bs_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_en_guar_acct_bs_inf_sgmt where day_id = '${v_sdate}';
 commit;
 
-insert into dw_pbc.t_en_guar_acct_bs_inf_sgmt
+insert into creditda.t_en_guar_acct_bs_inf_sgmt
 select  
 concat(DAY_ID,acct_code)
 ,DAY_ID
@@ -21,17 +21,17 @@ concat(DAY_ID,acct_code)
 ,sec_dep -- 保证金比例
 ,ctrct_txt_code -- 担保合同文本编号
 ,now() -- 创建时间
-from dw_pbc.exp_credit_comp_guar_info t1
+from creditda.exp_credit_comp_guar_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 commit;
 
 
 -- 企业担保-基础段
-delete from dw_pbc.t_en_guar_acct_bs_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_en_guar_acct_bs_sgmt where day_id = '${v_sdate}';
 commit;
 
-insert into dw_pbc.t_en_guar_acct_bs_sgmt
+insert into creditda.t_en_guar_acct_bs_sgmt
 select
 concat(DAY_ID,acct_code)
 ,DAY_ID
@@ -47,13 +47,13 @@ concat(DAY_ID,acct_code)
 ,id_num -- 债务人身份标识号码
 ,mngmt_org_code -- 业务管理机构代码
 ,now() -- 创建时间
-from dw_pbc.exp_credit_comp_guar_info t1
+from creditda.exp_credit_comp_guar_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 commit;
 
 -- 插入变更
-insert into dw_pbc.t_en_guar_acct_bs_sgmt
+insert into creditda.t_en_guar_acct_bs_sgmt
 select
 concat(t1.DAY_ID,t1.acct_code)
 ,t1.DAY_ID
@@ -69,11 +69,11 @@ concat(t1.DAY_ID,t1.acct_code)
 ,t1.id_num -- 债务人身份标识号码
 ,t1.mngmt_org_code -- 业务管理机构代码
 ,now() -- 创建时间
-from dw_pbc.exp_credit_comp_guar_info_change_b t1
+from creditda.exp_credit_comp_guar_info_change_b t1
 inner join (
 	select * from (
 		select distinct guar_id,acct_type,rpt_date,rpt_date_code 
-		from dw_pbc.exp_credit_comp_guar_info
+		from creditda.exp_credit_comp_guar_info
 		order by rpt_date DESC
 	)t
 	group by guar_id
@@ -85,9 +85,9 @@ commit;
 
 
 -- 按段更正标识
-delete from  dw_pbc.t_en_guar_mdfc_bs_sgmt where day_id = '${v_sdate}'  AND mdfc_sgmt_code = 'B' ;commit ;
+delete from  creditda.t_en_guar_mdfc_bs_sgmt where day_id = '${v_sdate}'  AND mdfc_sgmt_code = 'B' ;commit ;
  
-insert into dw_pbc.t_en_guar_mdfc_bs_sgmt
+insert into creditda.t_en_guar_mdfc_bs_sgmt
  SELECT distinct 
  concat(t1.DAY_ID,t1.acct_code)
  ,t1.DAY_ID
@@ -100,11 +100,11 @@ insert into dw_pbc.t_en_guar_mdfc_bs_sgmt
  ,'G1'       -- 账户类型
  ,'B'  -- 待更正段段标
  ,NOW()     -- 创建时间
- from dw_pbc.exp_credit_comp_guar_info_change_b t1
+ from creditda.exp_credit_comp_guar_info_change_b t1
  inner join (
 	select * from (
 		select distinct guar_id,acct_type,rpt_date,rpt_date_code 
-		from dw_pbc.exp_credit_comp_guar_info
+		from creditda.exp_credit_comp_guar_info
 		order by rpt_date DESC
 	)t
 	group by guar_id
@@ -115,9 +115,9 @@ on t1.guar_id = t2.guar_Id
  ;
  commit ;
  
-delete from dw_pbc.t_rd_en_sec_acct_mdfc where day_id = '${v_sdate}'  AND mdfc_sgmt_code = 'B' ;commit ;
+delete from creditda.t_rd_en_sec_acct_mdfc where day_id = '${v_sdate}'  AND mdfc_sgmt_code = 'B' ;commit ;
  
-insert into dw_pbc.t_rd_en_sec_acct_mdfc 
+insert into creditda.t_rd_en_sec_acct_mdfc 
  select distinct 
  null               ID
  ,t1.DAY_ID          
@@ -134,11 +134,11 @@ insert into dw_pbc.t_rd_en_sec_acct_mdfc
  ,null          -- 更新人ID
  ,null          -- 上报文件ID
  ,null          -- 文件行号      
- from dw_pbc.exp_credit_comp_guar_info_change_b t1
+ from creditda.exp_credit_comp_guar_info_change_b t1
  inner join (
 	select * from (
 		select distinct guar_id,acct_type,rpt_date,rpt_date_code 
-		from dw_pbc.exp_credit_comp_guar_info
+		from creditda.exp_credit_comp_guar_info
 		order by rpt_date DESC
 	)t
 	group by guar_id
@@ -166,10 +166,10 @@ on t1.guar_id = t2.guar_Id
 -- ;
 
 -- 企业担保-在保责任信息段
-delete from dw_pbc.t_en_guar_rlt_repymt_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_en_guar_rlt_repymt_inf_sgmt where day_id = '${v_sdate}';
 commit;
 
-insert into dw_pbc.t_en_guar_rlt_repymt_inf_sgmt
+insert into creditda.t_en_guar_rlt_repymt_inf_sgmt
 select
 concat(DAY_ID,acct_code)
 ,DAY_ID
@@ -184,7 +184,7 @@ concat(DAY_ID,acct_code)
 ,comp_adv_flag -- 代偿(垫款)标志
 ,close_date -- 账户关闭日期
 ,now() -- 创建时间
-from dw_pbc.exp_credit_comp_guar_info t1
+from creditda.exp_credit_comp_guar_info t1
 where t1.DAY_ID = '${v_sdate}'
 and rpt_date_code <> '50'   -- 其他信息变化 不上报在保责任信息段
 ;
@@ -193,9 +193,9 @@ commit;
 
    -- rlt_repymt_inf_sgmt_id
 -- 企业担保-相关还款责任人段
-delete from dw_pbc.t_en_rlt_repymt_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_en_rlt_repymt_inf_sgmt where day_id = '${v_sdate}';
 commit ;
-insert into dw_pbc.t_en_rlt_repymt_inf_sgmt
+insert into creditda.t_en_rlt_repymt_inf_sgmt
 select
 concat(t1.DAY_ID,t1.acct_code)
 ,t1.DAY_ID
@@ -203,10 +203,10 @@ concat(t1.DAY_ID,t1.acct_code)
 ,t1.cust_id
 ,coalesce(t2.duty_qty,0) -- 责任人个数 
 ,now() -- 创建时间
-from dw_pbc.exp_credit_comp_guar_info t1
+from creditda.exp_credit_comp_guar_info t1
 left join (
 select guar_id,count(distinct duty_cert_no) as duty_qty
-from dw_pbc.exp_credit_comp_repay_duty_info 
+from creditda.exp_credit_comp_repay_duty_info 
 where DAY_ID = '${v_sdate}'
 group by guar_id
 )t2
@@ -217,7 +217,7 @@ commit;
 
 
 -- 插入按段更新
-insert into dw_pbc.t_en_rlt_repymt_inf_sgmt
+insert into creditda.t_en_rlt_repymt_inf_sgmt
 select distinct 
 concat(t1.DAY_ID,t2.acct_code)
 ,t1.DAY_ID
@@ -227,12 +227,12 @@ concat(t1.DAY_ID,t2.acct_code)
 ,now()
 from (
 select DAY_ID,guar_id,count(distinct duty_cert_no) as duty_qty
-from dw_pbc.exp_credit_comp_guar_info_change_e 
+from creditda.exp_credit_comp_guar_info_change_e 
 where DAY_ID = '${v_sdate}'
 -- and guar_id = '202408090007'
 group by guar_id,DAY_ID
 )t1
-inner join (select distinct guar_id,cust_id,acct_code from dw_pbc.exp_credit_comp_guar_info)t2
+inner join (select distinct guar_id,cust_id,acct_code from creditda.exp_credit_comp_guar_info)t2
 on t1.guar_id = t2.guar_id
 
 ;
@@ -240,11 +240,11 @@ commit ;
 
 
 -- 相关还款责任人信息 
- delete from dw_pbc.t_en_rlt_repymt_inf_sgmt_el   where day_id = '${v_sdate}';
+ delete from creditda.t_en_rlt_repymt_inf_sgmt_el   where day_id = '${v_sdate}';
  --
 commit;
  -- 
- insert into dw_pbc.t_en_rlt_repymt_inf_sgmt_el
+ insert into creditda.t_en_rlt_repymt_inf_sgmt_el
  select
     null  ID
 	,t1.day_id -- 数据日期,
@@ -261,13 +261,13 @@ commit;
    -- ,concat('X3701010000337',t1.guar_cont_no) -- 保证合同编号,
    ,t1.guar_cont_no -- 保证合同编号,
    ,now() -- 创建时间,
- from dw_pbc.exp_credit_comp_repay_duty_info t1
- inner join    dw_pbc.exp_credit_comp_guar_info  t2 
+ from creditda.exp_credit_comp_repay_duty_info t1
+ inner join    creditda.exp_credit_comp_guar_info  t2 
     on t1.guar_id = t2.guar_id
    and t2.day_id = '${v_sdate}'
 left join (
 select guar_id,count(distinct duty_cert_no) as duty_qty
-from dw_pbc.exp_credit_comp_repay_duty_info 
+from creditda.exp_credit_comp_repay_duty_info 
 where DAY_ID = '${v_sdate}'
 group by guar_id
 )t3
@@ -279,7 +279,7 @@ commit;
 
 
  -- 插入按段更正
- insert into dw_pbc.t_en_rlt_repymt_inf_sgmt_el
+ insert into creditda.t_en_rlt_repymt_inf_sgmt_el
  select distinct 
    null ID
    ,t1.day_id -- 数据日期,
@@ -297,12 +297,12 @@ commit;
    -- ,concat('X3701010000337',t1.guar_cont_no) -- 保证合同编号,
    ,t1.guar_cont_no -- 保证合同编号,
    ,now() -- 创建时间,
- from dw_pbc.exp_credit_comp_guar_info_change_e t1
- inner join (select distinct guar_id,acct_code from dw_pbc.exp_credit_comp_guar_info) t2
+ from creditda.exp_credit_comp_guar_info_change_e t1
+ inner join (select distinct guar_id,acct_code from creditda.exp_credit_comp_guar_info) t2
     on t1.guar_id = t2.guar_id
 left join (
 select guar_id,count(distinct duty_cert_no) as duty_qty
-from dw_pbc.exp_credit_comp_guar_info_change_e 
+from creditda.exp_credit_comp_guar_info_change_e 
 where DAY_ID = '${v_sdate}'
 group by guar_id
 )t3
@@ -314,9 +314,9 @@ group by guar_id
  
  
 -- 按段更正标识
-delete from  dw_pbc.t_en_guar_mdfc_bs_sgmt where day_id = '${v_sdate}'  AND mdfc_sgmt_code = 'E' ;commit ;
+delete from  creditda.t_en_guar_mdfc_bs_sgmt where day_id = '${v_sdate}'  AND mdfc_sgmt_code = 'E' ;commit ;
  
-insert into dw_pbc.t_en_guar_mdfc_bs_sgmt
+insert into creditda.t_en_guar_mdfc_bs_sgmt
  SELECT distinct 
  concat(t1.DAY_ID,t2.acct_code)
  ,t1.DAY_ID
@@ -328,17 +328,17 @@ insert into dw_pbc.t_en_guar_mdfc_bs_sgmt
  ,'G1'       -- 账户类型
  ,'E'  -- 待更正段段标
  ,NOW()     -- 创建时间
- from dw_pbc.exp_credit_comp_guar_info_change_e t1
- inner join (select distinct guar_id,acct_code from dw_pbc.exp_credit_comp_guar_info) t2
+ from creditda.exp_credit_comp_guar_info_change_e t1
+ inner join (select distinct guar_id,acct_code from creditda.exp_credit_comp_guar_info) t2
  on t1.guar_id = t2.guar_id
  where t1.DAY_ID = '${v_sdate}'
  -- and t1.guar_id = '202408090007'
  ;
  commit ;
  
- delete from dw_pbc.t_rd_en_sec_acct_mdfc where day_id = '${v_sdate}'  AND mdfc_sgmt_code = 'E' ;commit ;
+ delete from creditda.t_rd_en_sec_acct_mdfc where day_id = '${v_sdate}'  AND mdfc_sgmt_code = 'E' ;commit ;
  
-insert into dw_pbc.t_rd_en_sec_acct_mdfc 
+insert into creditda.t_rd_en_sec_acct_mdfc 
  select distinct 
  null               ID
  ,t1.DAY_ID          
@@ -354,8 +354,8 @@ insert into dw_pbc.t_rd_en_sec_acct_mdfc
  ,null          -- 更新人ID
  ,null          -- 上报文件ID
  ,null          -- 文件行号      
- from dw_pbc.exp_credit_comp_guar_info_change_e t1
-  inner join (select distinct guar_id,acct_code from dw_pbc.exp_credit_comp_guar_info) t2
+ from creditda.exp_credit_comp_guar_info_change_e t1
+  inner join (select distinct guar_id,acct_code from creditda.exp_credit_comp_guar_info) t2
  on t1.guar_id = t2.guar_id
  where t1.DAY_ID = '${v_sdate}'
  -- and t1.guar_id = '202408090007'
@@ -366,10 +366,10 @@ insert into dw_pbc.t_rd_en_sec_acct_mdfc
 -- 企业担保账户记录
 -- t_rd_en_sec_acct_inf
 
-delete from dw_pbc.t_rd_en_sec_acct_inf where day_id = '${v_sdate}';
+delete from creditda.t_rd_en_sec_acct_inf where day_id = '${v_sdate}';
 commit;
 
-insert into dw_pbc.t_rd_en_sec_acct_inf
+insert into creditda.t_rd_en_sec_acct_inf
 select
 null  -- ID
 ,DAY_ID -- DAY_ID
@@ -388,7 +388,7 @@ null  -- ID
 ,null -- 更新人ID
 ,null -- 上报文件ID
 ,null -- 文件行号
-from dw_pbc.exp_credit_comp_guar_info  t1
+from creditda.exp_credit_comp_guar_info  t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 commit;
@@ -399,8 +399,8 @@ commit;
 
 
 -- -- 企业担保账户按段更正请求记录
--- delete from dw_pbc.t_en_guar_mdfc_bs_sgmt where day_id = '${v_sdate}'; COMMIT;
--- insert into dw_pbc.t_en_guar_mdfc_bs_sgmt
+-- delete from creditda.t_en_guar_mdfc_bs_sgmt where day_id = '${v_sdate}'; COMMIT;
+-- insert into creditda.t_en_guar_mdfc_bs_sgmt
 -- select
 -- concat(day_id,acct_code)
 -- ,day_id
@@ -412,13 +412,13 @@ commit;
 -- ,acct_type        -- 账户类型
 -- ,'C'   -- 待更正段段标
 -- ,now()      -- 创建时间
--- from dw_pbc.exp_credit_comp_guar_info t1
+-- from creditda.exp_credit_comp_guar_info t1
 -- where t1.day_id = '${v_sdate}'
 -- and guar_id='20200302-052'
 -- ;
 -- commit;
 
--- insert into dw_pbc.t_en_guar_mdfc_bs_sgmt
+-- insert into creditda.t_en_guar_mdfc_bs_sgmt
 -- select
 -- concat(day_id,acct_code)
 -- ,day_id
@@ -430,14 +430,14 @@ commit;
 -- ,acct_type        -- 账户类型
 -- ,'D'   -- 待更正段段标
 -- ,now()      -- 创建时间
--- from dw_pbc.exp_credit_comp_guar_info t1
+-- from creditda.exp_credit_comp_guar_info t1
 -- where t1.day_id = '${v_sdate}'
 -- and cust_id='202008191036440201361050064'
 -- ;
 -- commit;
 
--- delete from dw_pbc.t_rd_en_sec_acct_mdfc where day_id = '${v_sdate}'; COMMIT;
--- insert into dw_pbc.t_rd_en_sec_acct_mdfc
+-- delete from creditda.t_rd_en_sec_acct_mdfc where day_id = '${v_sdate}'; COMMIT;
+-- insert into creditda.t_rd_en_sec_acct_mdfc
 -- select
 -- null
 -- ,day_id
@@ -453,14 +453,14 @@ commit;
 -- ,null      -- 更新人ID
 -- ,null         -- 上报文件ID
 -- ,null        -- 文件行号
--- from dw_pbc.exp_credit_comp_guar_info t1
+-- from creditda.exp_credit_comp_guar_info t1
 -- where t1.day_id = '${v_sdate}'
 -- and guar_id='20200302-052'
 -- ;
 -- commit;
 
 -- 
--- insert into dw_pbc.t_rd_en_sec_acct_mdfc
+-- insert into creditda.t_rd_en_sec_acct_mdfc
 -- select
 -- null
 -- ,day_id
@@ -476,15 +476,15 @@ commit;
 -- ,null      -- 更新人ID
 -- ,null         -- 上报文件ID
 -- ,null        -- 文件行号
--- from dw_pbc.exp_credit_comp_guar_info t1
+-- from creditda.exp_credit_comp_guar_info t1
 -- where t1.day_id = '${v_sdate}'
 -- AND cust_id='202008191036440201361050064'
 -- ;
 -- commit;
 
 -- -- 按段删除
--- delete from dw_pbc.t_rd_en_sec_acct_del where day_id = '${v_sdate}'; COMMIT;
--- insert into dw_pbc.t_rd_en_sec_acct_del
+-- delete from creditda.t_rd_en_sec_acct_del where day_id = '${v_sdate}'; COMMIT;
+-- insert into creditda.t_rd_en_sec_acct_del
 -- select
 -- null
 -- ,day_id
@@ -502,13 +502,13 @@ commit;
 -- ,null   -- 更新人ID
 -- ,null          -- 上报文件ID
 -- ,null         -- 文件行号
--- from dw_pbc.exp_credit_comp_guar_info t1
+-- from creditda.exp_credit_comp_guar_info t1
 -- where t1.DAY_ID = '${v_sdate}'
 -- AND guar_id= '20200323-252'
 -- ; 
 -- commit;
 -- 
--- insert into dw_pbc.t_rd_en_sec_acct_del
+-- insert into creditda.t_rd_en_sec_acct_del
 -- select
 -- null
 -- ,day_id
@@ -526,15 +526,15 @@ commit;
 -- ,null   -- 更新人ID
 -- ,null          -- 上报文件ID
 -- ,null         -- 文件行号
--- from dw_pbc.exp_credit_comp_guar_info t1
+-- from creditda.exp_credit_comp_guar_info t1
 -- where t1.DAY_ID = '${v_sdate}'
 -- AND guar_id= '20200323-252'
 -- ; 
 -- commit; 
 -- 
 -- -- 整笔删除
--- delete from dw_pbc.t_rd_en_sec_acct_ent_del where day_id = '${v_sdate}'; COMMIT;
--- insert into dw_pbc.t_rd_en_sec_acct_ent_del
+-- delete from creditda.t_rd_en_sec_acct_ent_del where day_id = '${v_sdate}'; COMMIT;
+-- insert into creditda.t_rd_en_sec_acct_ent_del
 -- select
 -- null
 -- ,day_id
@@ -549,7 +549,7 @@ commit;
 -- ,null  -- 更新人ID
 -- ,null         -- 上报文件ID
 -- ,null        -- 文件行号
--- from dw_pbc.exp_credit_comp_guar_info t1
+-- from creditda.exp_credit_comp_guar_info t1
 -- where t1.DAY_ID = '${v_sdate}'
 -- AND guar_id= '20200323-252'
 -- ; 

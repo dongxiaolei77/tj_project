@@ -4,11 +4,11 @@
 
 -- 数据拆分
 -- 个人基本信息-基础段
-delete from dw_pbc.t_in_bas_bs_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_in_bas_bs_sgmt where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_in_bas_bs_sgmt
+insert into creditda.t_in_bas_bs_sgmt
 select
 concat(DAY_ID,CUST_ID)  -- ID
 ,DAY_ID -- DAY_ID
@@ -23,7 +23,7 @@ concat(DAY_ID,CUST_ID)  -- ID
 ,CIMOC -- 客户资料维护机构代码
 ,CUSTOMER_TYPE -- 客户资料类型
 ,now() -- 创建时间
-from dw_pbc.exp_credit_per_cust_info t1
+from creditda.exp_credit_per_cust_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 
@@ -31,11 +31,11 @@ commit ;
 
 
 -- 个人基本信息-教育信息段
-delete from dw_pbc.t_in_bas_edu_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_in_bas_edu_inf_sgmt where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_in_bas_edu_inf_sgmt
+insert into creditda.t_in_bas_edu_inf_sgmt
 select
 concat(DAY_ID,CUST_ID)  -- ID
 ,DAY_ID -- DAY_ID
@@ -44,7 +44,7 @@ concat(DAY_ID,CUST_ID)  -- ID
 ,ACA_DEGREE -- 学位
 ,DAY_ID -- 信息更新日期
 ,now() -- 创建时间
-from dw_pbc.exp_credit_per_cust_info t1
+from creditda.exp_credit_per_cust_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 
@@ -52,11 +52,11 @@ commit ;
 
 
 -- 个人基本信息-基本概况段
-delete from dw_pbc.t_in_bas_fcs_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_in_bas_fcs_inf_sgmt where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_in_bas_fcs_inf_sgmt
+insert into creditda.t_in_bas_fcs_inf_sgmt
 select
 concat(DAY_ID,CUST_ID)  -- ID
 ,DAY_ID -- DAY_ID
@@ -70,7 +70,7 @@ concat(DAY_ID,CUST_ID)  -- ID
 ,EMAIL -- 电子邮箱
 ,DAY_ID -- 信息更新日期
 ,now() -- 创建时间
-from dw_pbc.exp_credit_per_cust_info t1
+from creditda.exp_credit_per_cust_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 
@@ -78,11 +78,11 @@ commit ;
 
 
 -- 个人基本信息-通讯地址段
-delete from dw_pbc.t_in_bas_mlg_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_in_bas_mlg_inf_sgmt where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_in_bas_mlg_inf_sgmt
+insert into creditda.t_in_bas_mlg_inf_sgmt
 select
 concat(DAY_ID,CUST_ID)  -- ID
 ,DAY_ID -- DAY_ID
@@ -92,7 +92,7 @@ concat(DAY_ID,CUST_ID)  -- ID
 ,MAIL_DIST -- 通讯地行政区划
 ,DAY_ID -- 信息更新日期
 ,now() -- 创建时间
-from dw_pbc.exp_credit_per_cust_info t1
+from creditda.exp_credit_per_cust_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 
@@ -100,11 +100,11 @@ commit ;
 
  
 -- 个人基本信息-职业信息段
-delete from dw_pbc.t_in_bas_octpn_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_in_bas_octpn_inf_sgmt where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_in_bas_octpn_inf_sgmt
+insert into creditda.t_in_bas_octpn_inf_sgmt
 select
 concat(DAY_ID,CUST_ID)  -- ID
 ,DAY_ID -- DAY_ID
@@ -123,7 +123,7 @@ concat(DAY_ID,CUST_ID)  -- ID
 ,WORK_START_DATE -- 本单位工作起始年份
 ,DAY_ID -- 信息更新日期
 ,now() -- 创建时间
-from dw_pbc.exp_credit_per_cust_info t1
+from creditda.exp_credit_per_cust_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 
@@ -133,11 +133,11 @@ commit ;
 -- 个人基本信息-居住地址段
 
 
-delete from dw_pbc.t_in_bas_rednc_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_in_bas_rednc_inf_sgmt where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_in_bas_rednc_inf_sgmt
+insert into creditda.t_in_bas_rednc_inf_sgmt
 select
 concat(DAY_ID,CUST_ID)  -- ID
 ,DAY_ID -- DAY_ID
@@ -149,7 +149,7 @@ concat(DAY_ID,CUST_ID)  -- ID
 ,HOME_TEL -- 住宅电话
 ,DAY_ID -- 信息更新日期
 ,now() -- 创建时间
-from dw_pbc.exp_credit_per_cust_info t1
+from creditda.exp_credit_per_cust_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 
@@ -157,11 +157,11 @@ commit ;
 
 
 -- 个人基本信息-婚姻信息段
-delete from dw_pbc.t_in_bas_sps_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_in_bas_sps_inf_sgmt where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_in_bas_sps_inf_sgmt
+insert into creditda.t_in_bas_sps_inf_sgmt
 select
 concat(DAY_ID,CUST_ID)  -- ID
 ,DAY_ID -- DAY_ID
@@ -174,7 +174,7 @@ concat(DAY_ID,CUST_ID)  -- ID
 ,SPS_CMPY_NM -- 配偶工作单位
 ,DAY_ID -- 信息更新日期
 ,now() -- 创建时间
-from dw_pbc.exp_credit_per_cust_info t1
+from creditda.exp_credit_per_cust_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 
@@ -182,11 +182,11 @@ commit ;
 
 
 -- 个人证件有效期信息记录
-delete from dw_pbc.t_rd_in_id_efct_inf where day_id = '${v_sdate}';
+delete from creditda.t_rd_in_id_efct_inf where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_rd_in_id_efct_inf
+insert into creditda.t_rd_in_id_efct_inf
 select
 null  -- ID
 ,DAY_ID -- DAY_ID
@@ -209,7 +209,7 @@ null  -- ID
 ,null -- 更新人ID
 ,null -- 上报文件ID
 ,null -- 上报文件行号
-from dw_pbc.exp_credit_per_cust_info t1
+from creditda.exp_credit_per_cust_info t1
 where t1.DAY_ID = '${v_sdate}'
 and id_efct_date <= '${v_sdate}'  -- 限制到期日
 and ID_DUE_DATE >= '${v_sdate}' -- 限制到期日
@@ -220,11 +220,11 @@ commit ;
 
 
 -- 个人基本信息记录
-delete from dw_pbc.t_rd_in_bas_inf where day_id = '${v_sdate}';
+delete from creditda.t_rd_in_bas_inf where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_rd_in_bas_inf
+insert into creditda.t_rd_in_bas_inf
 select
 null  -- ID
 ,DAY_ID -- DAY_ID
@@ -245,7 +245,7 @@ null  -- ID
 ,null -- 更新人ID
 ,null -- 上报文件ID
 ,null -- 上报文件行号
-from dw_pbc.exp_credit_per_cust_info t1
+from creditda.exp_credit_per_cust_info t1
 where t1.DAY_ID = '${v_sdate}'
 ;
 

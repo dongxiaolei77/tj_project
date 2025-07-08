@@ -211,9 +211,11 @@ select
 	,t1.ent_name -- 企业名称
 	,t1.ent_cert_type -- 之前是 t1.ent_cert_type 20220816修改为10 中征码 -- 企业身份标识类型
 	,t1.ent_cert_num -- 企业身份标识号码RPAD(t1.ent_cert_num,16,'0')
-	,'X3701010000337' as inf_surc_code -- 信息来源编码
+	-- ,'X3701010000337' as inf_surc_code -- 信息来源编码
+	,'9999999' as inf_surc_code -- 信息来源编码
 	,'10' as rpt_date_code -- 报告时点说明代码
-	,'X3701010000337' as cimoc -- 客户资料维护机构代码
+	-- ,'X3701010000337' as cimoc -- 客户资料维护机构代码
+	,'9999999' as cimoc -- 客户资料维护机构代码
 	,'2' as customer_type  -- 客户资料类型  2 授信业务客户资料
 	,'X' as etp_sts -- 存续状态      X 未知
 	,t1.org_type -- 组织机构类型

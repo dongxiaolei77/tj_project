@@ -1,0 +1,12 @@
+-- ----------------------------------------
+-- 开发人   : dxl
+-- 开发时间 ：20250708
+-- 目标表   :  dwd_tjnd_report_cust_per_base_info 个人客户基础信息
+--            dwd_tjnd_report_cust_corp_rel_info 个人客户名下企业
+--            dwd_tjnd_report_cust_corp_base_info 企业客户基础信息
+--            dwd_tjnd_report_proj_cntr_agmt_info 反担保签约记录
+-- 源表     ： dwd_tjnd_cust_auth_info     中间表-信息查询授权
+-- 备注     ：
+-- 变更记录 ：
+-- ----------------------------------------
+

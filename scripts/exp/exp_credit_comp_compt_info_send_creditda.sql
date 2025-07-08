@@ -1,11 +1,11 @@
 
 -- t_en_acct_bs_sgmt	企业借贷-基础段
 
-delete from dw_pbc.t_en_acct_bs_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_en_acct_bs_sgmt where day_id = '${v_sdate}';
 
 commit ;
 
-insert into dw_pbc.t_en_acct_bs_sgmt
+insert into creditda.t_en_acct_bs_sgmt
 select
 concat(day_id,acct_code)               -- ID
 ,day_id
@@ -21,7 +21,7 @@ concat(day_id,acct_code)               -- ID
 ,id_num          -- 借款人身份标识号码
 ,mngmt_org_code  -- 业务管理机构代码
 ,now()     -- 创建时间
-from dw_pbc.exp_credit_comp_compt_info t1
+from creditda.exp_credit_comp_compt_info t1
 where t1.day_id = '${v_sdate}'
 ;
 
@@ -29,10 +29,10 @@ commit ;
 
 
 -- t_en_acct_bs_inf_sgmt	企业借贷-账户基本信息段
-delete from dw_pbc.t_en_acct_bs_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_en_acct_bs_inf_sgmt where day_id = '${v_sdate}';
 commit ;
 
-insert into dw_pbc.t_en_acct_bs_inf_sgmt
+insert into creditda.t_en_acct_bs_inf_sgmt
 select
 concat(day_id,acct_code)
 ,day_id
@@ -57,7 +57,7 @@ concat(day_id,acct_code)
 ,fund_sou            -- 业务经营类型
 ,asset_trand_flag    -- 资产转让标识
 ,now()         -- 创建时间
-from dw_pbc.exp_credit_comp_compt_info t1
+from creditda.exp_credit_comp_compt_info t1
 where t1.day_id = '${v_sdate}'
 ;
 commit ;
@@ -69,9 +69,9 @@ commit ;
 
  
 -- 相关还款责任人段
-delete from dw_pbc.t_en_acct_rlt_repymt_inf_sgm  where day_id = '${v_sdate}';
+delete from creditda.t_en_acct_rlt_repymt_inf_sgm  where day_id = '${v_sdate}';
 commit ;
-insert into dw_pbc.t_en_acct_rlt_repymt_inf_sgm
+insert into creditda.t_en_acct_rlt_repymt_inf_sgm
 select
 	concat(t1.DAY_ID,t1.acct_code)
 	,t1.DAY_ID
@@ -79,10 +79,10 @@ select
 	,t1.cust_id
 	,coalesce(t2.duty_qty,0) -- 责任人个数 
 	,now() -- 创建时间
-from dw_pbc.exp_credit_comp_compt_info t1
+from creditda.exp_credit_comp_compt_info t1
 left join (
 select guar_id,count(distinct duty_cert_no) as duty_qty
-from dw_pbc.exp_credit_comp_compt_repay_duty_info 
+from creditda.exp_credit_comp_compt_repay_duty_info 
 where DAY_ID = '${v_sdate}'
 group by guar_id
 )t2
@@ -94,10 +94,10 @@ commit;
 
 
  -- 相关还款责任人信息 
-delete from dw_pbc.t_en_acct_rlt_repymt_inf_sgm_el  where day_id = '${v_sdate}' ;
+delete from creditda.t_en_acct_rlt_repymt_inf_sgm_el  where day_id = '${v_sdate}' ;
 commit;
  
-insert into dw_pbc.t_en_acct_rlt_repymt_inf_sgm_el
+insert into creditda.t_en_acct_rlt_repymt_inf_sgm_el
 select
    null  ID
   ,t1.day_id -- 数据日期,
@@ -112,16 +112,16 @@ select
   ,t1.duty_amt -- 还款责任金额,
   ,case when coalesce(t3.duty_qty,0) >= 2 then '1' else '0' end as duty_flag -- 联保标志  0-单人保证/多人分保   1-联保（单人保证指该账户对应的担保交易仅有一个反担保人，多人分保指该账户对应的担保交易有多个反担保人，且每个反担保人独立分担一部分担保责任）1-联保（联保指该账户对应的担保交易有多个反担保人且共同承担担保责任）,
   -- ,concat('X3701010000337',t1.guar_cont_no) -- 保证合同编号,
-  ,t1.guar_cont_no	-- 保证合同编号,
+  ,t1.guar_cont_no -- 保证合同编号,
   ,now() -- 创建时间,
-from dw_pbc.exp_credit_comp_compt_repay_duty_info t1
-inner join dw_pbc.exp_credit_comp_compt_info  t2 
+from creditda.exp_credit_comp_compt_repay_duty_info t1
+inner join creditda.exp_credit_comp_compt_info  t2 
 on t1.guar_id = t2.ln_id
 and t2.day_id = '${v_sdate}'
 -- and t2.rpt_date_code = '10' -- 只有新开户或者首次上报时上报该段【取消限制】
 left join (
 select guar_id,count(distinct duty_cert_no) as duty_qty
-from dw_pbc.exp_credit_comp_compt_repay_duty_info 
+from creditda.exp_credit_comp_compt_repay_duty_info 
 where DAY_ID = '${v_sdate}'
 group by guar_id
 )t3
@@ -141,10 +141,10 @@ commit;
 
 -- t_en_acct_orig_creditor_inf_sgmt	企业借贷-初始债权说明段
 
-delete from dw_pbc.t_en_acct_orig_creditor_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_en_acct_orig_creditor_inf_sgmt where day_id = '${v_sdate}';
 commit ;
 
-insert into dw_pbc.t_en_acct_orig_creditor_inf_sgmt
+insert into creditda.t_en_acct_orig_creditor_inf_sgmt
 select
 concat(day_id,acct_code)
 ,day_id
@@ -155,7 +155,7 @@ concat(day_id,acct_code)
 ,orig_dbt_cate      -- 原债务种类
 ,init_rpy_sts       -- 债权转移时的还款状态
 ,now()        -- 创建时间
-from dw_pbc.exp_credit_comp_compt_info t1
+from creditda.exp_credit_comp_compt_info t1
 where t1.day_id = '${v_sdate}'
 and t1.rpt_date_code= '10' -- 只有新开户或者首次上报时上报该段
 ;
@@ -163,10 +163,10 @@ commit ;
 
  
 -- t_en_act_lblty_inf_sgmt	企业借贷-还款表现信息段
-delete from dw_pbc.t_en_act_lblty_inf_sgmt where day_id = '${v_sdate}';
+delete from creditda.t_en_act_lblty_inf_sgmt where day_id = '${v_sdate}';
 commit ;
 
-insert into dw_pbc.t_en_act_lblty_inf_sgmt
+insert into creditda.t_en_act_lblty_inf_sgmt
 select
 concat(day_id,acct_code)
 ,day_id
@@ -190,7 +190,7 @@ concat(day_id,acct_code)
 ,nxt_agrr_rpy_date      -- 下一次约定还款日期
 ,close_date             -- 账户关闭日期
 ,now()            -- 创建时间
-from dw_pbc.exp_credit_comp_compt_info t1
+from creditda.exp_credit_comp_compt_info t1
 where t1.day_id = '${v_sdate}'
 ;commit ;
 
@@ -199,10 +199,10 @@ where t1.day_id = '${v_sdate}'
 
 
 -- t_rd_en_acct_inf	企业借贷账户记录
-delete from dw_pbc.t_rd_en_acct_inf where day_id = '${v_sdate}';
+delete from creditda.t_rd_en_acct_inf where day_id = '${v_sdate}';
 commit;
 
-insert into dw_pbc.t_rd_en_acct_inf
+insert into creditda.t_rd_en_acct_inf
 select
 null
 ,day_id
@@ -223,7 +223,7 @@ null
 ,null                        -- 更新人ID
 ,null                               -- 上报文件ID
 ,null                              -- 上报文件行号
-from dw_pbc.exp_credit_comp_compt_info t1
+from creditda.exp_credit_comp_compt_info t1
 where t1.day_id = '${v_sdate}'
 ;
 commit;
@@ -239,8 +239,8 @@ commit;
 
 -- -- t_en_acct_mdfc_bs_sgmt	企业借贷更新-基础段
 
--- delete from dw_pbc.t_en_acct_mdfc_bs_sgmt where day_id = '${v_sdate}';
--- insert into dw_pbc.t_en_acct_mdfc_bs_sgmt
+-- delete from creditda.t_en_acct_mdfc_bs_sgmt where day_id = '${v_sdate}';
+-- insert into creditda.t_en_acct_mdfc_bs_sgmt
 -- select
 -- concat(day_id,acct_code) 
 -- ,day_id
@@ -252,12 +252,12 @@ commit;
 -- ,acct_type        -- 账户类型
 -- ,'C'   -- 待更正段段标
 -- ,now()      -- 创建时间
--- from dw_pbc.exp_credit_comp_compt_info t1
+-- from creditda.exp_credit_comp_compt_info t1
 -- where t1.day_id = '${v_sdate}'
 -- AND ln_id ='999901914' 
 -- ;
 -- commit;
--- insert into dw_pbc.t_en_acct_mdfc_bs_sgmt
+-- insert into creditda.t_en_acct_mdfc_bs_sgmt
 -- select
 -- concat(day_id,acct_code) 
 -- ,day_id
@@ -269,15 +269,15 @@ commit;
 -- ,acct_type        -- 账户类型
 -- ,'H'   -- 待更正段段标
 -- ,now()      -- 创建时间
--- from dw_pbc.exp_credit_comp_compt_info t1
+-- from creditda.exp_credit_comp_compt_info t1
 -- where t1.day_id = '${v_sdate}'
 -- AND CUST_ID ='202008201730157731361062497' 
 -- ;
 -- commit;
 
 -- t_rd_en_acct_inf_mdfc	企业借贷账户更正请求类记录
--- delete from dw_pbc.t_rd_en_acct_inf_mdfc where day_id = '${v_sdate}';
--- insert into dw_pbc.t_rd_en_acct_inf_mdfc
+-- delete from creditda.t_rd_en_acct_inf_mdfc where day_id = '${v_sdate}';
+-- insert into creditda.t_rd_en_acct_inf_mdfc
 -- SELECT
 -- null
 -- ,day_id
@@ -293,14 +293,14 @@ commit;
 -- ,null   -- 更新人ID
 -- ,null          -- 上报文件ID
 -- ,null         -- 文件行号
--- FROM  dw_pbc.exp_credit_comp_compt_info t1
+-- FROM  creditda.exp_credit_comp_compt_info t1
 -- where t1.day_id = '${v_sdate}'
 -- AND ln_id ='999901914' 
 -- ;
 -- commit;
 
 
--- insert into dw_pbc.t_rd_en_acct_inf_mdfc
+-- insert into creditda.t_rd_en_acct_inf_mdfc
 -- SELECT
 -- null
 -- ,day_id
@@ -316,7 +316,7 @@ commit;
 -- ,null   -- 更新人ID
 -- ,null          -- 上报文件ID
 -- ,null         -- 文件行号
--- FROM  dw_pbc.exp_credit_comp_compt_info t1
+-- FROM  creditda.exp_credit_comp_compt_info t1
 -- where t1.day_id = '${v_sdate}'
 -- AND CUST_ID ='202008201730157731361062497' 
 -- ;
@@ -326,8 +326,8 @@ commit;
 
 -- t_rd_en_acct_inf_del	    企业借贷账户按段删除请求类记录
 
--- delete from dw_pbc.t_rd_en_acct_inf_del where day_id = '${v_sdate}';
--- insert into dw_pbc.t_rd_en_acct_inf_del
+-- delete from creditda.t_rd_en_acct_inf_del where day_id = '${v_sdate}';
+-- insert into creditda.t_rd_en_acct_inf_del
 -- SELECT
 -- null
 -- ,day_id
@@ -345,13 +345,13 @@ commit;
 -- ,null           -- 更新人ID
 -- ,null           -- 上报文件ID
 -- ,null           -- 文件行号
--- FROM  dw_pbc.exp_credit_comp_compt_info t1
+-- FROM  creditda.exp_credit_comp_compt_info t1
 -- where t1.day_id = '${v_sdate}'
 -- AND ln_id ='20201229-023' 
 -- ;
 -- commit;
 -- 
--- insert into dw_pbc.t_rd_en_acct_inf_del
+-- insert into creditda.t_rd_en_acct_inf_del
 -- SELECT
 -- null
 -- ,day_id
@@ -369,7 +369,7 @@ commit;
 -- ,null           -- 更新人ID
 -- ,null           -- 上报文件ID
 -- ,null           -- 文件行号
--- FROM  dw_pbc.exp_credit_comp_compt_info t1
+-- FROM  creditda.exp_credit_comp_compt_info t1
 -- where t1.day_id = '${v_sdate}'
 -- AND ln_id ='20201229-023' 
 -- ;
@@ -377,8 +377,8 @@ commit;
 -- 
 -- -- t_rd_en_acct_inf_ent_del	企业借贷账户整笔删除请求类记录
 -- 
--- delete from dw_pbc.t_rd_en_acct_inf_ent_del where day_id = '${v_sdate}';
--- insert into dw_pbc.t_rd_en_acct_inf_ent_del
+-- delete from creditda.t_rd_en_acct_inf_ent_del where day_id = '${v_sdate}';
+-- insert into creditda.t_rd_en_acct_inf_ent_del
 -- SELECT
 -- null
 -- ,day_id
@@ -393,7 +393,7 @@ commit;
 -- ,null    -- 更新人ID
 -- ,null           -- 上报文件ID
 -- ,null          -- 文件行号
--- FROM  dw_pbc.exp_credit_comp_compt_info t1
+-- FROM  creditda.exp_credit_comp_compt_info t1
 -- where t1.day_id = '${v_sdate}'
 -- AND ln_id ='20201229-023' 
 -- ;

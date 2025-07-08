@@ -128,13 +128,15 @@ select distinct
 	   ,t1.guar_id as ln_id       -- 贷款ID
 	   ,t4.CUST_ID        -- 客户号
 	   ,'C1'as acct_type  -- 账户类型  C1-催收账户
-	   ,concat('X3701010000337',replace(t1.guar_id,'-','')) as acct_code   -- 账户标识码
+	   -- ,concat('X3701010000337',replace(t1.guar_id,'-','')) as acct_code   -- 账户标识码
+	   ,replace(t1.guar_id,'-','') as acct_code   -- 账户标识码
 	   ,DATE_FORMAT('${v_sdate}','%Y-%m-%d')as rpt_date                    -- 信息报告日期
 	   ,case when t3.is_close = '是' then '20' else '10' end as rpt_date_code  -- 报告时点说明代码
 	   ,t1.cust_name as name      -- 借款人名称
 	   ,coalesce(t4.id_type,'10')id_type   -- 借款人身份标识类型
 	   ,coalesce(t5.id_num,t6.zhongzheng_code) id_num   -- 中征码
-	   ,'X3701010000337' as mngmt_org_code -- 业务管理机构代码
+	   -- ,'X3701010000337' as mngmt_org_code -- 业务管理机构代码
+	   ,'9999999' as mngmt_org_code -- 业务管理机构代码
 	   ,'41' as busi_lines                 -- 借贷业务大类  41-垫款
 	   ,'50' as busi_dtl_lines             -- 借贷业务种类细分  50-担保代偿
 	   ,t7.compt_time as open_date      -- 开户日期
@@ -246,6 +248,7 @@ select ln_id
 from dw_base.exp_credit_comp_compt_info_ready  t1
 where day_id = '${v_sdate}'
 and close_date is not null
+and length(close_date)>0
 and close_date <= DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d')
 -- and close_date <> ''
 and not exists (         -- 新增 关闭账户
@@ -931,7 +934,8 @@ from (
 select biz_id
        ,contract_id  -- 合同编号
 	   ,customer_id  -- 签署人客户号
-	   ,concat('X3701010000337',contract_template_id) as contract_template_id -- 合同模板id
+	   -- ,concat('X3701010000337',contract_template_id) as contract_template_id -- 合同模板id
+	   ,contract_template_id as contract_template_id -- 合同模板id
        ,status
 from
 (

@@ -120,3 +120,4 @@ from
 )a
 group by cert_no;
 commit;
+

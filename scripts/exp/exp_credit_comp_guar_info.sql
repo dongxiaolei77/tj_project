@@ -377,13 +377,15 @@ select
 	,t1.guar_id                                             -- 担保id
 	,t1.cust_id                                             -- 客户号
 	,'G1' as acct_type                                      -- 账户类型  G1-融资担保账户
-	,concat('X3701010000337',replace(t1.guar_id,'-','')) as acct_code    -- 账户标识码
+	-- ,concat('X3701010000337',replace(t1.guar_id,'-','')) as acct_code    -- 账户标识码
+	,replace(t1.guar_id,'-','') as acct_code    -- 账户标识码
 	,'${v_sdate}' as rpt_date                                            -- 信息报告日期
 	,case when t1.acct_status = '1' then '10' else '20' end as rpt_date_code -- 报告时点说明代码
 	,t1.name          -- 债务人姓名
 	,'10' as id_type  -- 债务人证件类型   10-中征码
 	,t.id_num       -- 债务人中征码
-	,'X3701010000337' as mngmt_org_code -- 业务管理机构代码
+	-- ,'X3701010000337' as mngmt_org_code -- 业务管理机构代码
+	,'9999999' as mngmt_org_code -- 业务管理机构代码
 	,'1' as busi_lines                  -- 担保业务大类      1-融资担保
 	,'01' as busi_dtil_lines            -- 担保业务种类细分  01-贷款担保
 	,date_format(loan_begin_dt,'%Y-%m-%d') as open_date -- 开户日期
@@ -551,7 +553,7 @@ from dw_base.exp_credit_comp_guar_info_ready t1
 where t1.day_id = '${v_sdate}'
 and t1.open_date <= date_format('${v_sdate}' ,'%Y-%m-%d')     -- 放款日期为当天即新增,且保证首次上报时该表里有除已关户的所有客户
 -- and t1.close_date = ''    --首次上报时若关户 也上报，算在首次上报里,所以去掉了这个条件20220818修改
-and DATEDIFF(DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d'),t1.open_date) <= 30 -- 开户30天以上的无法通过校验
+ and DATEDIFF(DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d'),t1.open_date) <= 30 -- 开户30天以上的无法通过校验
 and not exists (         -- 第一次上报
 	select 1
 	from dw_base.exp_credit_comp_guar_info_open t2
@@ -582,6 +584,7 @@ and t1.close_date <= date_format('${v_sdate}' ,'%Y-%m-%d')  -- 关闭日期为�
 and t1.open_date < date_format('${v_sdate}' ,'%Y-%m-%d')  -- 开户日期（当天开户的算在开户时点）
 -- and t1.close_date <> ''
 and t1.close_date is not null
+and length(t1.close_date) >0
 and not exists (         -- 新增 关闭账户
 	select 1
 	from dw_base.exp_credit_comp_guar_info_close t2
@@ -630,6 +633,7 @@ and not exists (
 	where t2.day_id < '${v_sdate}'
 	-- and t2.close_date <> ''
 	and t2.close_date is not null
+	and length(t2.close_date) >0
 	and t1.guar_id = t2.guar_id
 )
 and  exists (
@@ -681,6 +685,7 @@ and not exists (
 	where t2.day_id < '${v_sdate}'
 	-- and t2.close_date <> ''
 	and t2.close_date is not null
+	and length(t2.close_date) >0
 	and t1.guar_id = t2.guar_id
 )
 and  exists (
@@ -754,6 +759,7 @@ and not exists (
 	where t2.day_id < '${v_sdate}'
 	-- and t2.close_date <> ''
 	and t2.close_date is not null
+	and length(t2.close_date) >0
 	and t1.guar_id = t2.guar_id
 )
 and  exists (
@@ -1228,7 +1234,8 @@ from (
 select biz_id
        ,contract_id  -- 合同编号
 	   ,customer_id  -- 签署人客户号
-	   ,concat('X3701010000337',contract_template_id) as contract_template_id -- 合同模板id
+	   -- ,concat('X3701010000337',contract_template_id) as contract_template_id -- 合同模板id
+	   ,contract_template_id as contract_template_id -- 合同模板id
 	   -- ,AUTHORIZED_CUSTOMER_ID
        ,status
 from

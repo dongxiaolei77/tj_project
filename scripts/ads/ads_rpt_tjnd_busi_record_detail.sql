@@ -363,12 +363,12 @@ select '${v_sdate}'                                              as day_id,
        warr_cont_no,
        area,
        case
-           when branch_off = 'NHDLBranch' then '宁河东丽办事处'
-           when branch_off = 'JNBHBranch' then '津南滨海新区办事处'
-           when branch_off = 'BCWQBranch' then '武清北辰办事处'
-           when branch_off = 'XQJHBranch' then '西青静海办事处'
-           when branch_off = 'JZBranch' then '蓟州办事处'
-           when branch_off = 'BDBranch' then '宝坻办事处'
+           when coalesce(t8.branch_off, t7.branch_off) = 'NHDLBranch' then '宁河东丽办事处'
+           when coalesce(t8.branch_off, t7.branch_off) = 'JNBHBranch' then '津南滨海新区办事处'
+           when coalesce(t8.branch_off, t7.branch_off) = 'BCWQBranch' then '武清北辰办事处'
+           when coalesce(t8.branch_off, t7.branch_off) = 'XQJHBranch' then '西青静海办事处'
+           when coalesce(t8.branch_off, t7.branch_off) = 'JZBranch' then '蓟州办事处'
+           when coalesce(t8.branch_off, t7.branch_off) = 'BDBranch' then '宝坻办事处'
            end                                                   as branch_off,
        guar_status,
        case
@@ -406,6 +406,7 @@ from (
                 guar_cnot_no   as warr_cont_no,         -- 保证合同编号
                 county_name    as area,                 -- 区县
                 country_code,                           -- 区县编码
+                town_name,                              -- 乡镇/街道
                 item_stt       as guar_status,          -- 项目状态
                 is_compensate  as is_compt,             -- 是否代偿
                 is_ovd         as is_ovd,               -- 是否逾期
@@ -451,8 +452,8 @@ from (
          left join
      (
          select PROC_INST_ID_
-              , t2.real_name as                                                          nd_proj_mgr_name -- 农担项目经理
-              , ROW_NUMBER() over (partition by PROC_INST_ID_ order by START_TIME_ desc) rn
+              , t2.real_name as                                                                 nd_proj_mgr_name -- 农担项目经理
+              , ROW_NUMBER() over (partition by PROC_INST_ID_ order by LAST_UPDATED_TIME_ desc) rn
          from dw_nd.ods_t_act_hi_taskinst_v2 t1
                   left join dw_nd.ods_t_sys_user t2 on t1.ASSIGNEE_ = t2.user_id
          where NAME_ = '放款确认'
@@ -477,7 +478,13 @@ from (
          select CITY_CODE_,              -- 区县编码
                 ROLE_CODE_ as branch_off -- 办事处编码
          from dw_base.dwd_imp_area_branch
-     ) t7 on t1.country_code = t7.CITY_CODE_;
+     ) t7 on t1.country_code = t7.CITY_CODE_
+         left join
+     (
+         select CITY_NAME_,              -- 区县编码
+                ROLE_CODE_ as branch_off -- 办事处编码
+         from dw_base.dwd_imp_area_branch
+     ) t8 on t1.town_name = t8.CITY_NAME_;
 commit;
 
 
