@@ -106,3 +106,128 @@ where b.day_id = '${v_sdate}'
   and a.delete_flag is null;
 
 commit;
+
+
+-- 新业务系统逻辑
+insert into dw_base.dwd_tjnd_report_proj_cntr_agmt_info
+( day_id
+, cntr_cont_no -- 反担保合同编号
+, proj_no_prov -- 反担保项目编号
+, cntr_cont_typ_cd -- 反担保合同种类
+, main_signer_name -- 反担保合同签署人
+, main_signer_cert_typ_cd -- 反担保合同签署人证件类型代码
+, main_signer_cert_no -- 反担保合同签署人证件号
+, cntr_cont_begin_dt -- 反担保合同签署日期
+, dict_flag
+, is_credit_auth -- 是否已授权征信上报
+)
+select distinct '${v_sdate}' as day_id
+     , t1.cntr_cont_no                    -- 省担反担保合同编号
+     , t1.proj_no                         -- 省农担担保项目编号
+     , t1.cntr_cont_typ_cd                -- 反担保合同种类
+     , t1.main_signer_name                -- 反担保合同签署人
+     , t1.main_signer_cert_typ_cd         -- 反担保合同签署人证件类型代码
+     , trim(t1.main_signer_cert_no)       -- 反担保合同签署人证件号码
+     , null         as cntr_cont_begin_dt -- 反担保合同签署日期
+     , 1            as dict_flag
+     , null         as is_credit_auth     -- 是否已授权征信上报
+from (
+         select a.count_cont_code          as cntr_cont_no
+              , '10000'                    as cntr_cont_typ_cd /*保证*/
+              , a.ct_guar_person_name      as main_signer_name
+              , a.ct_guar_person_main_type as main_signer_cert_typ_cd
+              , a.ct_guar_person_id_no     as main_signer_cert_no
+              , b.code                     as proj_no
+         from (
+                  select project_id
+                       , ct_guar_person_name      -- 反担保人名称
+                       , ct_guar_person_main_type -- 反担保人主体类型
+                       , ct_guar_person_id_no     -- 反担保人证件号码
+                       , count_cont_code          -- 反担保合同号(系统生成)
+                  from (
+                           select project_id
+                                , ct_guar_person_name      -- 反担保人名称
+                                , ct_guar_person_main_type -- 反担保人主体类型
+                                , ct_guar_person_id_no     -- 反担保人证件号码
+                                , count_cont_code          -- 反担保合同号(系统生成)
+                                , is_delete
+                                , row_number() over (partition by id order by db_update_time desc) as rk
+                           from dw_nd.ods_t_ct_guar_person
+                       ) a
+                  where rk = 1
+                    and is_delete = 0
+                    and count_cont_code is not null
+              ) a
+                  inner join
+              (
+                  select id
+                       , code
+                  from (
+                           select id
+                                , code
+                                , row_number() over (partition by id order by db_update_time desc) as rk
+                           from dw_nd.ods_t_biz_project_main
+                       ) a
+                  where rk = 1
+              ) b on a.project_id = b.id
+
+
+         union all
+         select distinct mort_con_code       as cntr_cont_no            -- 省担反担保合同编号
+                       , case
+                             when pawn_movable_type = '01' or pawn_name regexp '设备|渔船' then '20002' -- 抵押-农业设备
+                             when pawn_movable_type = '02' then '20008' -- 抵押-房地产
+                             when pawn_movable_type = '03' or pawn_name regexp '生物资产' then '20007'-- 抵押-生物资产
+                             when pawn_name regexp '集体建设用地使用权|土地' then '20010' -- 抵押-集体土地建设用地使用权
+                             when pawn_name regexp '海域使用权' then '20011' -- 抵押-海域使用权
+                             when pawn_name regexp '车辆' then '20001' -- 抵押-车辆
+                             when pawn_name regexp '设施' then '20004' -- 抵押-农业设施
+                             when pawn_name regexp '存货' then '20006' -- 抵押-存货
+                             when pawn_name regexp '海域' then '20011' -- 抵押-海域使用权
+                             when pawn_name regexp '房|不动产|区|住房|楼|公寓|商铺|住宅|路|单元|室|宅基地|府邸|棚|舍|厂房|仓库|车间|库' then '20008'
+                             else '20008' /*与业务部室确认后映射成上报标准*/
+             end                             as cntr_cont_typ_cd        -- 抵押合同种类
+                       , t1.mortgagor        as main_signer_name        -- 抵押合同签署人
+                       , mortgagor_main_type as main_signer_cert_typ_cd -- 抵押合同签署人证件类型代码
+                       , t1.mortgagor_id_no  as main_signer_cert_no     -- 抵押合同签署人证件号码
+                       , t1.proj_no
+         from (
+                  select a.mort_con_code
+                       , a.pawn_movable_type
+                       , a.pawn_name
+                       , a.mortgagor
+                       , a.mortgagor_main_type
+                       , a.mortgagor_id_no
+                       , b.code as proj_no
+                  from (
+                           select id
+                                , project_id
+                                , pawn_movable_type
+                                , pawn_name
+                                , mortgagor
+                                , mortgagor_main_type
+                                , mortgagor_id_no
+                                , mort_con_code
+                                , is_delete
+                                , row_number() over (partition by id order by db_update_time desc) as rk
+                           from dw_nd.ods_t_ct_guar_mortgage
+                       ) a
+                           inner join
+                       (
+                           select id
+                                , code
+                           from (
+                                    select id
+                                         , code
+                                         , row_number() over (partition by id order by db_update_time desc) as rk
+                                    from dw_nd.ods_t_biz_project_main
+                                ) a
+                           where rk = 1
+                       ) b on a.project_id = b.id
+                  where a.rk = 1
+                    and a.is_delete = 0
+                    and a.mort_con_code is not null
+              ) t1 -- 抵押合同信息表--协议域
+     ) t1
+         inner join dw_base.dwd_tjnd_report_biz_no_base t2
+                    on t1.proj_no = t2.biz_no and t2.day_id = '${v_sdate}';

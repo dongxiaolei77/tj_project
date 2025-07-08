@@ -288,7 +288,7 @@ from (
          left join
      (
          select id
-              , protocol_no             -- 协议编号
+              , protocol_no             -- 协议编号d
               , protocol_name           -- 协议名称
               , agreement_type          -- 协议类型
               , compensatory_rate_upper -- 代偿上限率

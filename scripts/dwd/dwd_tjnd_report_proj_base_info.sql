@@ -44,6 +44,7 @@
 -- 变更记录 ：20241209 分支机构代码加工逻辑变更
 --          20241210 只上报指标表上报的合作核心企业，修改计入在保日期为放款登记日期
 --          20250228 脚本的统一变更，TDS转MySQL8.0 zhangfl
+--          20250512 分支机构编码逻辑变更 wangyj
 -- ----------------------------------------
 
 -- 重跑逻辑
@@ -150,13 +151,11 @@ select '${v_sdate}'                                                 as day_id
      , PRODUCT_NAME                                                 as proj_prod_name            -- 担保产品名称
      , c.FIRST_GUARANTEE                                            as is_frst_guar              -- 是否首担
      , case
-           when a.approval_total between 10 and 300 then '1'
+           when a.approval_total / 10000 between 10 and 300 then '1'
            else '0'
     end                                                             as is_policy_biz             -- 是否政策性业务
-     , case
-           when a.BUSI_MODE_NAME = '见贷即保' then '1'
-           else '0'
-    end                                                             as is_guar_upon_loan_apply   -- 是否见贷即保
+#      , case when a.BUSI_MODE_NAME = '见贷即保' then '1' else '0' end    as is_guar_upon_loan_apply   -- 是否见贷即保
+     , '0'                                                          as is_guar_upon_loan_apply   -- 是否见贷即保 20250623 dxl
      , c.IS_LIMITED_RATE_COMPENSATION                               as is_comp_limit_rate        -- 是否限率代偿，待补充
      , if(c.IS_LIMITED_RATE_COMPENSATION = 1, 0.03, null)           as limit_rate                -- 限率
      , bank_cale_rate                                               as fin_org_risk_share_ratio  -- 金融机构分险比例
@@ -417,8 +416,8 @@ select distinct '${v_sdate}'                              as day_id
     end                                                   as proj_rsue_cd              -- 项目来源代码 /*业务系统数据不规则且缺少映射，与业务部室确认后转换成上报标准*/
               , case
                     when t1.guar_id like '%FXHJ%' then '04'
-                    when t3.is_first_guar = '1' then '0'
-                    when t3.is_first_guar = '0' then '1'
+                    when t3.is_first_guar = '1' then '02'
+                    when t3.is_first_guar = '0' then '01'
                     else null
     end                                                   as proj_typ_cd               -- 项目类型代码 /*通过业务编号判断，风险化解业务类型为风险续保；其他业务通过“是否首保”判断是新增或续保*/
               , coalesce(t0.country_code, t0.city_code)   as proj_blogto_area_cd       -- 项目所属区域代码 /*业务系统出，优先取县区级别，没有取市级别*/
@@ -525,10 +524,12 @@ select distinct '${v_sdate}'                              as day_id
                     else '999999'
     end                                                   as proj_fin_sup_link_cd      -- 资金支持环节 /*根据业务提供映射规则转换：国担分类+经营主业*/
               , t1.guar_prod                              as proj_prod_name            -- 担保产品名称
-              , case
-                    when t3.is_first_guar = '0' and t3.is_xz = '0' then '1'
-                    else '0'
-    end                                                   as is_frst_guar              -- 是否首担 /*首次担保+首次放款*/
+              , if(t20.ID_NUMBER is null,
+                   (case
+                        when t3.is_first_guar = '0' and t3.is_xz = '0' then '1'
+                        else '0' end),
+                   '0')
+                                                          as is_frst_guar              -- 是否首担 /*首次担保+首次放款*/
               , case
                     when t1.guar_amt between 10 and 300 then '1'
                     else '0'
@@ -826,34 +827,82 @@ from dw_base.dwd_guar_info_all t1 -- 业务信息宽表--项目域
                        and t17.day_id = '${v_sdate}'
          left join
      (
-         select distinct t1.nacga_key
-                       , coalesce(t2.table_no_nacga, t3.table_no_nacga) as table_no_nacga
-         from dw_nd.ods_nacga_report_prov_nacga_code_dict t1
+         select distinct city_code_
+                       , branch_off
+                       , table_no_nacga
+         from (
+                  select city_code_,
+                         case
+                             when ROLE_CODE_ = 'NHDLBranch' then '天津市宁河区'
+                             when ROLE_CODE_ = 'JNBHBranch' then '天津市津南区'
+                             when ROLE_CODE_ = 'BCWQBranch' then '天津市武清区'
+                             when ROLE_CODE_ = 'XQJHBranch' then '天津市静海区'
+                             when ROLE_CODE_ = 'JZBranch' then '天津市蓟州区'
+                             when ROLE_CODE_ = 'BDBranch' then '天津市宝坻区'
+                             end as branch_off
+                  from dw_base.dwd_imp_area_branch
+              ) a
                   left join
               (
-                  select *
-                  from (
-                           select *, row_number() over (partition by table_no_nacga order by db_update_time desc) rn
-                           from dw_nd.ods_nacga_report_prov_nacga_code_mapping) t1
-                  where rn = 1
-              ) t2
-              on t1.prov_key = t2.proj_no_prov
-                  and t2.table_name = 'corp_br_org_info_front'
-                  left join
-              (
-                  select *
-                  from (
-                           select *, row_number() over (partition by table_no_nacga order by db_update_time desc) rn
-                           from dw_nd.ods_nacga_report_prov_nacga_code_mapping) t1
-                  where rn = 1
-              ) t3
-              on left(prov_key, 3) = t3.proj_no_prov
-                  and t3.table_name = 'corp_br_org_info_front'
-         where t1.table_name = 'CORP_BR_ORG_INFO'
-           and t1.field_name = 'BLOGTO_CNTY_CD'
+                  select distinct t1.prov_key
+                                , coalesce(t2.table_no_nacga, t3.table_no_nacga) as table_no_nacga
+                  from dw_nd.ods_nacga_report_prov_nacga_code_dict t1
+                           left join
+                       (
+                           select *
+                           from (
+                                    select *,
+                                           row_number()
+                                                   over (partition by table_no_nacga order by db_update_time desc) rn
+                                    from dw_nd.ods_nacga_report_prov_nacga_code_mapping) t1
+                           where rn = 1
+                       ) t2
+                       on t1.prov_key = t2.proj_no_prov
+                           and t2.table_name = 'corp_br_org_info_front'
+                           left join
+                       (
+                           select *
+                           from (
+                                    select *,
+                                           row_number()
+                                                   over (partition by table_no_nacga order by db_update_time desc) rn
+                                    from dw_nd.ods_nacga_report_prov_nacga_code_mapping) t1
+                           where rn = 1
+                       ) t3
+                       on left(prov_key, 3) = t3.proj_no_prov
+                           and t3.table_name = 'corp_br_org_info_front'
+                  where t1.table_name = 'CORP_BR_ORG_INFO'
+                    and t1.field_name = 'BLOGTO_CNTY_CD'
+              ) b on a.branch_off = b.prov_key
      ) t18
-     on coalesce(t0.country_code, t0.city_code) = t18.nacga_key
+     on coalesce(t0.country_code, t0.city_code) = t18.city_code_
          left join dw_tmp.tmp_dwd_tjnd_report_proj_base_info_ct_meas t19
                    on if(t1.guar_id is not null and left(t1.guar_id, 4) in ('ZZXZ', 'BHJC'), t2.proj_no, t1.guar_id) =
                       t19.guar_id
+         left join
+     (
+         select ID_NUMBER, FIRST_GUARANTEE
+         from (
+                  select ID_NUMBER,
+                         FIRST_GUARANTEE,
+                         row_number() over (partition by ID_NUMBER order by CREATED_TIME desc) rn
+                  from dw_nd.ods_tjnd_yw_z_report_afg_business_infomation) t1
+         where rn = 1
+     ) t20 on t1.cert_no = t20.ID_NUMBER
 ;
+commit;
+-- 更新是否政策性业务代码
+update dw_base.dwd_tjnd_report_proj_base_info t1
+    inner join (
+        select cust_cert_no,
+               case
+                   when sum(if(proj_stt_cd in ('01', '02', '03'), gtee_cont_amt, 0)) between 10 and 300 then '1'
+                   else '0' end as is_policy_biz
+        from dw_base.dwd_tjnd_report_proj_base_info
+        where day_id = '${v_sdate}'
+        group by cust_cert_no
+    ) t2 on t1.cust_cert_no = t2.cust_cert_no
+set t1.is_policy_biz = t2.is_policy_biz
+where day_id = '${v_sdate}'
+  and proj_stt_cd in ('01', '02', '03');
+commit;

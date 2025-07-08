@@ -12,7 +12,9 @@
 -- 变更记录 ：
 -- ---------------------------------------
 -- 重跑逻辑
-truncate table dw_base.ads_rpt_tjnd_finance_bank_guar_stat;
+delete
+from dw_base.ads_rpt_tjnd_finance_bank_guar_stat
+where day_id = '${v_sdate}';
 commit;
 -- 插入数据
 insert into dw_base.ads_rpt_tjnd_finance_bank_guar_stat
@@ -73,11 +75,11 @@ from (
                   group by bank_name
                            -- 新系统取数逻辑
                   union all
-                  select t2.gnd_dept_name                                                           as bank_name,
-                         count(case when item_stt in ('已放款', '已解保', '已代偿') then t1.guar_id end)     as total_guar_cnt,
-                         sum(case when item_stt in ('已放款', '已解保', '已代偿') then guar_amt end) / 10000 as total_guar_amt,
-                         count(case when item_stt = '已放款' then t1.guar_id end)                      as gt_cnt,
-                         onguar_amt / 10000                                                         as gt_amt
+                  select t2.gnd_dept_name                                                       as bank_name,
+                         count(case when item_stt in ('已放款', '已解保', '已代偿') then t1.guar_id end) as total_guar_cnt,
+                         sum(case when item_stt in ('已放款', '已解保', '已代偿') then guar_amt end)     as total_guar_amt,
+                         count(case when item_stt = '已放款' then t1.guar_id end)                  as gt_cnt,
+                         sum(onguar_amt)                                                        as gt_amt
                   from (select guar_id,   -- 项目编号
                                loan_bank, -- 银行名称
                                item_stt,  -- 项目状态
@@ -118,7 +120,7 @@ from (
          left join
      -- 获取在保总额
          (
-             select sum(all_gt_amt) / 10000 as all_gt_amt
+             select sum(all_gt_amt) as all_gt_amt
              from (
                       select sum(if(GUR_STATE = 'GT', GT_AMOUNT, 0)) as all_gt_amt
                       from (
@@ -138,7 +140,7 @@ from (
                                where parentid = 200
                            ) t2 on t1.COOPERATIVE_BANK_FIRST = t2.fieldcode
                       union all
-                      select onguar_amt as all_gt_amt
+                      select sum(onguar_amt) as all_gt_amt
                       from (
                                select *
                                from dw_base.dwd_guar_info_all
@@ -154,6 +156,7 @@ from (
                            ) t2 on t1.guar_id = t2.guar_id
                   ) t1
          ) t4 on 1 = 1
+where '${v_sdate}' = date_format(last_day('${v_sdate}'), '%Y%m%d') -- 月底跑批
 order by gt_amt
     desc;
 commit;

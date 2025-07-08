@@ -14,6 +14,7 @@ from dw_base.dwd_tjnd_report_proj_rk_wrn_info
 where day_id = '${v_sdate}';
 commit;
 
+
 insert into dw_base.dwd_tjnd_report_proj_rk_wrn_info
 ( day_id
 , proj_no_prov -- 省农担担保项目编号

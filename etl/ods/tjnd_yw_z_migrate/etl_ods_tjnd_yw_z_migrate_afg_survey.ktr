@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>etl_ads_rpt_sdnd_year_finish_stat</name>
+    <name>etl_ods_tjnd_yw_z_migrate_afg_survey</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -428,16 +428,16 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2021/11/25 09:02:25.914</created_date>
+    <created_date>2023/02/08 16:06:59.325</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2021/11/25 09:02:25.914</modified_date>
+    <modified_date>2023/02/08 16:06:59.325</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
   </notepads>
   <connection>
-    <name>${dw_host}</name>
+    <name>dw_nd</name>
     <server>${dw_ip}</server>
     <type>MYSQL</type>
     <access>Native</access>
@@ -449,22 +449,6 @@
     <data_tablespace/>
     <index_tablespace/>
     <attributes>
-      <attribute>
-        <code>EXTRA_OPTION_MYSQL.characterEncoding</code>
-        <attribute>utf8</attribute>
-      </attribute>
-      <attribute>
-        <code>EXTRA_OPTION_MYSQL.rewriteBatchedStatements</code>
-        <attribute>true</attribute>
-      </attribute>
-      <attribute>
-        <code>EXTRA_OPTION_MYSQL.useCompression</code>
-        <attribute>true</attribute>
-      </attribute>
-      <attribute>
-        <code>EXTRA_OPTION_MYSQL.useServerPrepStmts</code>
-        <attribute>false</attribute>
-      </attribute>
       <attribute>
         <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
         <attribute>N</attribute>
@@ -490,10 +474,6 @@
         <attribute>N</attribute>
       </attribute>
       <attribute>
-        <code>SQL_CONNECT</code>
-        <attribute>set names utf8mb4;</attribute>
-      </attribute>
-      <attribute>
         <code>STREAM_RESULTS</code>
         <attribute>Y</attribute>
       </attribute>
@@ -512,33 +492,25 @@
     </attributes>
   </connection>
   <connection>
-    <name>dm_digital</name>
-    <server>${dm_digital_ip}</server>
+    <name>tjnd_yw</name>
+    <server>${tjnd_yw_ip}</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>${dm_digital_host}</database>
-    <port>3306</port>
-    <username>${dm_digital_user}</username>
-    <password>${dm_digital_pass}</password>
+    <database>${tjnd_yw_host}</database>
+    <port>8417</port>
+    <username>${tjnd_yw_user}</username>
+    <password>${tjnd_yw_pass}</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
     <attributes>
       <attribute>
-        <code>EXTRA_OPTION_MYSQL.characterEncoding</code>
-        <attribute>utf8</attribute>
+        <code>EXTRA_OPTION_MYSQL.defaultFetchSize</code>
+        <attribute>500</attribute>
       </attribute>
       <attribute>
-        <code>EXTRA_OPTION_MYSQL.rewriteBatchedStatements</code>
+        <code>EXTRA_OPTION_MYSQL.useCursorFetch</code>
         <attribute>true</attribute>
-      </attribute>
-      <attribute>
-        <code>EXTRA_OPTION_MYSQL.useCompression</code>
-        <attribute>true</attribute>
-      </attribute>
-      <attribute>
-        <code>EXTRA_OPTION_MYSQL.useServerPrepStmts</code>
-        <attribute>false</attribute>
       </attribute>
       <attribute>
         <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
@@ -554,7 +526,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>8417</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>
@@ -604,16 +576,15 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>${dw_host}</connection>
-    <sql>select * from dw_base.ads_rpt_sdnd_year_finish_stat
-where day_id = '${v_sdate}'
-;
-</sql>
+    <connection>tjnd_yw</connection>
+    <sql>SELECT * FROM ${tjnd_yw_host}.z_migrate_afg_survey;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta/>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -623,8 +594,8 @@ where day_id = '${v_sdate}'
       </output>
     </remotesteps>
     <GUI>
-      <xloc>240</xloc>
-      <yloc>240</yloc>
+      <xloc>304</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -639,14 +610,14 @@ where day_id = '${v_sdate}'
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>dm_digital</connection>
+    <connection>dw_nd</connection>
     <schema/>
-    <table>ads_rpt_sdnd_year_finish_stat</table>
+    <table>ods_tjnd_yw_z_migrate_afg_survey</table>
     <commit>1000</commit>
     <truncate>N</truncate>
     <ignore_errors>N</ignore_errors>
     <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
+    <specify_fields>N</specify_fields>
     <partitioning_enabled>N</partitioning_enabled>
     <partitioning_field/>
     <partitioning_daily>N</partitioning_daily>
@@ -657,138 +628,6 @@ where day_id = '${v_sdate}'
     <return_keys>N</return_keys>
     <return_field/>
     <fields>
-      <field>
-        <column_name>day_id</column_name>
-        <stream_name>day_id</stream_name>
-      </field>
-      <field>
-        <column_name>city_code</column_name>
-        <stream_name>city_code</stream_name>
-      </field>
-      <field>
-        <column_name>city_name</column_name>
-        <stream_name>city_name</stream_name>
-      </field>
-      <field>
-        <column_name>country_code</column_name>
-        <stream_name>country_code</stream_name>
-      </field>
-      <field>
-        <column_name>country_name</column_name>
-        <stream_name>country_name</stream_name>
-      </field>
-      <field>
-        <column_name>guar_class_name</column_name>
-        <stream_name>guar_class_name</stream_name>
-      </field>
-      <field>
-        <column_name>econ_class_name</column_name>
-        <stream_name>econ_class_name</stream_name>
-      </field>
-      <field>
-        <column_name>bank_type</column_name>
-        <stream_name>bank_type</stream_name>
-      </field>
-      <field>
-        <column_name>last_year_guar_amt</column_name>
-        <stream_name>last_year_guar_amt</stream_name>
-      </field>
-      <field>
-        <column_name>first_cnt</column_name>
-        <stream_name>first_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>first_amt</column_name>
-        <stream_name>first_amt</stream_name>
-      </field>
-      <field>
-        <column_name>conguar_cnt</column_name>
-        <stream_name>conguar_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>conguar_amt</column_name>
-        <stream_name>conguar_amt</stream_name>
-      </field>
-      <field>
-        <column_name>conpay_cnt</column_name>
-        <stream_name>conpay_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>conpay_amt</column_name>
-        <stream_name>conpay_amt</stream_name>
-      </field>
-      <field>
-        <column_name>sum_cnt</column_name>
-        <stream_name>sum_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>sum_amt</column_name>
-        <stream_name>sum_amt</stream_name>
-      </field>
-      <field>
-        <column_name>unguar_first_cnt</column_name>
-        <stream_name>unguar_first_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>unguar_first_amt</column_name>
-        <stream_name>unguar_first_amt</stream_name>
-      </field>
-      <field>
-        <column_name>unguar_conguar_cnt</column_name>
-        <stream_name>unguar_conguar_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>unguar_conguar_amt</column_name>
-        <stream_name>unguar_conguar_amt</stream_name>
-      </field>
-      <field>
-        <column_name>unguar_conpay_cnt</column_name>
-        <stream_name>unguar_conpay_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>unguar_conpay_amt</column_name>
-        <stream_name>unguar_conpay_amt</stream_name>
-      </field>
-      <field>
-        <column_name>unguar_cnt</column_name>
-        <stream_name>unguar_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>unguar_amt</column_name>
-        <stream_name>unguar_amt</stream_name>
-      </field>
-      <field>
-        <column_name>plan_conpay_cnt</column_name>
-        <stream_name>plan_conpay_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>plan_conpay_amt</column_name>
-        <stream_name>plan_conpay_amt</stream_name>
-      </field>
-      <field>
-        <column_name>contract_unguar_cnt</column_name>
-        <stream_name>contract_unguar_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>contract_unguar_amt</column_name>
-        <stream_name>contract_unguar_amt</stream_name>
-      </field>
-      <field>
-        <column_name>contract_expire_cnt</column_name>
-        <stream_name>contract_expire_cnt</stream_name>
-      </field>
-      <field>
-        <column_name>contract_expire_amt</column_name>
-        <stream_name>contract_expire_amt</stream_name>
-      </field>
-      <field>
-        <column_name>last_guar_amt</column_name>
-        <stream_name>last_guar_amt</stream_name>
-      </field>
-      <field>
-        <column_name>guar_amt</column_name>
-        <stream_name>guar_amt</stream_name>
-      </field>
     </fields>
     <attributes/>
     <cluster_schema/>
@@ -799,8 +638,8 @@ where day_id = '${v_sdate}'
       </output>
     </remotesteps>
     <GUI>
-      <xloc>432</xloc>
-      <yloc>240</yloc>
+      <xloc>544</xloc>
+      <yloc>224</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

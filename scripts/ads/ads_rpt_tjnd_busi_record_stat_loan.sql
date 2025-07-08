@@ -25,6 +25,7 @@ drop table if exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan;
 create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 (
     day_id            varchar(8)     null comment '数据日期',
+    report_type       varchar(50)    null comment '报表类型',
     group_type        varchar(50)    null comment '统计类型',
     group_name        varchar(100)   null comment '分组名称',
     start_balance     decimal(36, 6) null comment '期初余额(万元)',
@@ -55,15 +56,15 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 # select '${v_sdate}'                                                                                as day_id,
 #        '银行'                                                                                        as group_type,
 #        bank_name,
-#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt else 0 end)  as start_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        sum(if(now_guar_amt is null,0,now_guar_amt))                                                                           as now_guar_amt,
 #        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        sum(if(now_repayment_amt is null,0,now_repayment_amt))                                                                      as now_repayment_amt,
 #        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0  end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt else 0 end) as end_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
 # from (
 #          select ID,                    -- 业务id
@@ -143,15 +144,15 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 # select '${v_sdate}'                                                                                as day_id,
 #        '产品'                                                                                        as group_type,
 #        PRODUCT_NAME,
-#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt else 0 end)  as start_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        sum(if(now_guar_amt is null,0,now_guar_amt))                                                                           as now_guar_amt,
 #        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        sum(if(now_repayment_amt is null,0,now_repayment_amt))                                                                      as now_repayment_amt,
 #        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0  end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt else 0 end) as end_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
 # from (
 #          select ID,           -- 业务id
@@ -242,15 +243,15 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 #            when INDUSTRY_CATEGORY_COMPANY = '9' then '农田建设'
 #            when INDUSTRY_CATEGORY_COMPANY = '10' then '其他农业项目'
 #            end                                                                                     as INDUSTRY_CATEGORY_COMPANY,
-#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt else 0 end)  as start_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        sum(if(now_guar_amt is null,0,now_guar_amt))                                                                           as now_guar_amt,
 #        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        sum(if(now_repayment_amt is null,0,now_repayment_amt))                                                                      as now_repayment_amt,
 #        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0  end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt else 0 end) as end_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
 # from (
 #          select ID,         -- 业务id
@@ -337,15 +338,15 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 #            when branch_off = 'YW_JZBSC' then '蓟州办事处'
 #            when branch_off = 'YW_BDBSC' then '宝坻办事处'
 #            end                                                                                     as branch_off,
-#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt else 0 end)  as start_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        sum(if(now_guar_amt is null,0,now_guar_amt))                                                                           as now_guar_amt,
 #        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        sum(if(now_repayment_amt is null,0,now_repayment_amt))                                                                      as now_repayment_amt,
 #        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0  end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt else 0 end) as end_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
 # from (
 #          select ID,                      -- 业务id
@@ -418,15 +419,15 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 # select '${v_sdate}'                                                                                as day_id,
 #        '区域'                                                                                        as group_type,
 #        area_name,
-#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt else 0 end)  as start_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        sum(if(now_guar_amt is null,0,now_guar_amt))                                                                           as now_guar_amt,
 #        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        sum(if(now_repayment_amt is null,0,now_repayment_amt))                                                                      as now_repayment_amt,
 #        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0  end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt else 0 end) as end_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
 # from (
 #          select ID,                                              -- 业务id
@@ -500,15 +501,15 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 # select '${v_sdate}'                                                                                as day_id,
 #        '银行一级支行'                                                                                    as group_type,
 #        bank_name,
-#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt else 0 end)  as start_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        sum(if(now_guar_amt is null,0,now_guar_amt))                                                                           as now_guar_amt,
 #        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        sum(if(now_repayment_amt is null,0,now_repayment_amt))                                                                      as now_repayment_amt,
 #        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0  end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt else 0 end) as end_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
 # from (
 #          select ID,                     -- 业务id
@@ -588,15 +589,15 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 # select '${v_sdate}'                                                                                as day_id,
 #        '项目经理'                                                                                      as group_type,
 #        BUSINESS_SP_USER_NAME,
-#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt else 0 end)  as start_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)            as start_cnt,
-#        sum(now_guar_amt)                                                                           as now_guar_amt,
+#        sum(if(now_guar_amt is null,0,now_guar_amt))                                                                           as now_guar_amt,
 #        count(t4.ID_BUSINESS_INFORMATION)                                                           as now_guar_cnt,
-#        sum(now_repayment_amt)                                                                      as now_repayment_amt,
+#        sum(if(now_repayment_amt is null,0,now_repayment_amt))                                                                      as now_repayment_amt,
 #        count(t6.ID_BUSINESS_INFORMATION)                                                           as now_repayment_cnt,
-#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
+#        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0  end) -
+#        sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt else 0 end) as end_balance,
 #        sum(case when date_format(guar_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)           as end_cnt
 # from (
 #          select ID,                   -- 业务id
@@ -656,6 +657,7 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 -- 按银行
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 (day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -667,19 +669,24 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                                as day_id,
-       '银行'                                                                                        as group_type,
+select '${v_sdate}'                                                                        as day_id,
+		'日报'																				as report_type,
+       '银行'                                                                                as group_type,
        gnd_dept_name,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)          as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.guar_id)                                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.guar_id)                                                                           as now_repayment_cnt,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
+       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+       sum(case
+               when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt
+               else 0 end)                                                                 as start_balance,
+       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)  as start_cnt,
+       sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+       count(t4.guar_id)                                                                   as now_guar_cnt,
+       sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+       count(t6.guar_id)                                                                   as now_repayment_cnt,
+       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+       sum(case
+               when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+               else 0 end)                                                                 as end_balance,
+       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,     -- 业务id
                 guar_amt,    -- 放款金额(万元)
@@ -713,7 +720,7 @@ from (
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
            and item_stt in ('已放款', '已代偿', '已解保')
-           and loan_reg_dt = '{v_sdate}'
+           and loan_reg_dt = '${v_sdate}'
      ) t4 on t1.guar_id = t4.guar_id
          left join
      (
@@ -735,15 +742,14 @@ from (
          select biz_no,
                 gnd_dept_name
          from dw_base.dwd_tjnd_report_biz_loan_bank
-         where day_id = '{v_sdate}'
+         where day_id = '${v_sdate}'
      ) t7 on t1.guar_id = t7.biz_no
 group by gnd_dept_name;
 commit;
 
-
--- 按产品
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 (day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -755,19 +761,554 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                                as day_id,
-       '产品'                                                                                        as group_type,
-       guar_prod,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)          as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.guar_id)                                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.guar_id)                                                                           as now_repayment_cnt,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
+select '${v_sdate}'                                                                        as day_id,
+		'旬报'																				as report_type,
+		'银行'                                                                                as group_type,
+		gnd_dept_name,
+		-- 旬:判断参数日期如果在每月1号到10号则期初为1号；如果10号到20号则起初为10号；否则为20号
+		sum(case 
+			when date_format(loan_reg_dt, '%Y%m%d') 
+				< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+			then guar_amt else 0 end) 
+		-
+		sum(case
+			when date_format(repayment_date, '%Y%m%d') 
+				< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+			then repayment_amt else 0 end)                                                 as start_balance,
+		sum(case 
+			when date_format(loan_reg_dt, '%Y%m%d') 
+				< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+			then 1 else 0 end)  as start_cnt,
+		sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+		count(t4.guar_id)                                                                   as now_guar_cnt,
+		sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+		count(t6.guar_id)                                                                   as now_repayment_cnt,
+		sum(case 
+			when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) 
+		-
+		sum(case
+			when date_format(repayment_date, '%Y%m%d') 
+				<= '${v_sdate}' then repayment_amt else 0 end)                                                                 as end_balance,
+		sum(case 
+			when date_format(loan_reg_dt, '%Y%m%d') 
+				<= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额(万元)
+                loan_reg_dt, -- 放款登记日期
+                loan_bank    -- 合作银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),loan_reg_dt between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),loan_reg_dt between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,loan_reg_dt between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+		   and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select biz_no,
+                gnd_dept_name
+         from dw_base.dwd_tjnd_report_biz_loan_bank
+         where day_id = '${v_sdate}'
+     ) t7 on t1.guar_id = t7.biz_no
+group by gnd_dept_name;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}'                                                                        as day_id,
+		'月报'																				as report_type,
+       '银行'                                                                                as group_type,
+       gnd_dept_name,
+       sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then guar_amt else 0 end) -
+       sum(case
+               when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then repayment_amt
+               else 0 end)                                                                 as start_balance,
+       sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then 1 else 0 end)  as start_cnt,
+       sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+       count(t4.guar_id)                                                                   as now_guar_cnt,
+       sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+       count(t6.guar_id)                                                                   as now_repayment_cnt,
+       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+       sum(case
+               when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+               else 0 end)                                                                 as end_balance,
+       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额(万元)
+                loan_reg_dt, -- 放款登记日期
+                loan_bank    -- 合作银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+		   and loan_reg_dt between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+		   and date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select biz_no,
+                gnd_dept_name
+         from dw_base.dwd_tjnd_report_biz_loan_bank
+         where day_id = '${v_sdate}'
+     ) t7 on t1.guar_id = t7.biz_no
+group by gnd_dept_name;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}'                                                                        as day_id,
+	'季报'																				as report_type,
+	'银行'                                                                                as group_type,
+	gnd_dept_name,
+	sum(case 
+		when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case 
+		when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+	when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+	else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额(万元)
+                loan_reg_dt, -- 放款登记日期
+                loan_bank    -- 合作银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+			and if(quarter('${v_sdate}') = 1,loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,loan_reg_dt between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,loan_reg_dt between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if(quarter('${v_sdate}') = 1,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if(quarter('${v_sdate}') = 1,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select biz_no,
+                gnd_dept_name
+         from dw_base.dwd_tjnd_report_biz_loan_bank
+         where day_id = '${v_sdate}'
+     ) t7 on t1.guar_id = t7.biz_no
+group by gnd_dept_name;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}'                                                                        as day_id,
+	'半年报'																				as report_type,
+	'银行'                                                                                as group_type,
+	gnd_dept_name,
+	sum(case 
+		when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') ) 
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+		< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') ) 
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case 
+		when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') ) 
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+	when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+	else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额(万元)
+                loan_reg_dt, -- 放款登记日期
+                loan_bank    -- 合作银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+			and data_source = '担保业务管理系统新'
+			and item_stt in ('已放款', '已代偿', '已解保')
+			and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select biz_no,
+                gnd_dept_name
+         from dw_base.dwd_tjnd_report_biz_loan_bank
+         where day_id = '${v_sdate}'
+     ) t7 on t1.guar_id = t7.biz_no
+group by gnd_dept_name;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}'                                                                        as day_id,
+	'年报'																				as report_type,
+	'银行'                                                                                as group_type,
+	gnd_dept_name,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额(万元)
+                loan_reg_dt, -- 放款登记日期
+                loan_bank    -- 合作银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and left(loan_reg_dt,4) = left('${v_sdate}',4)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where left(repay_date,4) = left('${v_sdate}',4)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and left(unguar_dt,4) = left('${v_sdate}',4)
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select biz_no,
+                gnd_dept_name
+         from dw_base.dwd_tjnd_report_biz_loan_bank
+         where day_id = '${v_sdate}'
+     ) t7 on t1.guar_id = t7.biz_no
+group by gnd_dept_name;
+commit;
+
+-- 按产品
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'日报' as report_type,
+	'产品' as group_type,
+	guar_prod,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,     -- 业务id
                 guar_amt,    -- 放款金额
@@ -801,7 +1342,7 @@ from (
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
            and item_stt in ('已放款', '已代偿', '已解保')
-           and loan_reg_dt = '{v_sdate}'
+           and loan_reg_dt = '${v_sdate}'
      ) t4 on t1.guar_id = t4.guar_id
          left join
      (
@@ -821,10 +1362,9 @@ from (
 group by guar_prod;
 commit;
 
-
--- 按行业归类
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 (day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -836,19 +1376,509 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                                as day_id,
-       '行业归类'                                                                                      as group_type,
-       guar_class,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)          as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.guar_id)                                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.guar_id)                                                                           as now_repayment_cnt,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
+select '${v_sdate}' as day_id,
+	'旬报' as report_type,
+	'产品' as group_type,
+	guar_prod,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+						,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+					) 
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				) 
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额
+                loan_reg_dt, -- 放款登记日期
+                guar_prod
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),loan_reg_dt between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),loan_reg_dt between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,loan_reg_dt between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_prod;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'月报' as report_type,
+	'产品' as group_type,
+	guar_prod,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额
+                loan_reg_dt, -- 放款登记日期
+                guar_prod
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and loan_reg_dt between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_prod;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'季报' as report_type,
+	'产品' as group_type,
+	guar_prod,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+		< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+	then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额
+                loan_reg_dt, -- 放款登记日期
+                guar_prod
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if(quarter('${v_sdate}') = 1,loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,loan_reg_dt between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,loan_reg_dt between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if(quarter('${v_sdate}') = 1,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if(quarter('${v_sdate}') = 1,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_prod;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'半年报' as report_type,
+	'产品' as group_type,
+	guar_prod,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') ) 
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') ) 
+		then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') ) 
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额
+                loan_reg_dt, -- 放款登记日期
+                guar_prod
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_prod;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'年报' as report_type,
+	'产品' as group_type,
+	guar_prod,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,     -- 业务id
+                guar_amt,    -- 放款金额
+                loan_reg_dt, -- 放款登记日期
+                guar_prod
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and left(loan_reg_dt,4) = left('${v_sdate}',4)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where left(repay_date,4) = left('${v_sdate}',4)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and left(unguar_dt,4) = left('${v_sdate}',4)
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_prod;
+commit;
+
+
+-- 按行业归类
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'日报' as report_type,
+	'行业归类' as group_type,
+	guar_class,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,              -- 业务id
                 guar_amt as guar_amt, -- 放款金额
@@ -882,7 +1912,7 @@ from (
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
            and item_stt in ('已放款', '已代偿', '已解保')
-           and loan_reg_dt = '{v_sdate}'
+           and loan_reg_dt = '${v_sdate}'
      ) t4 on t1.guar_id = t4.guar_id
          left join
      (
@@ -902,10 +1932,9 @@ from (
 group by guar_class;
 commit;
 
-
--- 按办事处
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 (day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -917,31 +1946,40 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                                as day_id,
-       '办事处'                                                                                       as group_type,
-       case
-           when branch_off = 'NHDLBranch' then '宁河东丽办事处'
-           when branch_off = 'JNBHXQBranch' then '津南滨海新区办事处'
-           when branch_off = 'WQBCBranch' then '武清北辰办事处'
-           when branch_off = 'XQJHBranch' then '西青静海办事处'
-           when branch_off = 'JZBranch' then '蓟州办事处'
-           when branch_off = 'BDBranch' then '宝坻办事处'
-           end                                                                                     as branch_off,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)          as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.guar_id)                                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.guar_id)                                                                           as now_repayment_cnt,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
+select '${v_sdate}' as day_id,
+	'旬报' as report_type,
+	'行业归类' as group_type,
+	guar_class,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
-         select guar_id,            -- 业务id
-                guar_amt,           -- 放款金额
-                loan_reg_dt,        -- 放款登记日期
-                county_name as area -- 区县
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                guar_class
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -970,7 +2008,487 @@ from (
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
            and item_stt in ('已放款', '已代偿', '已解保')
-           and loan_reg_dt = '{v_sdate}'
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),loan_reg_dt between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),loan_reg_dt between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,loan_reg_dt between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_class;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'月报' as report_type,
+	'行业归类' as group_type,
+	guar_class,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                guar_class
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and loan_reg_dt between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_class;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'季报' as report_type,
+	'行业归类' as group_type,
+	guar_class,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                guar_class
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if(quarter('${v_sdate}') = 1,loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,loan_reg_dt between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,loan_reg_dt between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if(quarter('${v_sdate}') = 1,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if(quarter('${v_sdate}') = 1,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_class;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'半年报' as report_type,
+	'行业归类' as group_type,
+	guar_class,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                guar_class
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_class;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'年报' as report_type,
+	'行业归类' as group_type,
+	guar_class,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                guar_class
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and left(loan_reg_dt,4) = left('${v_sdate}',4)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where left(repay_date,4) = left('${v_sdate}',4)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and left(unguar_dt,4) = left('${v_sdate}',4)
+     ) t6 on t1.guar_id = t6.guar_id
+group by guar_class;
+commit;
+
+
+-- 按办事处
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'日报' as report_type,
+	'办事处' as group_type,
+	case
+		when branch_off = 'NHDLBranch' then '宁河东丽办事处'
+		when branch_off = 'JNBHBranch' then '津南滨海新区办事处'
+		when branch_off = 'BCWQBranch' then '武清北辰办事处'
+		when branch_off = 'XQJHBranch' then '西青静海办事处'
+		when branch_off = 'JZBranch' then '蓟州办事处'
+		when branch_off = 'BDBranch' then '宝坻办事处'
+		end                                                                             as branch_off,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,                  -- 业务id
+                guar_amt,                 -- 放款金额
+                loan_reg_dt,              -- 放款登记日期
+                country_code as area_code -- 区县编码
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and loan_reg_dt = '${v_sdate}'
      ) t4 on t1.guar_id = t4.guar_id
          left join
      (
@@ -989,17 +2507,16 @@ from (
      ) t6 on t1.guar_id = t6.guar_id
          left join
      (
-         select CITY_NAME_,              -- 区县名称
+         select CITY_CODE_,              -- 区县名称
                 ROLE_CODE_ as branch_off -- 办事处编码
          from dw_base.dwd_imp_area_branch
-     ) t7 on t1.area = t7.CITY_NAME_
+     ) t7 on t1.area_code = t7.CITY_CODE_
 group by branch_off;
 commit;
 
-
--- 按区域
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 (day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -1011,19 +2528,573 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                                as day_id,
-       '区域'                                                                                        as group_type,
-       area,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)          as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.guar_id)                                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.guar_id)                                                                           as now_repayment_cnt,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
+select '${v_sdate}' as day_id,
+	'旬报' as report_type,
+	'办事处' as group_type,
+	case
+		when branch_off = 'NHDLBranch' then '宁河东丽办事处'
+		when branch_off = 'JNBHBranch' then '津南滨海新区办事处'
+		when branch_off = 'BCWQBranch' then '武清北辰办事处'
+		when branch_off = 'XQJHBranch' then '西青静海办事处'
+		when branch_off = 'JZBranch' then '蓟州办事处'
+		when branch_off = 'BDBranch' then '宝坻办事处'
+		end                                                                             as branch_off,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,                  -- 业务id
+                guar_amt,                 -- 放款金额
+                loan_reg_dt,              -- 放款登记日期
+                country_code as area_code -- 区县编码
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),loan_reg_dt between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),loan_reg_dt between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,loan_reg_dt between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select CITY_CODE_,              -- 区县名称
+                ROLE_CODE_ as branch_off -- 办事处编码
+         from dw_base.dwd_imp_area_branch
+     ) t7 on t1.area_code = t7.CITY_CODE_
+group by branch_off;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'月报' as report_type,
+	'办事处' as group_type,
+	case
+		when branch_off = 'NHDLBranch' then '宁河东丽办事处'
+		when branch_off = 'JNBHBranch' then '津南滨海新区办事处'
+		when branch_off = 'BCWQBranch' then '武清北辰办事处'
+		when branch_off = 'XQJHBranch' then '西青静海办事处'
+		when branch_off = 'JZBranch' then '蓟州办事处'
+		when branch_off = 'BDBranch' then '宝坻办事处'
+		end                                                                             as branch_off,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,                  -- 业务id
+                guar_amt,                 -- 放款金额
+                loan_reg_dt,              -- 放款登记日期
+                country_code as area_code -- 区县编码
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and loan_reg_dt between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select CITY_CODE_,              -- 区县名称
+                ROLE_CODE_ as branch_off -- 办事处编码
+         from dw_base.dwd_imp_area_branch
+     ) t7 on t1.area_code = t7.CITY_CODE_
+group by branch_off;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'季报' as report_type,
+	'办事处' as group_type,
+	case
+		when branch_off = 'NHDLBranch' then '宁河东丽办事处'
+		when branch_off = 'JNBHBranch' then '津南滨海新区办事处'
+		when branch_off = 'BCWQBranch' then '武清北辰办事处'
+		when branch_off = 'XQJHBranch' then '西青静海办事处'
+		when branch_off = 'JZBranch' then '蓟州办事处'
+		when branch_off = 'BDBranch' then '宝坻办事处'
+		end                                                                             as branch_off,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,                  -- 业务id
+                guar_amt,                 -- 放款金额
+                loan_reg_dt,              -- 放款登记日期
+                country_code as area_code -- 区县编码
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if(quarter('${v_sdate}') = 1,loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,loan_reg_dt between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,loan_reg_dt between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if(quarter('${v_sdate}') = 1,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if(quarter('${v_sdate}') = 1,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select CITY_CODE_,              -- 区县名称
+                ROLE_CODE_ as branch_off -- 办事处编码
+         from dw_base.dwd_imp_area_branch
+     ) t7 on t1.area_code = t7.CITY_CODE_
+group by branch_off;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'半年报' as report_type,
+	'办事处' as group_type,
+	case
+		when branch_off = 'NHDLBranch' then '宁河东丽办事处'
+		when branch_off = 'JNBHBranch' then '津南滨海新区办事处'
+		when branch_off = 'BCWQBranch' then '武清北辰办事处'
+		when branch_off = 'XQJHBranch' then '西青静海办事处'
+		when branch_off = 'JZBranch' then '蓟州办事处'
+		when branch_off = 'BDBranch' then '宝坻办事处'
+		end                                                                             as branch_off,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,                  -- 业务id
+                guar_amt,                 -- 放款金额
+                loan_reg_dt,              -- 放款登记日期
+                country_code as area_code -- 区县编码
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select CITY_CODE_,              -- 区县名称
+                ROLE_CODE_ as branch_off -- 办事处编码
+         from dw_base.dwd_imp_area_branch
+     ) t7 on t1.area_code = t7.CITY_CODE_
+group by branch_off;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'年报' as report_type,
+	'办事处' as group_type,
+	case
+		when branch_off = 'NHDLBranch' then '宁河东丽办事处'
+		when branch_off = 'JNBHBranch' then '津南滨海新区办事处'
+		when branch_off = 'BCWQBranch' then '武清北辰办事处'
+		when branch_off = 'XQJHBranch' then '西青静海办事处'
+		when branch_off = 'JZBranch' then '蓟州办事处'
+		when branch_off = 'BDBranch' then '宝坻办事处'
+		end                                                                             as branch_off,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,                  -- 业务id
+                guar_amt,                 -- 放款金额
+                loan_reg_dt,              -- 放款登记日期
+                country_code as area_code -- 区县编码
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and left(loan_reg_dt,4) = left('${v_sdate}',4)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where left(repay_date,4) = left('${v_sdate}',4)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and left(unguar_dt,4) = left('${v_sdate}',4)
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select CITY_CODE_,              -- 区县名称
+                ROLE_CODE_ as branch_off -- 办事处编码
+         from dw_base.dwd_imp_area_branch
+     ) t7 on t1.area_code = t7.CITY_CODE_
+group by branch_off;
+commit;
+
+
+-- 按区域
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'日报' as report_type,
+	'区域' as group_type,
+	area,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,            -- 业务id
                 guar_amt,           -- 放款金额
@@ -1057,7 +3128,7 @@ from (
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
            and item_stt in ('已放款', '已代偿', '已解保')
-           and loan_reg_dt = '{v_sdate}'
+           and loan_reg_dt = '${v_sdate}'
      ) t4 on t1.guar_id = t4.guar_id
          left join
      (
@@ -1077,9 +3148,9 @@ from (
 group by area;
 commit;
 
--- 按银行一级支行
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 (day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -1091,19 +3162,507 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                                as day_id,
-       '银行一级支行'                                                                                    as group_type,
-       loan_bank,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)          as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.guar_id)                                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.guar_id)                                                                           as now_repayment_cnt,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
+select '${v_sdate}' as day_id,
+	'旬报' as report_type,
+	'区域' as group_type,
+	area,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,            -- 业务id
+                guar_amt,           -- 放款金额
+                loan_reg_dt,        -- 放款登记日期
+                county_name as area -- 区县
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),loan_reg_dt between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),loan_reg_dt between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,loan_reg_dt between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t6 on t1.guar_id = t6.guar_id
+group by area;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'月报' as report_type,
+	'区域' as group_type,
+	area,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,            -- 业务id
+                guar_amt,           -- 放款金额
+                loan_reg_dt,        -- 放款登记日期
+                county_name as area -- 区县
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and loan_reg_dt between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t6 on t1.guar_id = t6.guar_id
+group by area;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'季报' as report_type,
+	'区域' as group_type,
+	area,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,            -- 业务id
+                guar_amt,           -- 放款金额
+                loan_reg_dt,        -- 放款登记日期
+                county_name as area -- 区县
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if(quarter('${v_sdate}') = 1,loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,loan_reg_dt between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,loan_reg_dt between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if(quarter('${v_sdate}') = 1,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if(quarter('${v_sdate}') = 1,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t6 on t1.guar_id = t6.guar_id
+group by area;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'半年报' as report_type,
+	'区域' as group_type,
+	area,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') ) 
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') ) 
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') ) 
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,            -- 业务id
+                guar_amt,           -- 放款金额
+                loan_reg_dt,        -- 放款登记日期
+                county_name as area -- 区县
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t6 on t1.guar_id = t6.guar_id
+group by area;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'年报' as report_type,
+	'区域' as group_type,
+	area,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,            -- 业务id
+                guar_amt,           -- 放款金额
+                loan_reg_dt,        -- 放款登记日期
+                county_name as area -- 区县
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and left(loan_reg_dt,4) = left('${v_sdate}',4)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where left(repay_date,4) = left('${v_sdate}',4)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and left(unguar_dt,4) = left('${v_sdate}',4)
+     ) t6 on t1.guar_id = t6.guar_id
+group by area;
+commit;
+
+-- 按银行一级支行
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'日报' as report_type,
+	'银行一级支行' as group_type,
+	loan_bank,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,              -- 业务id
                 guar_amt as guar_amt, -- 放款金额
@@ -1137,7 +3696,7 @@ from (
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
            and item_stt in ('已放款', '已代偿', '已解保')
-           and loan_reg_dt = '{v_sdate}'
+           and loan_reg_dt = '${v_sdate}'
      ) t4 on t1.guar_id = t4.guar_id
          left join
      (
@@ -1157,9 +3716,9 @@ from (
 group by loan_bank;
 commit;
 
--- 按项目经理
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 (day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -1171,19 +3730,509 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                                as day_id,
-       '项目经理'                                                                                      as group_type,
-       nd_proj_mgr_name,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt end)  as start_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)          as start_cnt,
-       sum(now_guar_amt)                                                                           as now_guar_amt,
-       count(t4.guar_id)                                                                           as now_guar_cnt,
-       sum(now_repayment_amt)                                                                      as now_repayment_amt,
-       count(t6.guar_id)                                                                           as now_repayment_cnt,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt end) -
-       sum(case when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt end) as end_balance,
-       sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)         as end_cnt
+select '${v_sdate}' as day_id,
+	'旬报' as report_type,
+	'银行一级支行' as group_type,
+	loan_bank,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then repayment_amt else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                loan_bank             -- 贷款银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),loan_reg_dt between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),loan_reg_dt between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,loan_reg_dt between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t6 on t1.guar_id = t6.guar_id
+group by loan_bank;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'月报' as report_type,
+	'银行一级支行' as group_type,
+	loan_bank,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                loan_bank             -- 贷款银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and loan_reg_dt between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t6 on t1.guar_id = t6.guar_id
+group by loan_bank;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'季报' as report_type,
+	'银行一级支行' as group_type,
+	loan_bank,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                loan_bank             -- 贷款银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if(quarter('${v_sdate}') = 1,loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,loan_reg_dt between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,loan_reg_dt between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if(quarter('${v_sdate}') = 1,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if(quarter('${v_sdate}') = 1,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t6 on t1.guar_id = t6.guar_id
+group by loan_bank;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'半年报' as report_type,
+	'银行一级支行' as group_type,
+	loan_bank,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                loan_bank             -- 贷款银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t6 on t1.guar_id = t6.guar_id
+group by loan_bank;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'年报' as report_type,
+	'银行一级支行' as group_type,
+	loan_bank,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,              -- 业务id
+                guar_amt as guar_amt, -- 放款金额
+                loan_reg_dt,          -- 放款登记日期
+                loan_bank             -- 贷款银行
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and left(loan_reg_dt,4) = left('${v_sdate}',4)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where left(repay_date,4) = left('${v_sdate}',4)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and left(unguar_dt,4) = left('${v_sdate}',4)
+     ) t6 on t1.guar_id = t6.guar_id
+group by loan_bank;
+commit;
+
+-- 按项目经理
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'日报' as report_type,
+	'项目经理' as group_type,
+	nd_proj_mgr_name,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,    -- 业务id
                 guar_amt,   -- 放款金额
@@ -1216,7 +4265,7 @@ from (
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
            and item_stt in ('已放款', '已代偿', '已解保')
-           and loan_reg_dt = '{v_sdate}'
+           and loan_reg_dt = '${v_sdate}'
      ) t4 on t1.guar_id = t4.guar_id
          left join
      (
@@ -1246,9 +4295,9 @@ from (
 group by nd_proj_mgr_name;
 commit;
 
--- 新旧业务系统合并
-insert into dw_base.ads_rpt_tjnd_busi_record_stat_loan
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 (day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -1261,17 +4310,549 @@ insert into dw_base.ads_rpt_tjnd_busi_record_stat_loan
  end_cnt -- 期末笔数
 )
 select '${v_sdate}' as day_id,
+	'旬报' as report_type,
+	'项目经理' as group_type,
+	nd_proj_mgr_name,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format('${v_sdate}','%Y%m01') 
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format('${v_sdate}','%Y%m10') ,date_format('${v_sdate}','%Y%m20'))
+				)
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,    -- 业务id
+                guar_amt,   -- 放款金额
+                loan_reg_dt -- 放款登记日期
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),loan_reg_dt between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),loan_reg_dt between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,loan_reg_dt between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' <= date_format('${v_sdate}','%Y%m10'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and date_format('${v_sdate}','%Y%m10')
+					,if('${v_sdate}' <= date_format('${v_sdate}','%Y%m20'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m10') and date_format('${v_sdate}','%Y%m20') 
+						,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m20') and '${v_sdate}')
+				)
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select code,                            -- 项目id
+                create_name as nd_proj_mgr_name, -- 创建者
+                rn
+         from (
+                  select *, row_number() over (partition by code order by db_update_time desc) as rn
+                  from dw_nd.ods_t_biz_project_main) t1
+         where rn = 1
+     ) t7 on t1.guar_id = t7.code
+group by nd_proj_mgr_name;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'月报' as report_type,
+	'项目经理' as group_type,
+	nd_proj_mgr_name,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y%m01') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,    -- 业务id
+                guar_amt,   -- 放款金额
+                loan_reg_dt -- 放款登记日期
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and loan_reg_dt between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y%m01') and '${v_sdate}'
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select code,                            -- 项目id
+                create_name as nd_proj_mgr_name, -- 创建者
+                rn
+         from (
+                  select *, row_number() over (partition by code order by db_update_time desc) as rn
+                  from dw_nd.ods_t_biz_project_main) t1
+         where rn = 1
+     ) t7 on t1.guar_id = t7.code
+group by nd_proj_mgr_name;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'季报' as report_type,
+	'项目经理' as group_type,
+	nd_proj_mgr_name,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if(quarter('${v_sdate}') = 1,date_format('${v_sdate}','%Y0101')
+				,if(quarter('${v_sdate}') = 2,date_format('${v_sdate}','%Y0401')
+					,if(quarter('${v_sdate}') = 3,date_format('${v_sdate}','%Y0701')
+						,if(quarter('${v_sdate}') = 4,date_format('${v_sdate}','%Y1001'),'')
+					) ) )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,    -- 业务id
+                guar_amt,   -- 放款金额
+                loan_reg_dt -- 放款登记日期
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if(quarter('${v_sdate}') = 1,loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,loan_reg_dt between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,loan_reg_dt between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if(quarter('${v_sdate}') = 1,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if(quarter('${v_sdate}') = 1,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,if(quarter('${v_sdate}') = 2,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0401') and '${v_sdate}'
+					,if(quarter('${v_sdate}') = 3,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}'
+						,if(quarter('${v_sdate}') = 4,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y1001') and '${v_sdate}','')
+					) ) )
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select code,                            -- 项目id
+                create_name as nd_proj_mgr_name, -- 创建者
+                rn
+         from (
+                  select *, row_number() over (partition by code order by db_update_time desc) as rn
+                  from dw_nd.ods_t_biz_project_main) t1
+         where rn = 1
+     ) t7 on t1.guar_id = t7.code
+group by nd_proj_mgr_name;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'半年报' as report_type,
+	'项目经理' as group_type,
+	nd_proj_mgr_name,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') 
+			< if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format('${v_sdate}','%Y0101'),date_format('${v_sdate}','%Y0701') )
+		then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,    -- 业务id
+                guar_amt,   -- 放款金额
+                loan_reg_dt -- 放款登记日期
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),loan_reg_dt between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,loan_reg_dt between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(repay_date, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and if('${v_sdate}' < date_format('${v_sdate}','%Y0701'),date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0101') and '${v_sdate}'
+				,date_format(unguar_dt, '%Y%m%d') between date_format('${v_sdate}','%Y0701') and '${v_sdate}' )
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select code,                            -- 项目id
+                create_name as nd_proj_mgr_name, -- 创建者
+                rn
+         from (
+                  select *, row_number() over (partition by code order by db_update_time desc) as rn
+                  from dw_nd.ods_t_biz_project_main) t1
+         where rn = 1
+     ) t7 on t1.guar_id = t7.code
+group by nd_proj_mgr_name;
+commit;
+
+insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+	'年报' as report_type,
+	'项目经理' as group_type,
+	nd_proj_mgr_name,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then repayment_amt
+		else 0 end)                                                                 as start_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') < date_format('${v_sdate}','%Y0101') then 1 else 0 end)  as start_cnt,
+	sum(if(now_guar_amt is null, 0, now_guar_amt))                                      as now_guar_amt,
+	count(t4.guar_id)                                                                   as now_guar_cnt,
+	sum(if(now_repayment_amt is null, 0, now_repayment_amt))                            as now_repayment_amt,
+	count(t6.guar_id)                                                                   as now_repayment_cnt,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then guar_amt else 0 end) -
+	sum(case
+		when date_format(repayment_date, '%Y%m%d') <= '${v_sdate}' then repayment_amt
+		else 0 end)                                                                 as end_balance,
+	sum(case when date_format(loan_reg_dt, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
+from (
+         select guar_id,    -- 业务id
+                guar_amt,   -- 放款金额
+                loan_reg_dt -- 放款登记日期
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+     ) t1
+         left join
+     (
+         select guar_id,   -- 业务编号
+                project_id -- 项目id
+         from dw_base.dwd_guar_info_stat
+         where day_id = '${v_sdate}'
+     ) t2 on t1.guar_id = t2.guar_id
+         left join
+     (
+         select project_id,                                            -- 项目id
+                sum(actual_repayment_amount) / 10000 as repayment_amt, -- 还款金额
+                max(repay_date)                      as repayment_date -- 还款日期
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         group by project_id
+     ) t3 on t2.project_id = t3.project_id
+         left join
+     (
+         select guar_id,                 -- 业务id
+                guar_amt as now_guar_amt -- 放款金额
+         from dw_base.dwd_guar_info_all
+         where day_id = '${v_sdate}'
+           and data_source = '担保业务管理系统新'
+           and item_stt in ('已放款', '已代偿', '已解保')
+           and left(loan_reg_dt,4) = left('${v_sdate}',4)
+     ) t4 on t1.guar_id = t4.guar_id
+         left join
+     (
+         select project_id,                                               -- 项目id
+                sum(actual_repayment_amount) / 10000 as now_repayment_amt -- 当期还款金额
+         from dw_nd.ods_t_biz_proj_repayment_detail
+         where left(repay_date,4) = left('${v_sdate}',4)
+         group by project_id
+     ) t5 on t2.project_id = t5.project_id
+         left join
+     (
+         select guar_id -- 业务编号
+         from dw_base.dwd_guar_info_stat -- 取解保日期计算当期还款笔数
+         where day_id = '${v_sdate}'
+           and left(unguar_dt,4) = left('${v_sdate}',4)
+     ) t6 on t1.guar_id = t6.guar_id
+         left join
+     (
+         select code,                            -- 项目id
+                create_name as nd_proj_mgr_name, -- 创建者
+                rn
+         from (
+                  select *, row_number() over (partition by code order by db_update_time desc) as rn
+                  from dw_nd.ods_t_biz_project_main) t1
+         where rn = 1
+     ) t7 on t1.guar_id = t7.code
+group by nd_proj_mgr_name;
+commit;
+
+-- 新旧业务系统合并
+insert into dw_base.ads_rpt_tjnd_busi_record_stat_loan
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_guar_amt, -- 当期放款金额(万元)
+ now_guar_cnt, -- 当期放款笔数
+ now_repayment_amt, -- 当期还款金额
+ now_repayment_cnt, -- 当期还款笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+		report_type,
        group_type,
        group_name,
        sum(start_balance),
        sum(start_cnt),
-       sum(now_guar_amt),
+       sum(if(now_guar_amt is null, 0, now_guar_amt)),
        sum(now_guar_cnt),
-       sum(now_repayment_amt),
+       sum(if(now_repayment_amt is null, 0, now_repayment_amt)),
        sum(now_repayment_cnt),
        sum(end_balance),
        sum(end_cnt)
 from dw_base.tmp_ads_rpt_tjnd_busi_record_stat_loan
 where day_id = '${v_sdate}'
-group by group_type, group_name;
+group by report_type,group_type, group_name;
 commit;

@@ -609,6 +609,8 @@
 day_id
 ,city_code
 ,city_name
+,county_code
+,county_name
 ,guar_class
 ,guar_desc
 ,guar_cust as guar_qty
@@ -623,6 +625,8 @@ where day_id = '${v_sdate}'
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta/>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -677,6 +681,14 @@ where day_id = '${v_sdate}'
       <field>
         <column_name>city_name</column_name>
         <stream_name>city_name</stream_name>
+      </field>
+      <field>
+        <column_name>county_code</column_name>
+        <stream_name>county_code</stream_name>
+      </field>
+      <field>
+        <column_name>county_name</column_name>
+        <stream_name>county_name</stream_name>
       </field>
       <field>
         <column_name>guar_class</column_name>

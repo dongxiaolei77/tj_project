@@ -1,7 +1,7 @@
 -- ---------------------------------------
 -- 开发人   : dxl
 -- 开发时间 ：20250327
--- 目标表   ：dw_base.ads_rpt_finance_record_stat_info 财务部-业务情况统计
+-- 目标表   ：dw_base.ads_rpt_tjnd_finance_record_stat_info 财务部-业务情况统计
 -- 源表     ：
 --          旧业务系统
 --          dw_nd.ods_tjnd_yw_afg_business_infomation   业务申请表
@@ -283,7 +283,7 @@ from (
                 max(pay_date)              as refund_date -- 缴费日期
          from dw_nd.ods_t_biz_proj_refund
          group by project_id
-     ) t5 on t4.project_id = t4.project_id
+     ) t5 on t4.project_id = t5.project_id
          left join
      (
          select guar_id,

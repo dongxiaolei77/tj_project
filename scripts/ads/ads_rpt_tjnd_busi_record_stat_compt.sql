@@ -1,7 +1,7 @@
 -- ---------------------------------------
 -- 开发人   : dxl
 -- 开发时间 ：20250417
--- 目标表   ：dw_base.ads_rpt_tjnd_busi_record_stat_loan 业务状况-放款
+-- 目标表   ：dw_base.ads_rpt_tjnd_busi_record_stat_compt 业务状况-追偿
 -- 源表     ：
 --          旧业务系统
 --          dw_nd.ods_tjnd_yw_afg_business_infomation                   业务申请表
@@ -26,6 +26,7 @@ drop table if exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt;
 create table dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 (
     day_id           varchar(8) comment '数据日期',
+    report_type      varchar(50) null comment '报表类型',
     group_type       varchar(50) comment '统计类型',
     group_name       varchar(100) comment '分组名称',
     start_balance    decimal(36, 6) comment '期初余额(万元)',
@@ -57,8 +58,8 @@ commit;
 # select '${v_sdate}'                                                                              as day_id,
 #        '银行'                                                                                      as group_type,
 #        bank_name                                                                                 as group_name,
-#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)  as start_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
 #        sum(now_compt_amt)                                                                        as now_compt_amt,
 #        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
@@ -66,8 +67,8 @@ commit;
 #        sum(if(compt_amt -
 #               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
 #                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
-#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
 # from (
 #          select id,                    -- 业务id
@@ -141,8 +142,8 @@ commit;
 # select '${v_sdate}'                                                                              as day_id,
 #        '产品'                                                                                      as group_type,
 #        PRODUCT_NAME                                                                              as group_name,
-#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)  as start_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
 #        sum(now_compt_amt)                                                                        as now_compt_amt,
 #        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
@@ -150,8 +151,8 @@ commit;
 #        sum(if(compt_amt -
 #               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
 #                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
-#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
 # from (
 #          select id,           -- 业务id
@@ -237,8 +238,8 @@ commit;
 #            when INDUSTRY_CATEGORY_COMPANY = '9' then '农田建设'
 #            when INDUSTRY_CATEGORY_COMPANY = '10' then '其他农业项目'
 #            end                                                                                   as group_name,
-#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)  as start_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
 #        sum(now_compt_amt)                                                                        as now_compt_amt,
 #        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
@@ -246,8 +247,8 @@ commit;
 #        sum(if(compt_amt -
 #               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
 #                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
-#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
 # from (
 #          select id,         -- 业务id
@@ -328,8 +329,8 @@ commit;
 #            when branch_off = 'YW_JZBSC' then '蓟州办事处'
 #            when branch_off = 'YW_BDBSC' then '宝坻办事处'
 #            end                                                                                   as group_name,
-#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)  as start_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
 #        sum(now_compt_amt)                                                                        as now_compt_amt,
 #        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
@@ -337,8 +338,8 @@ commit;
 #        sum(if(compt_amt -
 #               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
 #                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
-#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
 # from (
 #          select id,                      -- 业务id
@@ -406,8 +407,8 @@ commit;
 # select '${v_sdate}'                                                                              as day_id,
 #        '区域'                                                                                      as group_type,
 #        area_name                                                                                 as group_name,
-#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)  as start_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
 #        sum(now_compt_amt)                                                                        as now_compt_amt,
 #        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
@@ -415,8 +416,8 @@ commit;
 #        sum(if(compt_amt -
 #               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
 #                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
-#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
 # from (
 #          select id,                                              -- 业务id
@@ -486,8 +487,8 @@ commit;
 # select '${v_sdate}'                                                                              as day_id,
 #        '银行一级支行'                                                                                  as group_type,
 #        bank_name                                                                                 as group_name,
-#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)  as start_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
 #        sum(now_compt_amt)                                                                        as now_compt_amt,
 #        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
@@ -495,8 +496,8 @@ commit;
 #        sum(if(compt_amt -
 #               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
 #                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
-#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
 # from (
 #          select id,                     -- 业务id
@@ -571,8 +572,8 @@ commit;
 # select '${v_sdate}'                                                                              as day_id,
 #        '项目经理'                                                                                    as group_type,
 #        BUSINESS_SP_USER_NAME                                                                     as group_name,
-#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)  as start_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
 #        sum(now_compt_amt)                                                                        as now_compt_amt,
 #        count(t4.ID_CFBIZ_UNDERWRITING)                                                           as now_compt_cnt,
@@ -580,8 +581,8 @@ commit;
 #        sum(if(compt_amt -
 #               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
 #                   <= 0, 1, 0))                                                                   as now_recovery_cnt,
-#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
+#        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+#        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance,
 #        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
 # from (
 #          select id,                   -- 业务id
@@ -637,6 +638,7 @@ commit;
 -- 按银行
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 (day_id, -- 数据日期
+ report_type, -- 报表类型
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -648,21 +650,29 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                              as day_id,
-       '银行'                                                                                      as group_type,
-       gnd_dept_name                                                                             as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t5.guar_id)                                                                         as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
+select '${v_sdate}'                                                                       as day_id,
+       '日报'                                                                               as report_type,
+       '银行'                                                                               as group_type,
+       gnd_dept_name                                                                      as group_name,
+       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as start_balance,
+       sum(case
+               when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1
+               else 0 end)                                                                as start_cnt,
+       sum(now_compt_amt)                                                                 as now_compt_amt,
+       count(t5.guar_id)                                                                  as now_compt_cnt,
+       sum(now_recovery_amt)                                                              as now_recovery_amt,
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+                  <= 0, 1,
+              0))                                                                         as now_recovery_cnt,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as end_balance,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id -- 业务id
          from dw_base.dwd_guar_info_all
@@ -716,7 +726,7 @@ from (
          select biz_no,
                 gnd_dept_name
          from dw_base.dwd_tjnd_report_biz_loan_bank
-         where day_id = '{v_sdate}'
+         where day_id = '${v_sdate}'
      ) t7 on t1.guar_id = t7.biz_no
 group by gnd_dept_name;
 commit;
@@ -724,6 +734,7 @@ commit;
 -- 按产品
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 (day_id, -- 数据日期
+ report_type, -- 报表类型
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -735,21 +746,29 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                              as day_id,
-       '产品'                                                                                      as group_type,
-       guar_prod                                                                                 as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t5.guar_id)                                                                         as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
+select '${v_sdate}'                                                                       as day_id,
+       '日报'                                                                               as report_type,
+       '产品'                                                                               as group_type,
+       guar_prod                                                                          as group_name,
+       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as start_balance,
+       sum(case
+               when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1
+               else 0 end)                                                                as start_cnt,
+       sum(now_compt_amt)                                                                 as now_compt_amt,
+       count(t5.guar_id)                                                                  as now_compt_cnt,
+       sum(now_recovery_amt)                                                              as now_recovery_amt,
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+                  <= 0, 1,
+              0))                                                                         as now_recovery_cnt,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as end_balance,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,  -- 业务id
                 guar_prod -- 担保产品
@@ -805,6 +824,7 @@ commit;
 -- 按行业归类
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 (day_id, -- 数据日期
+ report_type, -- 报表类型
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -816,21 +836,29 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                              as day_id,
-       '行业归类'                                                                                    as group_type,
-       guar_class                                                                                as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t5.guar_id)                                                                         as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
+select '${v_sdate}'                                                                       as day_id,
+       '日报'                                                                               as report_type,
+       '行业归类'                                                                             as group_type,
+       guar_class                                                                         as group_name,
+       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as start_balance,
+       sum(case
+               when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1
+               else 0 end)                                                                as start_cnt,
+       sum(now_compt_amt)                                                                 as now_compt_amt,
+       count(t5.guar_id)                                                                  as now_compt_cnt,
+       sum(now_recovery_amt)                                                              as now_recovery_amt,
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+                  <= 0, 1,
+              0))                                                                         as now_recovery_cnt,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as end_balance,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,   -- 业务id
                 guar_class -- 国担分类
@@ -886,6 +914,7 @@ commit;
 -- 按办事处
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 (day_id, -- 数据日期
+ report_type, -- 报表类型
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -897,31 +926,39 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                              as day_id,
-       '办事处'                                                                                     as group_type,
+select '${v_sdate}'                                                                       as day_id,
+       '日报'                                                                               as report_type,
+       '办事处'                                                                              as group_type,
        case
            when branch_off = 'NHDLBranch' then '宁河东丽办事处'
-           when branch_off = 'JNBHXQBranch' then '津南滨海新区办事处'
-           when branch_off = 'WQBCBranch' then '武清北辰办事处'
+           when branch_off = 'JNBHBranch' then '津南滨海新区办事处'
+           when branch_off = 'BCWQBranch' then '武清北辰办事处'
            when branch_off = 'XQJHBranch' then '西青静海办事处'
            when branch_off = 'JZBranch' then '蓟州办事处'
            when branch_off = 'BDBranch' then '宝坻办事处'
-           end                                                                                   as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t5.guar_id)                                                                         as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
+           end                                                                            as group_name,
+       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as start_balance,
+       sum(case
+               when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1
+               else 0 end)                                                                as start_cnt,
+       sum(now_compt_amt)                                                                 as now_compt_amt,
+       count(t5.guar_id)                                                                  as now_compt_cnt,
+       sum(now_recovery_amt)                                                              as now_recovery_amt,
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+                  <= 0, 1,
+              0))                                                                         as now_recovery_cnt,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as end_balance,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
-         select guar_id,            -- 业务id
-                county_name as area -- 区县
+         select guar_id,                  -- 业务id
+                country_code as area_code -- 区县编码
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -970,16 +1007,17 @@ from (
      ) t6 on t2.project_id = t6.project_id
          left join
      (
-         select CITY_NAME_,              -- 区县名称
+         select CITY_CODE_,              -- 区县编码
                 ROLE_CODE_ as branch_off -- 办事处编码
          from dw_base.dwd_imp_area_branch
-     ) t7 on t1.area = t7.CITY_NAME_
+     ) t7 on t1.area_code = t7.CITY_CODE_
 group by branch_off;
 commit;
 
 -- 按区域
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 (day_id, -- 数据日期
+ report_type, -- 报表类型
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -991,21 +1029,29 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                              as day_id,
-       '区域'                                                                                      as group_type,
-       area                                                                                      as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t5.guar_id)                                                                         as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
+select '${v_sdate}'                                                                       as day_id,
+       '日报'                                                                               as report_type,
+       '区域'                                                                               as group_type,
+       area                                                                               as group_name,
+       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as start_balance,
+       sum(case
+               when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1
+               else 0 end)                                                                as start_cnt,
+       sum(now_compt_amt)                                                                 as now_compt_amt,
+       count(t5.guar_id)                                                                  as now_compt_cnt,
+       sum(now_recovery_amt)                                                              as now_recovery_amt,
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+                  <= 0, 1,
+              0))                                                                         as now_recovery_cnt,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as end_balance,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,            -- 业务id
                 county_name as area -- 区县
@@ -1061,6 +1107,7 @@ commit;
 -- 按银行一级支行
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 (day_id, -- 数据日期
+ report_type, -- 报表类型
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -1072,21 +1119,29 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                              as day_id,
-       '银行一级支行'                                                                                  as group_type,
-       loan_bank                                                                                 as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t5.guar_id)                                                                         as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
+select '${v_sdate}'                                                                       as day_id,
+       '日报'                                                                               as report_type,
+       '银行一级支行'                                                                           as group_type,
+       loan_bank                                                                          as group_name,
+       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as start_balance,
+       sum(case
+               when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1
+               else 0 end)                                                                as start_cnt,
+       sum(now_compt_amt)                                                                 as now_compt_amt,
+       count(t5.guar_id)                                                                  as now_compt_cnt,
+       sum(now_recovery_amt)                                                              as now_recovery_amt,
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+                  <= 0, 1,
+              0))                                                                         as now_recovery_cnt,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as end_balance,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id,  -- 业务id
                 loan_bank -- 贷款银行
@@ -1142,6 +1197,7 @@ commit;
 -- 按项目经理
 insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 (day_id, -- 数据日期
+ report_type, -- 报表类型
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -1153,21 +1209,29 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
  end_balance, -- 期末余额(万元)
  end_cnt -- 期末笔数
 )
-select '${v_sdate}'                                                                              as day_id,
-       '项目经理'                                                                                    as group_type,
-       nd_proj_mgr_name                                                                          as group_name,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt end)  as start_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)         as start_cnt,
-       sum(now_compt_amt)                                                                        as now_compt_amt,
-       count(t5.guar_id)                                                                         as now_compt_cnt,
-       sum(now_recovery_amt)                                                                     as now_recovery_amt,
+select '${v_sdate}'                                                                       as day_id,
+       '日报'                                                                               as report_type,
+       '项目经理'                                                                             as group_type,
+       nd_proj_mgr_name                                                                   as group_name,
+       sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as start_balance,
+       sum(case
+               when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1
+               else 0 end)                                                                as start_cnt,
+       sum(now_compt_amt)                                                                 as now_compt_amt,
+       count(t5.guar_id)                                                                  as now_compt_cnt,
+       sum(now_recovery_amt)                                                              as now_recovery_amt,
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                   as now_recovery_cnt,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt end) -
-       sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt end) as end_balance,
-       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)        as end_cnt
+                  <= 0, 1,
+              0))                                                                         as now_recovery_cnt,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
+       sum(case
+               when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt
+               else 0 end)                                                                as end_balance,
+       sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end) as end_cnt
 from (
          select guar_id -- 业务id
          from dw_base.dwd_guar_info_all
@@ -1233,6 +1297,7 @@ commit;
 -- 新旧系统数据合并
 insert into dw_base.ads_rpt_tjnd_busi_record_stat_compt
 (day_id, -- 数据日期
+ report_type,
  group_type, -- 统计类型
  group_name, -- 分组名称
  start_balance, -- 期初余额(万元)
@@ -1245,6 +1310,7 @@ insert into dw_base.ads_rpt_tjnd_busi_record_stat_compt
  end_cnt -- 期末笔数
 )
 select '${v_sdate}' as day_id,
+       report_type,
        group_type,
        group_name,
        sum(start_balance),
@@ -1257,5 +1323,5 @@ select '${v_sdate}' as day_id,
        sum(end_cnt)
 from dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt
 where day_id = '${v_sdate}'
-group by group_type, group_name;
+group by report_type, group_type, group_name;
 commit;

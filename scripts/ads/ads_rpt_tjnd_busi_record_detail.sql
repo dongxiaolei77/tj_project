@@ -311,7 +311,11 @@ insert into dw_base.ads_rpt_tjnd_busi_record_detail
  repayment_amt, -- 还款本金金额
  repayment_date, -- 还款日期
  is_compt, -- 是否代偿
- is_ovd -- 是否逾期
+ is_ovd, -- 是否逾期
+ main_type, -- 主体类型
+ business_address, -- 经营地址
+ id_address, -- 户籍地址
+ loan_use -- 贷款用途
 )
 select '${v_sdate}'                                              as day_id,
        t1.guar_id,
@@ -327,7 +331,11 @@ select '${v_sdate}'                                              as day_id,
        guar_end_date,
        guar_date,
        main_biz,
-       unguar_type,
+       replace(replace(replace(replace(replace(replace(
+                                                       replace(replace(replace(unguar_type, '"', ''), '[', ''), ']', ''),
+                                                       '01', '无'),
+                                               '02', '抵押'), '03', '质押'), '04', '保证'), '05', '以物抵债'), '00',
+               '其他')                                             as unguar_type,
        loan_bank_name,
        guar_approved_rate,
        loan_rate,
@@ -372,7 +380,11 @@ select '${v_sdate}'                                              as day_id,
        repayment_amt,
        repayment_date,
        is_compt,
-       is_ovd
+       is_ovd,
+       main_type,
+       business_address,
+       id_address,
+       loan_use
 from (
          select guar_id        as guar_id,              -- 台账编号
                 cust_name      as cust_name,            -- 客户名称
@@ -383,7 +395,6 @@ from (
                 is_first_guar  as is_first_guar,        -- 是否首保
                 loan_notify_dt as loan_date,            -- 放款时间
                 loan_reg_dt    as guar_date,            -- 放款登记日期
-                protect_guar   as unguar_type,          -- 反担保措施
                 loan_bank      as loan_bank_name,       -- 贷款银行
                 guar_prod      as prod_type,            -- 担保产品
                 aprv_term      as guar_approved_period, -- 批复期限
@@ -397,7 +408,9 @@ from (
                 country_code,                           -- 区县编码
                 item_stt       as guar_status,          -- 项目状态
                 is_compensate  as is_compt,             -- 是否代偿
-                is_ovd         as is_ovd                -- 是否逾期
+                is_ovd         as is_ovd,               -- 是否逾期
+                cust_class     as main_type,            -- 主体类型
+                loan_use       as loan_use              -- 贷款用途
          from dw_base.dwd_guar_info_all
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
@@ -415,18 +428,35 @@ from (
      ) t2 on t1.guar_id = t2.guar_id
          left join
      (
-         select code,                                  -- 项目id
-                main_business_one as main_biz,         -- 经营主业
-                enterprise_scale  as corp_type,        -- 企业规模
-                create_name       as nd_proj_mgr_name, -- 创建者
-                is_farmer         as is_support_snzt,  -- 是否支持三农主体
-                cust_main_label,                       -- 客户主体标签
+         select code,                                        -- 项目id
+                main_business_one       as main_biz,         -- 经营主业
+                enterprise_scale        as corp_type,        -- 企业规模
+                is_farmer               as is_support_snzt,  -- 是否支持三农主体
+                cust_main_label,                             -- 客户主体标签
+                cust_addr               as business_address, -- 经营地址
+                ID_ADDRESS              as id_address,       -- 户籍地址
+                apply_counter_guar_meas as unguar_type,      -- 反担保方式
+                wf_inst_id,
                 rn
          from (
-                  select *, row_number() over (partition by code order by db_update_time desc) as rn
-                  from dw_nd.ods_t_biz_project_main) t1
+                  select t1.*,
+                         t2.ID_ADDRESS,
+                         row_number() over (partition by code order by db_update_time desc) as rn
+                  from dw_nd.ods_t_biz_project_main t1
+                           left join dw_nd.ods_wxapp_cust_login_info t2
+                                     on t1.cust_id = t2.CUSTOMER_ID
+              ) t1
          where rn = 1
      ) t3 on t1.guar_id = t3.code
+         left join
+     (
+         select PROC_INST_ID_
+              , t2.real_name as                                                          nd_proj_mgr_name -- 农担项目经理
+              , ROW_NUMBER() over (partition by PROC_INST_ID_ order by START_TIME_ desc) rn
+         from dw_nd.ods_t_act_hi_taskinst_v2 t1
+                  left join dw_nd.ods_t_sys_user t2 on t1.ASSIGNEE_ = t2.user_id
+         where NAME_ = '放款确认'
+     ) t4 on t3.wf_inst_id = t4.PROC_INST_ID_ and t4.rn = 1
          left join
      (
          select project_id,                                    -- 项目id
@@ -434,18 +464,21 @@ from (
                 max(repay_date)              as repayment_date -- 还款日期
          from dw_nd.ods_t_biz_proj_repayment_detail
          group by project_id
-     ) t4 on t2.project_id = t4.project_id
+     ) t5 on t2.project_id = t5.project_id
          left join
      (
          select guar_id,
                 onguar_amt as in_force_balance -- 在保余额
          from dw_base.dwd_guar_info_onguar
          where day_id = '${v_sdate}'
-     ) t5 on t1.guar_id = t5.guar_id
+     ) t6 on t1.guar_id = t6.guar_id
          left join
      (
          select CITY_CODE_,              -- 区县编码
                 ROLE_CODE_ as branch_off -- 办事处编码
          from dw_base.dwd_imp_area_branch
-     ) t6 on t1.country_code = t6.CITY_CODE_;
+     ) t7 on t1.country_code = t7.CITY_CODE_;
 commit;
+
+
+

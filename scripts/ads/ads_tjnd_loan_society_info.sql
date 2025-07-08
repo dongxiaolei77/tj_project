@@ -22,3 +22,4 @@ where day_id = '${v_sdate}'
       date_format(last_day(makedate(extract(year from '${v_sdate}'), 1) + interval quarter('${v_sdate}') * 3 - 1 month),
                   '%Y%m%d');
 commit;
+

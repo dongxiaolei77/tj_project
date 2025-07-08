@@ -10,6 +10,7 @@
 --            20221014 增加解保户数、累计放款笔数、累计放款金额、累计代偿户数
 --            20230613 增加字段：不考虑分险的代偿金额 zhangfl
 --            20230815 修改逻辑：代偿金额、代偿笔数从担保业务系统出，不再从画像系统出 zhangfl
+--            20250528 添加字段: 分支机构
 -- ---------------------------------------
 drop table if exists dw_base.tmp_dws_guar_stat_compt;
 commit;
@@ -167,6 +168,7 @@ insert into dw_base.dws_guar_stat
  guar_type,
  bank_type,
  loan_scale,
+ branch_office,
  accum_cust,
  guar_cust,
  lsmn_inc_cust,
@@ -186,8 +188,7 @@ insert into dw_base.dws_guar_stat
  rel_guar_qty,
  comp_loan_amt,
  loan_qty,
- loan_bal
- )
+ loan_bal)
 select '${v_sdate}'
      , city_code                                                                          -- 地市 dim_org_info
      , country_code                                                                       -- 县区
@@ -195,6 +196,7 @@ select '${v_sdate}'
      , guar_code                                                                          -- 产业分布 （dim_guar_class）
      , bank_code                                                                          -- 合作银行(dim_bank_class)
      , loan_scale                                                                         -- 100-300万
+     , branch_office                                                                      -- 分支机构
      , sum(1)                                                                             -- 累保户数
      , sum(case
                when item_stt_code = '06'
@@ -259,6 +261,7 @@ from (
               , cust_class_code -- 业务主体（dim_cust_class）
               , guar_code       -- 产业分布 （dim_guar_class）
               , bank_code       -- 合作银行(dim_bank_class)
+              , branch_office   -- 分支机构
               , case
                     when (loan_amt >= 0 and loan_amt < 10) or loan_amt is null then '1' -- 0-10万
                     when loan_amt >= 10 and loan_amt <= 50 then '2' -- 10-50万
@@ -288,5 +291,6 @@ group by city_code       -- 地市
        , guar_code       -- 产业分布 （dim_guar_class）
        , bank_code       -- 合作银行(dim_bank_class)
        , loan_scale
+       , branch_office -- 分支机构
 ;
 commit;

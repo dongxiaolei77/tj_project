@@ -2790,7 +2790,7 @@ commit;</sql>
       <description/>
       <type>SQL</type>
       <attributes/>
-      <sql>delete from nacga_report.proj_old_comp_rcvr_info_front where day_id = '${v_sdate}' ;
+      <sql>delete from nacga_report.proj_old_comp_rcvr_info_front where day_id = date_format(date_add('${v_sdate}', interval 1 day), '%Y%m') and '${v_sdate}' = date_format(last_day('${v_sdate}'), '%Y%m%d');
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
@@ -2809,7 +2809,7 @@ commit;</sql>
       <description/>
       <type>SQL</type>
       <attributes/>
-      <sql>delete from nacga_report.proj_old_comp_rcvr_info_front_his where day_id = '${v_sdate}' ;
+      <sql>delete from nacga_report.proj_old_comp_rcvr_info_front_his where day_id = date_format(date_add('${v_sdate}', interval 1 day), '%Y%m') and '${v_sdate}' = date_format(last_day('${v_sdate}'), '%Y%m%d') ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
@@ -2873,7 +2873,8 @@ select proj_no_prov,
        day_id,
        batch_id
 from nacga_report.proj_old_comp_rcvr_info_front
-where day_id = '${v_sdate}' ;
+where day_id = date_format(date_add('${v_sdate}', interval 1 day), '%Y%m')
+and '${v_sdate}' = date_format(last_day('${v_sdate}'), '%Y%m%d');
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>

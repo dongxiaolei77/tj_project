@@ -34,7 +34,7 @@ select
 city_code as city_cd
 ,coalesce(t1.country_code,concat(substr(t1.city_code,1,4),'99')) as country_cd
 ,count(1) as apply_qty
-,sum(coalesce(appl_amt/10000,0)) as apply_bal
+,sum(coalesce(appl_amt,0)) as apply_bal
 from dw_base.dwd_guar_info_stat t1
 group by country_code,city_code
 ;
@@ -109,25 +109,25 @@ from
 	,t2.area_name  as city_name     -- 地市名称
 	,coalesce(t1.country_cd,concat(substr(t1.city_cd,1,4),'99')) as country_code  -- 区县  -- mdy 20221014 wyx
 	,t3.area_name as country_name  -- 区县名称  -- mdy 20221014 wyx
-	,sum(accum_bal/10000) as accum_bal        -- 累保金额	
+	,sum(accum_bal) as accum_bal        -- 累保金额
 	,sum(accum_cust) as accum_cust  -- 累保户数	
-	,sum(guar_bal/10000)  as guar_bal         -- 在保金额	
+	,sum(guar_bal)  as guar_bal         -- 在保金额
 	,sum(guar_cust) as guar_cust    -- 在保户数	
-	,sum(td_inc_bal/10000) as lsday_inc_bal   -- 昨日新增金额	
+	,sum(td_inc_bal) as lsday_inc_bal   -- 昨日新增金额
 	,sum(td_inc_cust) as yd_inc_cust   -- 昨日新增户数	
-	,sum(lsmn_inc_bal/10000) as lsmn_inc_bal  -- 上月新增金额	
+	,sum(lsmn_inc_bal) as lsmn_inc_bal  -- 上月新增金额
 	,sum(lsmn_inc_cust) as lsmn_inc_cust  -- 上月新增户数	
-	,sum(ty_inc_bal/10000)  as year_inc_bal   --   今年来新增金额	
+	,sum(ty_inc_bal)  as year_inc_bal   --   今年来新增金额
 	,sum(ty_inc_cust) as year_inc_cust -- 当年新增户数	
-	,sum(t1.loan_bal/10000)  as loan_bal -- 累计放款金额 -- mdy 20221014 wyx
+	,sum(t1.loan_bal)  as loan_bal -- 累计放款金额 -- mdy 20221014 wyx
 	,sum(t1.loan_qty) as loan_qty  -- 累计放款笔数 -- mdy 20221014 wyx	
-	,sum(clsd_bal/10000)   as rel_guar_bal  --   解保金额 -- mdy 20221014 wyx
+	,sum(clsd_bal)   as rel_guar_bal  --   解保金额 -- mdy 20221014 wyx
 	,sum(t1.rel_guar_qty) as rel_guar_qty -- 累计解保户数 -- mdy 20221014 wyx
-    ,sum(t1.comp_loan_amt/10000) as comp_loan_amt -- 累计代偿合同金额 mdy 20240301
-	,sum(compt_bal/10000)  as comp_bal    -- 代偿金额(考虑分险)
-    ,sum(t1.portrait_comp_bal/10000) as portrait_comp_bal  -- 代偿金额(不考虑分险) + 20230613 zhangfl
+    ,sum(t1.comp_loan_amt) as comp_loan_amt -- 累计代偿合同金额 mdy 20240301
+	,sum(compt_bal)  as comp_bal    -- 代偿金额(考虑分险)
+    ,sum(t1.portrait_comp_bal) as portrait_comp_bal  -- 代偿金额(不考虑分险) + 20230613 zhangfl
 	,sum(t1.compt_qty) as comp_qty   -- 累计代偿户数 -- mdy 20221017
-    ,sum(case when t1.guar_type = '01' then t1.accum_bal/10000 else 0 end) as plant_accum_bal  -- 国担粮食种植类累保金额  +20230417
+    ,sum(case when t1.guar_type = '01' then t1.accum_bal else 0 end) as plant_accum_bal  -- 国担粮食种植类累保金额  +20230417
     ,sum(case when t1.guar_type = '01' then t1.accum_cust else 0 end) as plant_accum_qty       -- 国担粮食种植类笔数      +20230417
 
 	from dw_base.dws_guar_stat t1
@@ -140,7 +140,7 @@ from
 	where t1.day_id = '${v_sdate}'
 	group by
 	city_cd  -- 地市
-	,country_cd  -- 地市名称
+	,country_cd  -- 区县
 ) t1
 left join dw_tmp.tmp_ads_show_guar_accum_info_apply t2
 on t1.city_code = t2.city_cd

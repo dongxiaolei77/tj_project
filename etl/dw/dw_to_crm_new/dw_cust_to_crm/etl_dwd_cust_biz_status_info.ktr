@@ -609,6 +609,8 @@ cert_no	    as cust_code
 ,'1' as under_guar_status
 ,city_name_1
 ,district_name_1
+,province_code
+,province_name
 ,busi_pl
 ,busi_class
 ,econ_class
@@ -620,6 +622,8 @@ from dwd_cust_biz_status_info
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta/>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -706,6 +710,14 @@ from dwd_cust_biz_status_info
       <field>
         <column_name>district_name_1</column_name>
         <stream_name>district_name_1</stream_name>
+      </field>
+      <field>
+        <column_name>province_code</column_name>
+        <stream_name>province_code</stream_name>
+      </field>
+      <field>
+        <column_name>province_name</column_name>
+        <stream_name>province_name</stream_name>
       </field>
       <field>
         <column_name>busi_pl</column_name>

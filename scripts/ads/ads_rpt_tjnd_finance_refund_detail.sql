@@ -152,7 +152,10 @@ from (
          select project_id,                  -- 项目id
                 refund_amount as refund_amt, -- 退费金额
                 pay_date      as clear_date  -- 退费日期
-         from dw_nd.ods_t_biz_proj_refund
+         from (
+                  select *, row_number() over (partition by project_id order by update_time desc) as rn
+                  from dw_nd.ods_t_biz_proj_refund) t1
+         where rn = 1
      ) t3 on t2.project_id = t3.project_id
          left join
      (
