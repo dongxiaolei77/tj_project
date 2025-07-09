@@ -1,4 +1,3 @@
-
 -- exp_credit_per_compt_info 个人贷款信息
 -- /**
 -- CREATE TABLE ods_imp_compt_repay_info (
@@ -14,7 +13,8 @@
 
 -- 最近还款情况
 -- 历史追偿业务报送
-drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_repay ; -- 20230706【dw_base改为dw_tmp】
+drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_repay ;
+ -- 20230706【dw_base改为dw_tmp】
 commit;
 
 create  table dw_tmp.tmp_exp_credit_per_compt_info_repay (
@@ -24,19 +24,19 @@ seq_id varchar(60) -- 贷款ID
 ,is_close varchar(10)
 ,sum_rpy_amt decimal(18,2) -- 累计追偿本金
 ,index idx_tmp_exp_credit_per_compt_info_repay_seq_id(seq_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC 
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC
 ;
 commit;
 
 insert into dw_tmp.tmp_exp_credit_per_compt_info_repay
-select 
+select
 t1.guar_id
 ,t1.recovery_amt  -- 最近一次追偿本金
 ,t1.last_repay_date -- 最近一次偿还日期/结清日期
 ,t1.is_settle -- 是否结清
 ,sum_recovery_amt  -- 累计追偿本金
 from (
-	select 
+	select
 	guar_id
 	,recovery_amt  -- 最近一次追偿本金
 	,last_repay_date
@@ -66,10 +66,10 @@ on t1.guar_id = t2.guar_id
 commit ;
 
 
--- 
+--
 
 -- 代偿账户信息
- 
+
 delete from dw_base.exp_credit_per_compt_info_ready where day_id ='${v_sdate}';
 
 commit;
@@ -136,10 +136,10 @@ from dw_nd.ods_imp_compt_cust_info t1  -- 担保业务系统所有代偿业务
 -- from dw_nd.ods_imp_compt_cust_info_rpb t1
 -- inner join dw_base.exp_credit_per_cust_info_ready t2  -- 客户授权
 inner join dw_base.tmp_exp_credit_per_cust_info_id t2  -- 客户授权
-on t1.cert_no = t2.id_num 
+on t1.cert_no = t2.id_num
 left join dw_tmp.tmp_exp_credit_per_compt_info_repay t3
 on t1.seq_id = t3.seq_id
-left join dw_base.dwd_guar_compt_info t4 
+left join dw_base.dwd_guar_compt_info t4
 on t1.seq_id=t4.guar_id
 left join (
 	select bank_id,org_code
@@ -159,7 +159,7 @@ commit;
 -- 相关还款责任人（只在账户开立的时候上报）
 
 -- 每笔业务对应的反担保人信息,共同借款人信息
-drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_xz_counter ;
+drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_xz_counter;
 commit;
 
 create table dw_tmp.tmp_exp_credit_per_compt_info_xz_counter (
@@ -170,108 +170,108 @@ create table dw_tmp.tmp_exp_credit_per_compt_info_xz_counter (
 	id_type            varchar(4),
 	id_no              varchar(40),
 	index idx_tmp_tmp_exp_credit_per_compt_info_xz_counter_project_id(project_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC 
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC
 ;
 commit;
 
 insert into dw_tmp.tmp_exp_credit_per_compt_info_xz_counter
-select distinct 
-        '2' as duty_type, -- 1-共同债务人 2-反担保人 9-其他
-        t1.apply_code,
+select distinct
+		'2' as duty_type, -- 1-共同债务人 2-反担保人 9-其他
+		t1.apply_code,
 		t1.guar_id,
- 		t2.counter_name, -- 反担保人名称
+		t2.counter_name, -- 反担保人名称
 		t2.id_type,   -- 反担保人证件类型
 		t2.id_no      -- 反担保人证件号
-from 
+from
 	(
-	    select 
-	    	guar_id,
-	    	apply_code
-	    from
-	    	(
-	    	    select 
-	    	    	guar_id,
-	    	    	apply_code,
-	    	        row_number() over (partition by apply_code order by update_time desc) rn
-	    	    from dw_nd.ods_bizhall_guar_apply  -- 客户申请表
-	    	    where date_format(update_time,'%Y%m%d') <=  '${v_sdate}'
-	    	    and guar_id is not null
-	    	) t 
-	    where rn = 1
+		select
+			guar_id,
+			apply_code
+		from
+			(
+				select
+					guar_id,
+					apply_code,
+					row_number() over (partition by apply_code order by update_time desc) rn
+				from dw_nd.ods_bizhall_guar_apply  -- 客户申请表
+				where date_format(update_time,'%Y%m%d') <=  '${v_sdate}'
+				and guar_id is not null
+			) t
+		where rn = 1
 	)t1
-inner join 
+inner join
 (
-    select 
-    	apply_code,
-    	counter_name,
-    	coalesce(id_type,ident_type) id_type,
-    	id_no
-    from
-    	(
-    	    select 
-    	    	apply_code,
-    	    	counter_name,
-    	    	id_type,  -- 10 证件号  20 企业信用代码
+	select
+		apply_code,
+		counter_name,
+		coalesce(id_type,ident_type) id_type,
+		id_no
+	from
+		(
+			select
+				apply_code,
+				counter_name,
+				id_type,  -- 10 证件号  20 企业信用代码
 				case when id_no like '9%' then '20' else '10' end ident_type,
-    	    	id_no,
-    	        row_number() over (partition by apply_code,id_no,counter_name order by update_time desc) rn
-    	    from dw_nd.ods_bizhall_guar_apply_counter -- 反担保关联表  status状态字段不用限制
-    	    where date_format(update_time,'%Y%m%d') <=  '${v_sdate}'
+				id_no,
+				row_number() over (partition by apply_code,id_no,counter_name order by update_time desc) rn
+			from dw_nd.ods_bizhall_guar_apply_counter -- 反担保关联表  status状态字段不用限制
+			where date_format(update_time,'%Y%m%d') <=  '${v_sdate}'
 					-- and apply_code = 'W202212210000010178'
-    	) t
-    where rn = 1
+		) t
+	where rn = 1
 )t2
 on t1.apply_code = t2.apply_code
 union all
-select distinct 
+select distinct
 		'1' as duty_type, -- 1-共同债务人 2-反担保人 9-其他
-        t1.apply_code,
+		t1.apply_code,
 		t1.guar_id,
- 		coalesce(t1.bank_part_name,t2.part_name), -- 共同借款人名称
+		coalesce(t1.bank_part_name,t2.part_name), -- 共同借款人名称
 		t2.id_type,   -- 共同借款人证件类型
 		coalesce(t1.bank_part_id_no,t2.id_no)      -- 共同借款人证件号
-from 
+from
 	(
-	    select 
-	    	guar_id,
-	    	apply_code,
-	    	bank_part_name,
-	    	bank_part_id_no
-	    from
-	    	(
-	    	    select 
-	    	    	guar_id,
-	    	    	apply_code,
-	    	    	bank_part_name, -- 共同借款人姓名
-	    	    	bank_part_id_no, -- 共同借款人身份证号
-	    	        row_number() over (partition by apply_code order by update_time desc) rn
-	    	    from dw_nd.ods_bizhall_guar_apply  -- 客户申请表
-	    	    where date_format(update_time,'%Y%m%d') <=  '${v_sdate}'
-	    	    and guar_id is not null
-	    	) t 
-	    where rn = 1
+		select
+			guar_id,
+			apply_code,
+			bank_part_name,
+			bank_part_id_no
+		from
+			(
+				select
+					guar_id,
+					apply_code,
+					bank_part_name, -- 共同借款人姓名
+					bank_part_id_no, -- 共同借款人身份证号
+					row_number() over (partition by apply_code order by update_time desc) rn
+				from dw_nd.ods_bizhall_guar_apply  -- 客户申请表
+				where date_format(update_time,'%Y%m%d') <=  '${v_sdate}'
+				and guar_id is not null
+			) t
+		where rn = 1
 	)t1
-inner join	
+inner join
 (
-    select 
-    	apply_code,
-    	part_name,
-    	coalesce(id_type,ident_type)id_type,
-    	id_no
-    from
-    	(
-    	    select 
-    	    	apply_code,
-    	    	part_name,
-    	    	id_type,  -- 10 证件号  20 企业信用代码
+	select
+		apply_code,
+		part_name,
+		coalesce(id_type,ident_type)id_type,
+		id_no
+	from
+		(
+			select
+				apply_code,
+				part_name,
+				id_type,  -- 10 证件号  20 企业信用代码
 				case when id_no like '9%' then '20' else '10' end ident_type,
-    	    	upper(id_no)id_no,
-    	        row_number() over (partition by apply_code,upper(id_no) order by update_time desc) rn
-    	    from dw_nd.ods_bizhall_guar_apply_part -- 共同申保人关联表
-    	    where date_format(update_time,'%Y%m%d') <=  '${v_sdate}'
+				upper(id_no)id_no,
+				row_number() over (partition by apply_code,upper(id_no) order by update_time desc) rn
+			from dw_nd.ods_bizhall_guar_apply_part -- 共同申保人关联表
+			where date_format(update_time,'%Y%m%d') <=  '${v_sdate}'
 			and part_name is not null
-    	) t
-    where rn = 1
+		) t
+	where rn = 1
 )t2
 on t1.apply_code = t2.apply_code
 inner join (
@@ -281,7 +281,7 @@ inner join (
 		from dw_nd.ods_t_biz_project_main
 	)t
 	where rn = 1
-) t3 
+) t3
 on t1.guar_id = t3.id and t3.spouse_co_borrower is true
 ;
 commit;
@@ -293,7 +293,7 @@ commit;
 
 create table dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_sq (
 	duty_type          varchar(60),
-    apply_code         varchar(60),
+	apply_code         varchar(60),
 	project_id         varchar(60),
 	counter_name       varchar(60),
 	id_type            varchar(4),
@@ -302,7 +302,7 @@ create table dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_sq (
 	index credit_per_guar_info_xz_counter_sq_project_id(project_id),
 	index credit_per_guar_info_xz_counter_sq_ct_guar_person_id_no(id_no),
 	index credit_per_guar_info_xz_counter_sq_cust_code(cust_code)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC 
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC
 ;
 commit;
 
@@ -310,32 +310,32 @@ insert into dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_sq
 select
 	   t.duty_type, -- 1-共同债务人 2-反担保人 9-其他
 	   t.apply_code,
-       t.project_id,   -- 担保业务系统ID
-       t.counter_name,  -- 反担保人/共同借款人名称
-       t.id_type,  -- 反担保人/共同借款人证件类型
-       t.id_no,  -- 反担保人/共同借款人证件号
+	   t.project_id,   -- 担保业务系统ID
+	   t.counter_name,  -- 反担保人/共同借款人名称
+	   t.id_type,  -- 反担保人/共同借款人证件类型
+	   t.id_no,  -- 反担保人/共同借款人证件号
 	   t2.cust_code  -- 反担保人/共同借款人客户号
 from dw_tmp.tmp_exp_credit_per_compt_info_xz_counter t -- 每笔申请记录对应的反担保人/共同借款人信息
-inner join 
+inner join
 (
   select customer_id
-  		,main_name
-  		,coalesce(main_id_type,ident_type)main_id_type
-  		,main_id_no    
+		,main_name
+		,coalesce(main_id_type,ident_type)main_id_type
+		,main_id_no
   from
   (
-    select customer_id,
-		       main_name,
-               main_id_type,
-               case when main_id_no like '9%' then '20' else '10' end ident_type,
-               main_id_no,
-               row_number() over (partition by MAIN_ID_NO order by update_time desc) rn
-    from dw_nd.ods_wxapp_cust_login_info     -- 用户注册信息
-    where status = '10'  -- 已授权   授权的客户证件号都不为空，去掉了 customer_id is not null and main_id_no is null 这个条件
+	select customer_id,
+			   main_name,
+			   main_id_type,
+			   case when main_id_no like '9%' then '20' else '10' end ident_type,
+			   main_id_no,
+			   row_number() over (partition by MAIN_ID_NO order by update_time desc) rn
+	from dw_nd.ods_wxapp_cust_login_info     -- 用户注册信息
+	where status = '10'  -- 已授权   授权的客户证件号都不为空，去掉了 customer_id is not null and main_id_no is null 这个条件
   ) t
   where rn = 1
 )t1
-on t.id_no = t1.main_id_no   
+on t.id_no = t1.main_id_no
 left join (select cust_code,id_no from (select cust_code,id_no,row_number() over (partition by cust_code order by update_time desc) rn from dw_nd.ods_crm_cust_info)t where rn = 1)t2  -- mdy 20240911，之前是按照id_No取最新，但是会存在一个证件号对应多个客户号的情况，漏掉客户号，导致后面关联不到合同
 on t.id_no = t2.id_no
 ;
@@ -352,32 +352,32 @@ create table dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_contract (
 	contract_template_id  varchar(64),
 	index idx_tmp_exp_credit_per_compt_info_xz_counter_contract_biz_id(biz_id),
 	index idx_tmp_exp_credit_per_compt_info_xz_contract_customer_id(customer_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC 
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC
 ;
 commit;
 
 insert into dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_contract
 select biz_id
-       ,contract_id  -- 合同编号
+	   ,contract_id  -- 合同编号
 	   ,customer_id  -- 签署人客户号
-       ,contract_template_id -- 合同模板id
+	   ,contract_template_id -- 合同模板id
 from (
 select biz_id
-       ,contract_id  -- 合同编号
+	   ,contract_id  -- 合同编号
 	   ,customer_id  -- 签署人客户号
 	   -- ,concat('X3701010000337',contract_template_id) as contract_template_id -- 合同模板id
 	   ,contract_template_id as contract_template_id -- 合同模板id
-       ,status
-from 
+	   ,status
+from
 (
-    select biz_id
-           ,contract_id  -- 合同编号
-    	   ,coalesce(AUTHORIZED_CUSTOMER_ID,customer_id)customer_id  -- 签署人客户号
-    	   ,contract_template_id  -- 合同模板id
-           ,status
-           ,row_number() over (partition by BIZ_ID,CONTRACT_ID order by UPDATE_TIME desc) as rn
-    from dw_nd.ods_comm_cont_comm_contract_info
-    where contract_name like '%反担保%'
+	select biz_id
+		   ,contract_id  -- 合同编号
+		   ,coalesce(AUTHORIZED_CUSTOMER_ID,customer_id)customer_id  -- 签署人客户号
+		   ,contract_template_id  -- 合同模板id
+		   ,status
+		   ,row_number() over (partition by BIZ_ID,CONTRACT_ID order by UPDATE_TIME desc) as rn
+	from dw_nd.ods_comm_cont_comm_contract_info
+	where contract_name like '%反担保%'
 )a
 where rn = 1
 )t1
@@ -397,7 +397,7 @@ create table dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_contract_xx (
 	count_cont_code           varchar(64),
 	index idx_tmp_xz_counter_contract_xx_project_id(project_id),
 	index idx_tmp_xz_counter_contract_xx_ct_guar_person_id_no(ct_guar_person_id_no)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC 
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC
 ;
 commit;
 
@@ -408,12 +408,12 @@ select project_id
 	  ,ct_guar_person_id_no -- 反担保人证件号
 	  ,replace(count_cont_code,'线下','XX')      -- 反担保合同
 from (
-	select id  
-	       ,project_id
+	select id
+		   ,project_id
 		   ,ct_guar_person_name
 		   ,ct_guar_person_id_no
 		   ,count_cont_code
-	       ,row_number() over (partition by project_id order by db_update_time desc,update_time desc) rn
+		   ,row_number() over (partition by project_id order by db_update_time desc,update_time desc) rn
 	from dw_nd.ods_t_ct_guar_person
 )t
 where rn = 1
@@ -425,11 +425,11 @@ drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_main;
 commit;
 
 create table dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_main (
-    project_id         varchar(60),
+	project_id         varchar(60),
 	guar_id            varchar(60),
 	index credit_per_guar_info_xz_counter_main_project_id(project_id),
 	index credit_per_guar_info_xz_counter_main_ct_guar_person_id_no(guar_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC 
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC
 ;
 commit;
 
@@ -439,7 +439,7 @@ select id,
 from (
 select id,
 	   code,
-       row_number() over (partition by id order by db_update_time desc,update_time desc) rn
+	   row_number() over (partition by id order by db_update_time desc,update_time desc) rn
 from dw_nd.ods_t_biz_project_main
 )a
 where rn = 1
@@ -452,11 +452,11 @@ drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_check;
 commit;
 
 create table dw_tmp.tmp_exp_credit_per_compt_info_check (
-    project_id         varchar(60),
+	project_id         varchar(60),
 	aggregate_scheme   varchar(60),
 	index tmp_exp_credit_comp_guar_info_checkproject_id(project_id),
 	index tmp_exp_credit_comp_guar_info_check_aggregate_scheme(aggregate_scheme)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC 
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC
 ;
 commit;
 
@@ -466,7 +466,7 @@ select project_id,
 from (
 select project_id,
 	   aggregate_scheme,
-       row_number() over (partition by project_id order by update_time desc) rn
+	   row_number() over (partition by project_id order by update_time desc) rn
 from dw_nd.ods_t_risk_check_opinion
 )a
 where rn = 1
@@ -474,7 +474,7 @@ where rn = 1
 commit;
 
 -- 核心企业管理中企业分险
-drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_risk_comp; commit;
+drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_risk_comp;commit;
 create table if not exists dw_tmp.tmp_exp_credit_per_compt_info_risk_comp(
 company_name varchar(200) comment'企业名称',
 unified_social_credit_code varchar(50) comment '统一社会信用代码',
@@ -503,7 +503,7 @@ on t1.id = t2.cem_base_id -- 核心企业id    【经沟通，ods_cem_company_ba
 commit;
 
 -- 核心企业管理中自然人分险
-drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_risk_natural; commit;
+drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_risk_natural;commit;
 create table if not exists dw_tmp.tmp_exp_credit_per_compt_info_risk_natural(
 person_name varchar(200) comment'自然人名称',
 person_identity varchar(50) comment '证件号',
@@ -543,9 +543,9 @@ commit;
 -- 	duty_cert_no varchar(40)  comment '责任人身份标识号码',
 -- 	duty_type varchar(3)  comment '还款责任人类型：1-共同债务人2-反担保人9-其他',
 -- 	duty_amt int  comment '还款责任金额',
--- 	duty_flag varchar(3)  comment '联保标志：0-单人保证/多人分保（单人保证指该账户对应的担保交易仅有一个反担保人，多人分保指该账户对应的担保交易有多个反担保人，且每个反担保人独立分担一部分担保责任）1-联保（联保指该账户对应的担保交易有多个反担保人且共同承担担保责任）',  
+-- 	duty_flag varchar(3)  comment '联保标志：0-单人保证/多人分保（单人保证指该账户对应的担保交易仅有一个反担保人，多人分保指该账户对应的担保交易有多个反担保人，且每个反担保人独立分担一部分担保责任）1-联保（联保指该账户对应的担保交易有多个反担保人且共同承担担保责任）',
 -- 	guar_cont_no varchar(60)  comment '保证合同编号'
--- ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC 
+-- ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC
 -- ;
 -- commit;
 
@@ -555,7 +555,7 @@ commit;
 insert into dw_base.exp_credit_per_compt_duty_info
 select * from (
 select t.day_id
-       ,t.ln_id
+	   ,t.ln_id
 	 ,t.cust_id
 	 ,t.info_id_type
 	 ,t.duty_name
@@ -574,29 +574,29 @@ select t.day_id
 		   end as guar_cont_no  -- 反担保合同
 from (
 select '${v_sdate}' as day_id,
-       t.ln_id,  -- 担保ID
-       t.cust_id,  -- 客户号
+	   t.ln_id,  -- 担保ID
+	   t.cust_id,  -- 客户号
 	   case when t2.id_type = '10' then '1' when t2.id_type = '20' then '2' else null end as info_id_type,  -- 身份类别  1-自然人  2-组织机构
 	   t2.counter_name as duty_name, -- 责任人名称
 	   '10' as duty_cert_type,  -- 责任人身份标识类型  10:居民身份证及其他以公民身份证号为标识的证件 20-统一社会信用代码
-	   case when t2.id_type = '10' then t2.id_no 
-	        when t2.id_type = '20' then coalesce(t10.zhongzheng_code,t9.id_num) 
-			else null 
+	   case when t2.id_type = '10' then t2.id_no
+			when t2.id_type = '20' then coalesce(t10.zhongzheng_code,t9.id_num)
+			else null
 	   end as duty_cert_no,  -- 责任人身份标识号码
 	   t2.duty_type, -- 1-共同债务人 2-反担保人 9-其他
 	   case when t2.duty_type='2' then coalesce(t.acct_cred_line,t.loan_amt) else null end as duty_amt, -- 还款责任金额(担保金额)
-	   -- case when t2.duty_type='2' then coalesce(t5.contract_id,t4.contract_id,t7.contract_id,t8.contract_id,t6.count_cont_code) 
-	   -- 	else null 
+	   -- case when t2.duty_type='2' then coalesce(t5.contract_id,t4.contract_id,t7.contract_id,t8.contract_id,t6.count_cont_code)
+	   -- 	else null
 	   -- 	end as guar_cont_no, -- 反担保合同编号
-	   case when t2.duty_type='2' then coalesce(t5.contract_id,t4.contract_id,t6.count_cont_code) 
-	        else null 
-	        end as guar_cont_no, -- 反担保合同编号
+	   case when t2.duty_type='2' then coalesce(t5.contract_id,t4.contract_id,t6.count_cont_code)
+			else null
+			end as guar_cont_no, -- 反担保合同编号
 	   t10.ct_guar_person_id_no, -- 企业统一社会编码
 	   t11.aggregate_scheme -- 产业集群
 from (
 select ln_id,cust_id,acct_cred_line,loan_amt
-from dw_base.exp_credit_per_compt_info_ready  
-where day_id = '${v_sdate}' 
+from dw_base.exp_credit_per_compt_info_ready
+where day_id = '${v_sdate}'
 )t -- 与昨日数据对比获取余额变动日期、五级分类变动日期 存放当天变化后的数据以及变化日期
 inner join dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_main t1  -- -- 担保业务系统id 和项目编号转换
 on t.ln_id = t1.guar_id
@@ -612,7 +612,7 @@ and t2.id_no = t5.customer_id  -- 证件号
 and t2.duty_type='2'
 left join dw_tmp.tmp_exp_credit_per_compt_info_xz_counter_contract_xx t6 -- 线下签约
 on t1.project_Id = t6.project_Id
-and t2.id_no = t6.ct_guar_person_id_no 
+and t2.id_no = t6.ct_guar_person_id_no
 and t6.count_cont_code is not null
 and t2.duty_type='2'
 -- left join dw_tmp.tmp_exp_credit_per_guar_info_xz_counter_contract t7
@@ -633,13 +633,13 @@ left join (
 	from (
 		select id,project_id,zhongzheng_code,ct_guar_person_id_no,row_number() over (partition by id order by db_update_time desc,update_time desc) rn
 		from dw_nd.ods_t_ct_guar_person
-                where data_type = '7' -- 出具批复最终定的担保人
+				where data_type = '7' -- 出具批复最终定的担保人
 	)t
 	where rn = 1
 )t10
 on t1.project_Id = t10.project_Id
 and t2.id_no = t10.ct_guar_person_id_no
-and t10.zhongzheng_code is not null 
+and t10.zhongzheng_code is not null
 and t2.duty_type='2'
 left join dw_tmp.tmp_exp_credit_per_compt_info_check t11
 on t1.project_id = t11.project_id
@@ -647,12 +647,12 @@ on t1.project_id = t11.project_id
 left join dw_tmp.tmp_exp_credit_per_compt_info_risk_comp t1  -- 20231023优化，核心企业的集群方案与担保业务一致时，作为反担保人时，责任金额用合同金额*分险比例，反担保合同用协议合同+业务编号
 on t.ct_guar_person_id_no = t1.unified_social_credit_code
 and t.aggregate_scheme = t1.dictionaries_code
-left join dw_tmp.tmp_exp_credit_per_compt_info_risk_natural t2 
+left join dw_tmp.tmp_exp_credit_per_compt_info_risk_natural t2
 on t.duty_cert_no = t2.person_identity
 and t.aggregate_scheme = t2.dictionaries_code
-where t.duty_cert_no is not null 
+where t.duty_cert_no is not null
 )t
-where guar_cont_no is not null 
+where guar_cont_no is not null
 ;
 commit;
 
@@ -668,21 +668,21 @@ commit;
 
 
 delete from dw_base.exp_credit_per_compt_info_open where day_id = '${v_sdate}' ;
-commit; 
+commit;
 insert into dw_base.exp_credit_per_compt_info_open
-select 
-ln_id     -- 
-,day_id     
-,open_date 
+select
+ln_id     --
+,day_id
+,open_date
 from dw_base.exp_credit_per_compt_info_ready t1
-where t1.day_id = '${v_sdate}'  
+where t1.day_id = '${v_sdate}'
 and t1.open_date <= DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d')     -- 放款日期为当天即新增
 and datediff(DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d'),open_date) < 300  -- 检验规则：开户日期和报送日期间隔要小于30天
 and t1.close_date = ''
 and not exists (         -- 新开客户
 select 1
 from dw_pbc.exp_credit_per_compt_info t2
-where t2.day_id < '${v_sdate}' 
+where t2.day_id < '${v_sdate}'
 and t2.rpt_date_code = '10'
 and t1.ln_id = t2.ln_id
 )
@@ -698,19 +698,19 @@ commit;
 --  ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC ;
 
 delete from dw_base.exp_credit_per_compt_info_close where day_id = '${v_sdate}' ;
-commit; 
+commit;
 insert into dw_base.exp_credit_per_compt_info_close
-select 
-ln_id     -- 
-,day_id     
-,close_date 
+select
+ln_id     --
+,day_id
+,close_date
 from (
-select 
-ln_id     
-,day_id     
-,close_date  
-from dw_base.exp_credit_per_compt_info_ready 
-where day_id = '${v_sdate}'  
+select
+ln_id
+,day_id
+,close_date
+from dw_base.exp_credit_per_compt_info_ready
+where day_id = '${v_sdate}'
 and  close_date <= DATE_FORMAT('${v_sdate}' ,'%Y-%m-%d')    -- mdy 20221009 增加结清的数据
 -- and close_date <>''
 and close_date is not null
@@ -725,7 +725,7 @@ where exists (
 and not exists (         -- 新增 关闭账户
 select 1
 from dw_pbc.exp_credit_per_compt_info t2
-where t2.day_id < '${v_sdate}' 
+where t2.day_id < '${v_sdate}'
 and t2.rpt_date_code = '20'  -- 关户
 and t1.ln_id = t2.ln_id
 )
@@ -744,9 +744,9 @@ commit;
 
 
 delete from dw_base.exp_credit_per_compt_info_repay_dt where day_id = '${v_sdate}' ;
-commit; 
+commit;
 insert into dw_base.exp_credit_per_compt_info_repay_dt
-select 
+select
 seq_id
 ,DATE_FORMAT('${v_sdate}' ,'%Y%m%d')
 ,lat_rpy_date
@@ -764,7 +764,7 @@ select 1 from dw_pbc.exp_credit_per_compt_info t2 -- 余额变动 不能关闭
 where t2.rpt_date_code = '20' -- 关户
 and t1.seq_id = t2.ln_id
 )
-and exists (  
+and exists (
 select 1 from dw_pbc.exp_credit_per_compt_info t2 --   之前开户
 where t2.day_id < '${v_sdate}'
 and t2.rpt_date_code = '10' -- 开户
@@ -788,7 +788,7 @@ commit;
 
 -- 账户开立 10
 insert into dw_base.exp_credit_per_compt_info
-select distinct 
+select distinct
 t1.day_id	 --	数据日期
 ,t1.ln_id	 --	贷款ID
 ,t1.cust_id	 --	客户号
@@ -847,7 +847,7 @@ commit;
 
 -- 账户关闭 20
 insert into dw_base.exp_credit_per_compt_info
-select distinct 
+select distinct
  t1.day_id	 --	数据日期
 ,t1.ln_id	 --	贷款ID
 ,t1.cust_id	 --	客户号
@@ -907,7 +907,7 @@ commit;
 -- 月结日 没有 30
 -- 收回逾期款项 40
 insert into dw_base.exp_credit_per_compt_info
-select distinct 
+select distinct
  t1.day_id	 --	数据日期
 ,t1.ln_id	 --	贷款ID
 ,t1.cust_id	 --	客户号
@@ -963,7 +963,7 @@ where t1.day_id ='${v_sdate}'
 commit;
 
 -- -- 个人借贷账户标识变更请求记录
--- 
+--
 -- insert into dw_base.exp_credit_per_compt_info_del
 -- select
 -- '${v_sdate}'	 --	数据日期
@@ -981,25 +981,25 @@ commit;
 
 -- 1.定位客户群 今天上报前已开户，但是未关闭。
 
-drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_sep_cust ;  -- 【dw_base 改为dw_tmp】
+drop table if exists dw_tmp.tmp_exp_credit_per_compt_info_sep_cust ;	-- 【dw_base 改为dw_tmp】
 
 commit;
 
 create  table dw_tmp.tmp_exp_credit_per_compt_info_sep_cust (
-ln_id varchar(60) 
+ln_id varchar(60)
 ,key(ln_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin ROW_FORMAT=DYNAMIC ;
 
 commit;
-   
+
 insert into dw_tmp.tmp_exp_credit_per_compt_info_sep_cust
-select 
-ln_id   
-from dw_base.exp_credit_per_compt_info_open t1 
-where t1.day_id < '${v_sdate}' 
-and not exists( 
-select 1 from dw_base.exp_credit_per_compt_info t2 
-where t2.day_id <= '${v_sdate}' 
+select
+ln_id
+from dw_base.exp_credit_per_compt_info_open t1
+where t1.day_id < '${v_sdate}'
+and not exists(
+select 1 from dw_base.exp_credit_per_compt_info t2
+where t2.day_id <= '${v_sdate}'
 and t2.rpt_date_code = '20' -- 关户
 and t1.ln_id = t2.ln_id
 )
@@ -1026,11 +1026,11 @@ select
 ,t2.mngmt_org_code -- 业务管理机构代码
 from dw_tmp.tmp_exp_credit_per_compt_info_sep_cust t1
 inner join dw_base.exp_credit_per_compt_info_ready t2
-        on t1.ln_Id = t2.ln_Id
-       and t2.day_id = '${v_sdate}'
+		on t1.ln_Id = t2.ln_Id
+	   and t2.day_id = '${v_sdate}'
 inner join dw_base.exp_credit_per_compt_info_ready t3
-        on t1.ln_Id = t3.ln_Id
-       and t3.day_id = '${v_yesterday}' 
+		on t1.ln_Id = t3.ln_Id
+	   and t3.day_id = '${v_yesterday}'
 where t2.name <> t3.name
    or t2.id_type <> t3.id_type
    or t2.id_num <> t3.id_num
@@ -1038,7 +1038,7 @@ where t2.name <> t3.name
 ;
 commit;
 
--- C-基本信息段 
+-- C-基本信息段
 delete from dw_base.exp_credit_per_compt_info_change_c where day_id = '${v_sdate}' ;
 
 commit;
@@ -1071,11 +1071,11 @@ select
 ,t2.first_hou_loan_flag -- 是否为首套住房贷款
 from dw_tmp.tmp_exp_credit_per_compt_info_sep_cust t1
 inner join dw_base.exp_credit_per_compt_info_ready t2
-        on t1.ln_Id = t2.ln_Id
-       and t2.day_id = '${v_sdate}'
+		on t1.ln_Id = t2.ln_Id
+	   and t2.day_id = '${v_sdate}'
 inner join dw_base.exp_credit_per_compt_info_ready t3
-        on t1.ln_Id = t3.ln_Id
-       and t3.day_id = '${v_yesterday}' 
+		on t1.ln_Id = t3.ln_Id
+	   and t3.day_id = '${v_yesterday}'
 where (t2.loan_amt <> t3.loan_amt
    or t2.due_date <> t2.due_date
    -- or t2.open_date <> t3.open_date
@@ -1085,7 +1085,7 @@ where (t2.loan_amt <> t3.loan_amt
 	 select 1 from dw_base.exp_credit_per_compt_info t4  -- 不能通过 10 20 30 40 50 上报
 	 where t4.day_id = '${v_sdate}'
 	   and t1.ln_Id = t4.ln_Id
-	 )   
+	 )
 ;
 commit;
 
@@ -1100,17 +1100,17 @@ select
 ,t2.ln_Id
 ,t2.cust_Id
 ,t2.acct_code -- 账户标识码
-,t2.init_cred_name -- 初始债权人名称 
-,t2.init_cred_org_nm -- 初始债权人机构代码 
+,t2.init_cred_name -- 初始债权人名称
+,t2.init_cred_org_nm -- 初始债权人机构代码
 ,t2.orig_dbt_cate -- 原债务种类
 ,t2.init_rpy_sts -- 债权转移时的还款状态
 from dw_tmp.tmp_exp_credit_per_compt_info_sep_cust t1
 inner join dw_base.exp_credit_per_compt_info_ready t2
-        on t1.ln_Id = t2.ln_Id
-       and t2.day_id = '${v_sdate}'
+		on t1.ln_Id = t2.ln_Id
+	   and t2.day_id = '${v_sdate}'
 inner join dw_base.exp_credit_per_compt_info_ready t3
-        on t1.ln_Id = t3.ln_Id
-       and t3.day_id = '${v_yesterday}' 
+		on t1.ln_Id = t3.ln_Id
+	   and t3.day_id = '${v_yesterday}'
 where (t2.init_cred_name <> t3.init_cred_name
    -- or t2.init_rpy_sts <> t3.init_rpy_sts
    )
@@ -1119,7 +1119,7 @@ where (t2.init_cred_name <> t3.init_cred_name
 	 select 1 from dw_base.exp_credit_per_compt_info t4  -- 不能通过 10 20 30 40 50 上报
 	 where t4.day_id = '${v_sdate}'
 	   and t1.ln_Id = t4.ln_Id
-	 ) 
+	 )
 ;
 commit;
 -- J-非月度表现信息段
@@ -1146,11 +1146,11 @@ select
 ,t2.close_date -- 账户关闭日期
 from dw_tmp.tmp_exp_credit_per_compt_info_sep_cust t1
 inner join dw_base.exp_credit_per_compt_info_ready t2
-        on t1.ln_Id = t2.ln_Id
-       and t2.day_id = '${v_sdate}'
+		on t1.ln_Id = t2.ln_Id
+	   and t2.day_id = '${v_sdate}'
 inner join dw_base.exp_credit_per_compt_info_ready t3
-        on t1.ln_Id = t3.ln_Id
-       and t3.day_id = '${v_yesterday}' 
+		on t1.ln_Id = t3.ln_Id
+	   and t3.day_id = '${v_yesterday}'
 where t2.acct_bal <> t3.acct_bal
 and not exists(
 select 1 from dw_base.exp_credit_per_compt_info t4 where day_id = '${v_sdate}'
@@ -1168,9 +1168,9 @@ delete from dw_pbc.exp_credit_per_compt_info where day_id = '${v_sdate}' ;
 commit;
 
 insert into dw_pbc.exp_credit_per_compt_info
-select * 
+select *
 from dw_base.exp_credit_per_compt_info
-where day_id = '${v_sdate}' 
+where day_id = '${v_sdate}'
 ;
 
 commit;
@@ -1180,8 +1180,8 @@ commit;
 insert into dw_pbc.exp_credit_per_compt_duty_info
 select
 *
-from dw_base.exp_credit_per_compt_duty_info 
-where day_id = '${v_sdate}' 
+from dw_base.exp_credit_per_compt_duty_info
+where day_id = '${v_sdate}'
 ;
 commit ;
 
@@ -1190,10 +1190,10 @@ delete from dw_pbc.exp_credit_per_compt_info_change_b where day_id = '${v_sdate}
 
 commit ;
 
-insert into dw_pbc.exp_credit_per_compt_info_change_b 
-select * 
-from dw_base.exp_credit_per_compt_info_change_b  
-where day_id = '${v_sdate}' 
+insert into dw_pbc.exp_credit_per_compt_info_change_b
+select *
+from dw_base.exp_credit_per_compt_info_change_b
+where day_id = '${v_sdate}'
 ;
 
 commit ;
@@ -1202,10 +1202,10 @@ delete from dw_pbc.exp_credit_per_compt_info_change_c where day_id = '${v_sdate}
 
 commit ;
 
-insert into dw_pbc.exp_credit_per_compt_info_change_c 
-select * 
+insert into dw_pbc.exp_credit_per_compt_info_change_c
+select *
 from dw_base.exp_credit_per_compt_info_change_c
-where day_id = '${v_sdate}' 
+where day_id = '${v_sdate}'
 ;
 
 commit ;
@@ -1214,10 +1214,10 @@ delete from dw_pbc.exp_credit_per_compt_info_change_g where day_id = '${v_sdate}
 
 commit ;
 
-insert into dw_pbc.exp_credit_per_compt_info_change_g 
-select * 
+insert into dw_pbc.exp_credit_per_compt_info_change_g
+select *
 from dw_base.exp_credit_per_compt_info_change_g
-where day_id = '${v_sdate}' 
+where day_id = '${v_sdate}'
 ;
 
 commit ;
@@ -1226,11 +1226,16 @@ delete from dw_pbc.exp_credit_per_compt_info_change_j where day_id = '${v_sdate}
 
 commit ;
 
-insert into dw_pbc.exp_credit_per_compt_info_change_j 
-select * 
+insert into dw_pbc.exp_credit_per_compt_info_change_j
+select *
 from dw_base.exp_credit_per_compt_info_change_j
-where day_id = '${v_sdate}' 
+where day_id = '${v_sdate}'
 ;
 
 commit ;
 
+delete
+from dw_pbc.exp_credit_per_compt_info
+where day_id = '${v_sdate}'
+  and ln_id in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5Z88-9594');
+commit;

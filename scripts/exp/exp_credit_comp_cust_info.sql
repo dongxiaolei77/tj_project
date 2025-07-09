@@ -42,9 +42,7 @@ from
 		,t1.name
 		,t1.id_type
 		,t1.id_num
-		,case when right(t1.name,2) ='作社' then '9'   -- 其他组织机构
-			  else  '1'  -- 企业（填写至大类）
-			  end org_type
+		,'1' org_type -- 20250701 修改默认组织机构类型 合作社也算企业
 		,substring_index(replace(replace((replace(t2.econ_class_cd,'\"','')),'[',''), ']',''),',',-1) code
 		,t1.day_id
 		,t1.rpt_date_code
@@ -217,7 +215,7 @@ select
 	-- ,'X3701010000337' as cimoc -- 客户资料维护机构代码
 	,'9999999' as cimoc -- 客户资料维护机构代码
 	,'2' as customer_type  -- 客户资料类型  2 授信业务客户资料
-	,'X' as etp_sts -- 存续状态      X 未知
+	,'1' as etp_sts -- 存续状态      X 未知
 	,t1.org_type -- 组织机构类型
 	,'CHN' as nationality -- 国别代码
 	,t3.reg_add -- 登记地址
