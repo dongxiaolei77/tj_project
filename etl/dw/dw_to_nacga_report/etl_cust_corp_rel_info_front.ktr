@@ -648,6 +648,18 @@
         <column_name>dict_flag</column_name>
         <stream_name>dict_flag</stream_name>
       </field>
+      <field>
+        <column_name>is_info_auth_own_comp</column_name>
+        <stream_name>is_info_auth_own_comp</stream_name>
+      </field>
+      <field>
+        <column_name>info_auth_start_dt_own_comp</column_name>
+        <stream_name>info_auth_start_dt_own_comp</stream_name>
+      </field>
+      <field>
+        <column_name>info_auth_end_dt_own_comp</column_name>
+        <stream_name>info_auth_end_dt_own_comp</stream_name>
+      </field>
     </fields>
     <attributes/>
     <cluster_schema/>

@@ -1338,6 +1338,12 @@ cust_no_nacga
 ,db_update_time
 ,day_id
 ,batch_id
+,is_info_auth
+,info_auth_start_dt
+,info_auth_end_dt
+,is_info_auth_coup
+,info_auth_start_dt_coup
+,info_auth_end_dt_coup
 
 )
 select
@@ -1368,6 +1374,12 @@ cust_no_nacga
 ,db_update_time
 ,day_id
 ,batch_id
+,is_info_auth
+,info_auth_start_dt
+,info_auth_end_dt
+,is_info_auth_coup
+,info_auth_start_dt_coup
+,info_auth_end_dt_coup
 from nacga_report.cust_per_base_info_front
 where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
 ;
@@ -1446,6 +1458,9 @@ cust_corp_cd
 ,db_update_time
 ,day_id
 ,batch_id
+,is_info_auth_own_comp
+,info_auth_start_dt_own_comp
+,info_auth_end_dt_own_comp
 )
 select
 cust_corp_cd
@@ -1465,6 +1480,9 @@ cust_corp_cd
 ,db_update_time
 ,day_id
 ,batch_id
+,is_info_auth_own_comp
+,info_auth_start_dt_own_comp
+,info_auth_end_dt_own_comp
 from nacga_report.cust_corp_rel_info_front
 where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
 ;
@@ -1527,6 +1545,12 @@ cust_no_nacga
 ,db_update_time
 ,day_id
 ,batch_id
+,is_info_auth
+,info_auth_start_dt
+,info_auth_end_dt
+,is_info_auth_lgpr
+,info_auth_start_dt_lgpr
+,info_auth_end_dt_lgpr
 )
 select
 cust_no_nacga
@@ -1549,6 +1573,12 @@ cust_no_nacga
 ,db_update_time
 ,day_id
 ,batch_id
+,is_info_auth
+,info_auth_start_dt
+,info_auth_end_dt
+,is_info_auth_lgpr
+,info_auth_start_dt_lgpr
+,info_auth_end_dt_lgpr
 from nacga_report.cust_corp_base_info_front
 where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
 ;
@@ -1673,6 +1703,13 @@ proj_no_nacga
 ,day_id
 ,batch_id
 ,core_corp_cert_no
+,is_credit_auth
+,is_comp_notice_credit
+,is_direct_guar
+,is_coop_cd
+,ovd_prin_rmv_bank_rk_seg_bal_3
+,other_ovd_rmv_bank_rk_seg_bal_3
+,comp_fst_comp_ntc_dt
 )
 select
 proj_no_nacga
@@ -1757,6 +1794,13 @@ proj_no_nacga
 ,day_id
 ,batch_id
 ,core_corp_cert_no
+,is_credit_auth
+,is_comp_notice_credit
+,is_direct_guar
+,is_coop_cd
+,ovd_prin_rmv_bank_rk_seg_bal_3
+,other_ovd_rmv_bank_rk_seg_bal_3
+,comp_fst_comp_ntc_dt
 from nacga_report.proj_base_info_front
 where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
 ;
@@ -1799,6 +1843,11 @@ cntr_cont_no_nacga
 ,db_update_time
 ,day_id
 ,batch_id
+,is_credit_auth
+,is_info_auth_cntr
+,info_auth_start_dt_cntr
+,info_auth_end_dt_cntr
+
 )
 select
 cntr_cont_no_nacga
@@ -1820,6 +1869,10 @@ cntr_cont_no_nacga
 ,db_update_time
 ,day_id
 ,batch_id
+,is_credit_auth
+,is_info_auth_cntr
+,info_auth_start_dt_cntr
+,info_auth_end_dt_cntr
 from nacga_report.proj_cntr_agmt_info_front
 where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
 ;
@@ -2627,6 +2680,7 @@ proj_comp_no_nacga
 ,db_update_time
 ,day_id
 ,batch_id
+,comp_ovd_amt
 )
 select
 proj_comp_no_nacga
@@ -2655,6 +2709,7 @@ proj_comp_no_nacga
 ,db_update_time
 ,day_id
 ,batch_id
+,comp_ovd_amt
 from nacga_report.proj_comp_info_front
 where day_id = date_format(date_sub(date('${v_sdate}'), interval 7 day), '%Y%m%d')
 ;

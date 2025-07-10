@@ -50,10 +50,37 @@ from ( -- 期初数
                DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
-         from dw_nd.ods_t_biz_proj_repayment_detail
-         where date_format(repay_date, '%Y%m') =
-               DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
+         from (
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
+                  where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
+              ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -95,10 +122,37 @@ from ( -- 期初数
                DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
-         from dw_nd.ods_t_biz_proj_repayment_detail
-         where date_format(repay_date, '%Y%m') =
-               DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
+         from (
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
+                  where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
+              ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -139,10 +193,37 @@ from ( -- 期初数
                DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
-         from dw_nd.ods_t_biz_proj_repayment_detail
-         where date_format(repay_date, '%Y%m') =
-               DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
+         from (
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
+                  where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
+              ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -813,10 +894,37 @@ from ( -- 期初数
                DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
-         from dw_nd.ods_t_biz_proj_repayment_detail
-         where date_format(repay_date, '%Y%m') =
-               DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
+         from (
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
+                  where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
+              ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -1111,12 +1219,37 @@ from ( -- 期初数
               ) t2 on t1.guar_id = t2.code
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
               ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
                   inner join
               (
                   select code -- 业务编号
@@ -1126,14 +1259,7 @@ from ( -- 期初数
                   where rn = 1
                     -- 02 中型企业 03 小型企业 04 微型企业
                     and enterprise_scale in ('02', '03', '04')
-              ) t2 on t1.guar_id = t2.code
-                  left join
-              (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
-                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t3 on t1.project_id = t3.project_id
+              ) t5 on t1.guar_id = t5.code
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -1213,12 +1339,37 @@ from ( -- 期初数
               ) t2 on t1.guar_id = t2.code
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
               ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
                   inner join
               (
                   select code -- 业务编号
@@ -1228,14 +1379,7 @@ from ( -- 期初数
                   where rn = 1
                     -- 是否农户为是
                     and is_farmer = 1
-              ) t2 on t1.guar_id = t2.code
-                  left join
-              (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
-                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t3 on t1.project_id = t3.project_id
+              ) t5 on t1.guar_id = t5.code
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -1334,12 +1478,37 @@ from ( -- 期初数
               ) t2 on t1.guar_id = t2.code
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
               ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
                   inner join
               (
                   select code -- 业务编号
@@ -1349,14 +1518,7 @@ from ( -- 期初数
                   where rn = 1
                     -- 06对应战略性新兴产业
                     and cust_main_label like '%06%'
-              ) t2 on t1.guar_id = t2.code
-                  left join
-              (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
-                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t3 on t1.project_id = t3.project_id
+              ) t5 on t1.guar_id = t5.code
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -1436,12 +1598,37 @@ from ( -- 期初数
               ) t2 on t1.guar_id = t2.code
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
               ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
                   inner join
               (
                   select code -- 业务编号
@@ -1451,14 +1638,7 @@ from ( -- 期初数
                   where rn = 1
                     -- 是否首贷 为是
                     and is_first_loan = 1
-              ) t2 on t1.guar_id = t2.code
-                  left join
-              (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
-                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t3 on t1.project_id = t3.project_id
+              ) t5 on t1.guar_id = t5.code
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -1538,12 +1718,37 @@ from ( -- 期初数
               ) t2 on t1.guar_id = t2.code
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
               ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
                   inner join
               (
                   select code -- 业务编号
@@ -1553,14 +1758,7 @@ from ( -- 期初数
                   where rn = 1
                     -- 02对应科技创新担保
                     and cust_main_label like '%02%'
-              ) t2 on t1.guar_id = t2.code
-                  left join
-              (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
-                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t3 on t1.project_id = t3.project_id
+              ) t5 on t1.guar_id = t5.code
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -1640,12 +1838,37 @@ from ( -- 期初数
               ) t2 on t1.guar_id = t2.code
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
               ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
                   inner join
               (
                   select code -- 业务编号
@@ -1655,14 +1878,7 @@ from ( -- 期初数
                   where rn = 1
                     -- 04对应服务绿色产业
                     and cust_main_label like '%04%'
-              ) t2 on t1.guar_id = t2.code
-                  left join
-              (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
-                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t3 on t1.project_id = t3.project_id
+              ) t5 on t1.guar_id = t5.code
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -1742,12 +1958,37 @@ from ( -- 期初数
               ) t2 on t1.guar_id = t2.code
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
               ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
                   inner join
               (
                   select code -- 业务编号
@@ -1757,14 +1998,7 @@ from ( -- 期初数
                   where rn = 1
                     -- 05对应服务航运产业
                     and cust_main_label like '%05%'
-              ) t2 on t1.guar_id = t2.code
-                  left join
-              (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
-                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t3 on t1.project_id = t3.project_id
+              ) t5 on t1.guar_id = t5.code
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -1844,12 +2078,37 @@ from ( -- 期初数
               ) t2 on t1.guar_id = t2.code
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
+                  from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
               ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
+                  left join
+              (
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
                   inner join
               (
                   select code -- 业务编号
@@ -1859,14 +2118,7 @@ from ( -- 期初数
                   where rn = 1
                     -- 03对应创业担保贷款
                     and cust_main_label like '%03%'
-              ) t2 on t1.guar_id = t2.code
-                  left join
-              (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
-                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t3 on t1.project_id = t3.project_id
+              ) t5 on t1.guar_id = t5.code
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -1950,27 +2202,39 @@ from ( -- 期初数
            and guar_rate < 1
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
-                  where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
-              ) t1
-                  inner join
-              (
-                  select guar_id
+                  select guar_id,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
                   from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
                     -- 担保费率低于1%
                     and guar_rate < 1
-              ) t2 on t1.guar_id = t2.guar_id
+              ) t1
+                  left join
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
                   left join
               (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
                         DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t3 on t1.project_id = t3.project_id
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)
@@ -5363,29 +5627,42 @@ from ( -- 期初数
          where t2.sup_area_name != '天津市'
      ) t2,
      ( -- 本期减少(发生额)
-         select sum(actual_repayment_amount) / 10000 as now_reduce_num -- 还款金额(万元)
+         select sum(if(t3.biz_no is not null, coalesce(t1.guar_amt, 0),
+                       coalesce(t4.repayment_amount, 0))) as now_reduce_num
          from (
-                  select guar_id, project_id
-                  from dw_base.dwd_guar_info_stat
-                  where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
-              ) t1
-                  inner join
-              (
-                  select guar_id, city_code
+                  select guar_id,
+                         city_code,
+                         guar_amt -- 放款金额(万元) 解保了对应解保金额
                   from dw_base.dwd_guar_info_all_his
                   where day_id = DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
-              ) t2 on t1.guar_id = t2.guar_id
+              ) t1
                   left join
-              dw_base.dim_area_info t3 on t2.city_code = t3.area_cd
+              dw_base.dwd_guar_info_stat t2 on t1.guar_id = t2.guar_id
                   left join
               (
-                  select project_id, actual_repayment_amount
-                  from dw_nd.ods_t_biz_proj_repayment_detail
-                  where date_format(repay_date, '%Y%m') =
+                  select biz_no
+                  from dw_base.dwd_guar_biz_unguar_info
+                  where day_id = '${v_sdate}'
+                    and biz_unguar_reason = '合同解保'
+                    -- 解保日期为当期
+                    and date_format(biz_unguar_dt, '%Y%m') =
                         DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
-              ) t4 on t1.project_id = t4.project_id
+              ) t3 on t1.guar_id = t3.biz_no
+                  left join
+              (
+                  select id,
+                         project_id,
+                         actual_repayment_amount / 10000 as repayment_amount -- 还款金额(万元)
+                  from (select *, row_number() over (partition by id order by db_update_time desc) rn
+                        from dw_nd.ods_t_biz_proj_repayment_detail) t1
+                  where rn = 1
+                    and date_format(repay_date, '%Y%m') =
+                        DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m')
+              ) t4 on t2.project_id = t4.project_id
+                  left join
+              dw_base.dim_area_info t5 on t1.city_code = t5.area_cd
               -- 判断非天津市
-         where t3.sup_area_name != '天津市'
+         where t5.sup_area_name != '天津市'
      ) t3,
      ( -- 期末数
          select sum(onguar_amt) as end_num -- 在保余额(万元)

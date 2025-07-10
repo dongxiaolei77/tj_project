@@ -924,6 +924,18 @@
         <column_name>is_coop_cd</column_name>
         <stream_name>is_coop_cd</stream_name>
       </field>
+      <field>
+        <column_name>ovd_prin_rmv_bank_rk_seg_bal_3</column_name>
+        <stream_name>ovd_prin_rmv_bank_rk_seg_bal_3</stream_name>
+      </field>
+      <field>
+        <column_name>other_ovd_rmv_bank_rk_seg_bal_3</column_name>
+        <stream_name>other_ovd_rmv_bank_rk_seg_bal_3</stream_name>
+      </field>
+      <field>
+        <column_name>comp_fst_comp_ntc_dt</column_name>
+        <stream_name>comp_fst_comp_ntc_dt</stream_name>
+      </field>
     </fields>
     <attributes/>
     <cluster_schema/>

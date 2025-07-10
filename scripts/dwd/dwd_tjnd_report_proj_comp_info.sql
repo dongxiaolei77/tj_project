@@ -32,7 +32,9 @@ insert into dw_base.dwd_tjnd_report_proj_comp_info
 , comp_pmt_dt -- 代偿拨付日期
 , comp_pmt_amt -- 代偿拨付金额
 , comp_cert_dt -- 代偿证明开具日期
-, dict_flag)
+, dict_flag
+, COMP_OVD_AMT -- 代偿时逾期金额
+)
 select distinct '${v_sdate}'                                               as day_id
               , t1.biz_no                                                  as proj_no_prov
               , date_format(t2.compenstation_application_date, '%Y-%m-%d') as comp_fst_comp_ntc_dt
@@ -49,6 +51,7 @@ select distinct '${v_sdate}'                                               as da
               , coalesce(t2.total_compensation, 0)                         as comp_pmt_amt
               , null                                                       as comp_cert_dt
               , 0                                                          as dict_flag
+              , t2.OVERDUE_TOT                                                                        -- 代偿时逾期金额
 from dw_base.dwd_nacga_report_guar_info_base_info t1 -- 国担上报范围表
          inner join dw_nd.ods_tjnd_yw_z_report_bh_compensatory t2 -- 代偿表
                     on t1.biz_id = t2.id_cfbiz_underwriting

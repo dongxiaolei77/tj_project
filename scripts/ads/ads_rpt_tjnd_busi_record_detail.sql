@@ -363,12 +363,12 @@ select '${v_sdate}'                                              as day_id,
        warr_cont_no,
        area,
        case
-           when coalesce(t8.branch_off, t7.branch_off) = 'NHDLBranch' then '宁河东丽办事处'
-           when coalesce(t8.branch_off, t7.branch_off) = 'JNBHBranch' then '津南滨海新区办事处'
-           when coalesce(t8.branch_off, t7.branch_off) = 'BCWQBranch' then '武清北辰办事处'
-           when coalesce(t8.branch_off, t7.branch_off) = 'XQJHBranch' then '西青静海办事处'
-           when coalesce(t8.branch_off, t7.branch_off) = 'JZBranch' then '蓟州办事处'
-           when coalesce(t8.branch_off, t7.branch_off) = 'BDBranch' then '宝坻办事处'
+           when coalesce(t7.branch_off, t6.branch_off) = 'NHDLBranch' then '宁河东丽办事处'
+           when coalesce(t7.branch_off, t6.branch_off) = 'JNBHBranch' then '津南滨海新区办事处'
+           when coalesce(t7.branch_off, t6.branch_off) = 'BCWQBranch' then '武清北辰办事处'
+           when coalesce(t7.branch_off, t6.branch_off) = 'XQJHBranch' then '西青静海办事处'
+           when coalesce(t7.branch_off, t6.branch_off) = 'JZBranch' then '蓟州办事处'
+           when coalesce(t7.branch_off, t6.branch_off) = 'BDBranch' then '宝坻办事处'
            end                                                   as branch_off,
        guar_status,
        case
@@ -438,6 +438,7 @@ from (
                 ID_ADDRESS              as id_address,       -- 户籍地址
                 apply_counter_guar_meas as unguar_type,      -- 反担保方式
                 wf_inst_id,
+                fk_manager_name         as nd_proj_mgr_name, -- 农担项目经理
                 rn
          from (
                   select t1.*,
@@ -451,40 +452,31 @@ from (
      ) t3 on t1.guar_id = t3.code
          left join
      (
-         select PROC_INST_ID_
-              , t2.real_name as                                                                 nd_proj_mgr_name -- 农担项目经理
-              , ROW_NUMBER() over (partition by PROC_INST_ID_ order by LAST_UPDATED_TIME_ desc) rn
-         from dw_nd.ods_t_act_hi_taskinst_v2 t1
-                  left join dw_nd.ods_t_sys_user t2 on t1.ASSIGNEE_ = t2.user_id
-         where NAME_ = '放款确认'
-     ) t4 on t3.wf_inst_id = t4.PROC_INST_ID_ and t4.rn = 1
-         left join
-     (
          select project_id,                                    -- 项目id
                 sum(actual_repayment_amount) as repayment_amt, -- 还款金额
                 max(repay_date)              as repayment_date -- 还款日期
          from dw_nd.ods_t_biz_proj_repayment_detail
          group by project_id
-     ) t5 on t2.project_id = t5.project_id
+     ) t4 on t2.project_id = t4.project_id
          left join
      (
          select guar_id,
                 onguar_amt as in_force_balance -- 在保余额
          from dw_base.dwd_guar_info_onguar
          where day_id = '${v_sdate}'
-     ) t6 on t1.guar_id = t6.guar_id
+     ) t5 on t1.guar_id = t5.guar_id
          left join
      (
          select CITY_CODE_,              -- 区县编码
                 ROLE_CODE_ as branch_off -- 办事处编码
          from dw_base.dwd_imp_area_branch
-     ) t7 on t1.country_code = t7.CITY_CODE_
+     ) t6 on t1.country_code = t6.CITY_CODE_
          left join
      (
          select CITY_NAME_,              -- 区县编码
                 ROLE_CODE_ as branch_off -- 办事处编码
          from dw_base.dwd_imp_area_branch
-     ) t8 on t1.town_name = t8.CITY_NAME_;
+     ) t7 on t1.town_name = t7.CITY_NAME_;
 commit;
 
 

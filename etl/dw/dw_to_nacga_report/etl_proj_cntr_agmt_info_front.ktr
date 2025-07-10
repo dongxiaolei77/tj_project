@@ -660,6 +660,18 @@
         <column_name>is_credit_auth</column_name>
         <stream_name>is_credit_auth</stream_name>
       </field>
+      <field>
+        <column_name>is_info_auth_cntr</column_name>
+        <stream_name>is_info_auth_cntr</stream_name>
+      </field>
+      <field>
+        <column_name>info_auth_start_dt_cntr</column_name>
+        <stream_name>info_auth_start_dt_cntr</stream_name>
+      </field>
+      <field>
+        <column_name>info_auth_end_dt_cntr</column_name>
+        <stream_name>info_auth_end_dt_cntr</stream_name>
+      </field>
     </fields>
     <attributes/>
     <cluster_schema/>
