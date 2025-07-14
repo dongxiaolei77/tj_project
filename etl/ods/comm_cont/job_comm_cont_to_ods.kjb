@@ -11,7 +11,17 @@
   <modified_user>-</modified_user>
   <modified_date>2021/11/15 15:32:48.368</modified_date>
   <parameters>
-    </parameters>
+    <parameter>
+      <name>v_sdate</name>
+      <default_value/>
+      <description/>
+    </parameter>
+    <parameter>
+      <name>v_today</name>
+      <default_value/>
+      <description/>
+    </parameter>
+  </parameters>
   <connection>
     <name>${dw_host}</name>
     <server>${dw_ip}</server>
@@ -393,45 +403,6 @@
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>设置时间变量</name>
-      <description/>
-      <type>TRANS</type>
-      <attributes/>
-      <specification_method>filename</specification_method>
-      <trans_object_id/>
-      <filename>${Internal.Entry.Current.Directory}/etl_setDateVar.ktr</filename>
-      <transname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
-      <slave_server_name/>
-      <set_append_logfile>N</set_append_logfile>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
-      <run_configuration>Pentaho local</run_configuration>
-      <suppress_result_data>N</suppress_result_data>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <parallel>Y</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>368</xloc>
-      <yloc>288</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
       <name>设置变量</name>
       <description/>
       <type>SET_VARIABLES</type>
@@ -533,7 +504,6 @@
       <create_parent_folder>N</create_parent_folder>
       <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
-      <suppress_result_data>N</suppress_result_data>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
@@ -549,7 +519,7 @@
       <description/>
       <type>SQL</type>
       <attributes/>
-      <sql>delete  from ods_comm_cont_comm_contract_info -- where date_format(UPDATE_TIME,'%Y%m%d') ='${v_sdate}';
+      <sql>delete  from ods_comm_cont_comm_contract_info where date_format(UPDATE_TIME,'%Y%m%d') ='${v_sdate}';
 commit;
 </sql>
       <useVariableSubstitution>T</useVariableSubstitution>
@@ -592,7 +562,6 @@ commit;
       <create_parent_folder>N</create_parent_folder>
       <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
-      <suppress_result_data>N</suppress_result_data>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
@@ -631,7 +600,6 @@ commit;
       <create_parent_folder>N</create_parent_folder>
       <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
-      <suppress_result_data>N</suppress_result_data>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
@@ -670,7 +638,6 @@ commit;
       <create_parent_folder>N</create_parent_folder>
       <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
-      <suppress_result_data>N</suppress_result_data>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
@@ -709,7 +676,6 @@ commit;
       <create_parent_folder>N</create_parent_folder>
       <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
-      <suppress_result_data>N</suppress_result_data>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
@@ -748,7 +714,6 @@ commit;
       <create_parent_folder>N</create_parent_folder>
       <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
-      <suppress_result_data>N</suppress_result_data>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
@@ -787,7 +752,6 @@ commit;
       <create_parent_folder>N</create_parent_folder>
       <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
-      <suppress_result_data>N</suppress_result_data>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
@@ -803,7 +767,7 @@ commit;
       <description/>
       <type>SQL</type>
       <attributes/>
-      <sql>delete  from ods_comm_cont_comm_contract_account_info -- where date_format(UPDATE_TIME,'%Y%m%d') ='${v_sdate}';
+      <sql>delete  from ods_comm_cont_comm_contract_account_info  where date_format(UPDATE_TIME,'%Y%m%d') ='${v_sdate}';
 commit;
 </sql>
       <useVariableSubstitution>T</useVariableSubstitution>
@@ -843,7 +807,7 @@ commit;
       <description/>
       <type>SQL</type>
       <attributes/>
-      <sql>delete  from ods_comm_cont_comm_contract_offline_info where date_format(UPDATE_TIME,'%Y%m%d') ='${v_sdate}';
+      <sql>delete  from ods_comm_cont_comm_contract_offline_info  where date_format(UPDATE_TIME,'%Y%m%d') ='${v_sdate}';
 commit;
 </sql>
       <useVariableSubstitution>T</useVariableSubstitution>
@@ -883,7 +847,7 @@ commit;
       <description/>
       <type>SQL</type>
       <attributes/>
-      <sql>delete  from ods_comm_cont_comm_contract_template_info -- where date_format(UPDATE_TIME,'%Y%m%d') ='${v_sdate}';
+      <sql>delete  from ods_comm_cont_comm_contract_template_info  where date_format(UPDATE_TIME,'%Y%m%d') ='${v_sdate}';
 commit;
 </sql>
       <useVariableSubstitution>T</useVariableSubstitution>
@@ -946,7 +910,6 @@ commit;
       <create_parent_folder>N</create_parent_folder>
       <logging_remote_work>N</logging_remote_work>
       <run_configuration>Pentaho local</run_configuration>
-      <suppress_result_data>N</suppress_result_data>
       <parameters>
         <pass_all_parameters>Y</pass_all_parameters>
       </parameters>
@@ -977,17 +940,35 @@ commit;
       <yloc>544</yloc>
       <attributes_kjc/>
     </entry>
+    <entry>
+      <name>设置日期变量</name>
+      <description/>
+      <type>SET_VARIABLES</type>
+      <attributes/>
+      <replacevars>Y</replacevars>
+      <filename/>
+      <file_variable_type>JVM</file_variable_type>
+      <fields>
+        <field>
+          <variable_name>v_sdate</variable_name>
+          <variable_value>${v_sdate}</variable_value>
+          <variable_type>JVM</variable_type>
+        </field>
+        <field>
+          <variable_name>v_today</variable_name>
+          <variable_value>${v_today}</variable_value>
+          <variable_type>JVM</variable_type>
+        </field>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>352</xloc>
+      <yloc>288</yloc>
+      <attributes_kjc/>
+    </entry>
   </entries>
   <hops>
-    <hop>
-      <from>设置时间变量</from>
-      <to>del_ods_comm_cont_comm_contract_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
     <hop>
       <from>del_ods_comm_cont_comm_contract_info</from>
       <to>etl_ods_comm_cont_comm_contract_info</to>
@@ -1061,60 +1042,6 @@ commit;
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>设置时间变量</from>
-      <to>del_ods_comm_cont_comm_contract_account_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>设置时间变量</from>
-      <to>del_ods_comm_cont_comm_contract_detail</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>设置时间变量</from>
-      <to>del_ods_comm_cont_comm_contract_offline_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>设置时间变量</from>
-      <to>del_ods_comm_cont_comm_contract_seal</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>设置时间变量</from>
-      <to>del_ods_comm_cont_comm_contract_template_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>设置时间变量</from>
-      <to>del_ods_comm_cont_comm_contract_third_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_comm_cont_comm_contract_third_info</from>
       <to>etl_ods_comm_cont_comm_contract_third_info</to>
       <from_nr>0</from_nr>
@@ -1178,24 +1105,6 @@ commit;
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>设置变量</from>
-      <to>设置时间变量</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>N</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>设置时间变量</from>
-      <to>del_ods_comm_cont_auth_letter_contract_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_comm_cont_auth_letter_contract_info</from>
       <to>etl_ods_comm_cont_auth_letter_contract_info</to>
       <from_nr>0</from_nr>
@@ -1223,8 +1132,89 @@ commit;
       <unconditional>Y</unconditional>
     </hop>
     <hop>
+      <from>设置变量</from>
+      <to>设置日期变量</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
       <from>设置变量_读取参数文件</from>
-      <to>设置时间变量</to>
+      <to>设置日期变量</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_comm_cont_comm_contract_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_comm_cont_comm_contract_account_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_comm_cont_comm_contract_detail</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_comm_cont_comm_contract_offline_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_comm_cont_comm_contract_seal</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_comm_cont_comm_contract_template_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_comm_cont_comm_contract_third_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_comm_cont_auth_letter_contract_info</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>

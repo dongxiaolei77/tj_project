@@ -11,7 +11,17 @@
   <modified_user>-</modified_user>
   <modified_date>2021/04/13 16:03:21.187</modified_date>
   <parameters>
-    </parameters>
+    <parameter>
+      <name>v_sdate</name>
+      <default_value/>
+      <description/>
+    </parameter>
+    <parameter>
+      <name>v_sday</name>
+      <default_value/>
+      <description/>
+    </parameter>
+  </parameters>
   <connection>
     <name>${dw_host}</name>
     <server>${dw_ip}</server>
@@ -503,44 +513,6 @@ commit;</sql>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>208</xloc>
-      <yloc>528</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
-      <name>etl_set_var</name>
-      <description/>
-      <type>TRANS</type>
-      <attributes/>
-      <specification_method>filename</specification_method>
-      <trans_object_id/>
-      <filename>${Internal.Entry.Current.Directory}/etl_set_var.ktr</filename>
-      <transname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
-      <slave_server_name/>
-      <set_append_logfile>N</set_append_logfile>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
-      <run_configuration>Pentaho local</run_configuration>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <parallel>Y</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>320</xloc>
       <yloc>528</yloc>
       <attributes_kjc/>
     </entry>
@@ -1430,6 +1402,33 @@ commit;</sql>
       <yloc>1172</yloc>
       <attributes_kjc/>
     </entry>
+    <entry>
+      <name>设置日期变量</name>
+      <description/>
+      <type>SET_VARIABLES</type>
+      <attributes/>
+      <replacevars>Y</replacevars>
+      <filename/>
+      <file_variable_type>JVM</file_variable_type>
+      <fields>
+        <field>
+          <variable_name>v_sdate</variable_name>
+          <variable_value>${v_sdate}</variable_value>
+          <variable_type>JVM</variable_type>
+        </field>
+        <field>
+          <variable_name>v_sday</variable_name>
+          <variable_value>${v_sday}</variable_value>
+          <variable_type>JVM</variable_type>
+        </field>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>320</xloc>
+      <yloc>528</yloc>
+      <attributes_kjc/>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -1444,51 +1443,6 @@ commit;</sql>
     <hop>
       <from>del_ods_bg_platform_v2_loan_contract_info</from>
       <to>etl_ods_bg_platform_v2_loan_contract_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_loan_contract_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_loan_standing_book</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_recycle_status_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_repay_plan_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_trade_turnover_info</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -1577,24 +1531,6 @@ commit;</sql>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>设置变量</from>
-      <to>etl_set_var</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>N</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_t_snx_parameter_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_bg_platform_t_snx_parameter_info</from>
       <to>etl_ods_bg_platform_t_snx_parameter_info</to>
       <from_nr>0</from_nr>
@@ -1606,15 +1542,6 @@ commit;</sql>
     <hop>
       <from>etl_ods_bg_platform_t_snx_parameter_info</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_t_snx_parameter_info_extra</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -1640,15 +1567,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_contract_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_bg_platform_v2_contract_info</from>
       <to>etl_ods_bg_platform_v2_contract_info</to>
       <from_nr>0</from_nr>
@@ -1660,15 +1578,6 @@ commit;</sql>
     <hop>
       <from>etl_ods_bg_platform_v2_contract_info</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_evidence_info</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -1694,15 +1603,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_repay_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_bg_platform_v2_repay_info</from>
       <to>etl_ods_bg_platform_v2_repay_info</to>
       <from_nr>0</from_nr>
@@ -1714,15 +1614,6 @@ commit;</sql>
     <hop>
       <from>etl_ods_bg_platform_v2_repay_info</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_push_bank_info</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -1748,15 +1639,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_t_runtime_data</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_bg_platform_v2_t_runtime_data</from>
       <to>etl_ods_bg_platform_v2_t_runtime_data</to>
       <from_nr>0</from_nr>
@@ -1768,15 +1650,6 @@ commit;</sql>
     <hop>
       <from>etl_ods_bg_platform_v2_t_runtime_data</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_business_info</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -1802,15 +1675,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_snx_manage_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_bg_platform_v2_snx_manage_info</from>
       <to>etl_ods_bg_platform_v2_snx_manage_info</to>
       <from_nr>0</from_nr>
@@ -1822,15 +1686,6 @@ commit;</sql>
     <hop>
       <from>etl_ods_bg_platform_v2_snx_manage_info</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_trade_turnover_info_total</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -1865,24 +1720,6 @@ commit;</sql>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
-      <from>设置变量_读取参数文件</from>
-      <to>etl_set_var</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>etl_set_var</from>
-      <to>del_ods_bg_platform_v2_loan_contract_info_total</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_bg_platform_v2_loan_contract_info_total</from>
       <to>etl_ods_bg_platform_v2_loan_contract_info_total</to>
       <from_nr>0</from_nr>
@@ -1894,6 +1731,159 @@ commit;</sql>
     <hop>
       <from>etl_ods_bg_platform_v2_loan_contract_info_total</from>
       <to>成功</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置变量_读取参数文件</from>
+      <to>设置日期变量</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置变量</from>
+      <to>设置日期变量</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_loan_contract_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_loan_standing_book</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_repay_plan_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_trade_turnover_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_t_snx_parameter_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_t_snx_parameter_info_extra</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_contract_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_evidence_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_repay_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_push_bank_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_t_runtime_data</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_business_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_snx_manage_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_trade_turnover_info_total</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_bg_platform_v2_loan_contract_info_total</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>

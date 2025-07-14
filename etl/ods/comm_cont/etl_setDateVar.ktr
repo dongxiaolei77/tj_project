@@ -517,14 +517,16 @@
       <schema_name/>
     </partitioning>
     <connection>${dw_host}</connection>
-    <sql>SELECT 
-'2025-01-01 00:00:00' as  v_sdate ,
-'2025-02-28 00:00:00' as  v_today</sql>
+    <sql>SELECT
+date_format(DATE_SUB(CURDATE(),INTERVAL 1 DAY),'%Y%m%d') v_sdate ,
+date_format(CURDATE(),'%Y%m%d') v_today</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>N</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta/>
     <attributes/>
     <cluster_schema/>
     <remotesteps>

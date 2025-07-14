@@ -11,7 +11,12 @@
   <modified_user>-</modified_user>
   <modified_date>2021/04/13 16:03:21.187</modified_date>
   <parameters>
-    </parameters>
+    <parameter>
+      <name>v_sdate</name>
+      <default_value/>
+      <description/>
+    </parameter>
+  </parameters>
   <connection>
     <name>dw_nd</name>
     <server>${dw_ip}</server>
@@ -523,8 +528,8 @@ commit;</sql>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
-      <yloc>144</yloc>
+      <xloc>464</xloc>
+      <yloc>160</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -566,44 +571,6 @@ commit;</sql>
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>set_var</name>
-      <description/>
-      <type>TRANS</type>
-      <attributes/>
-      <specification_method>filename</specification_method>
-      <trans_object_id/>
-      <filename>${Internal.Entry.Current.Directory}/set_var.ktr</filename>
-      <transname/>
-      <arg_from_previous>N</arg_from_previous>
-      <params_from_previous>N</params_from_previous>
-      <exec_per_row>N</exec_per_row>
-      <clear_rows>N</clear_rows>
-      <clear_files>N</clear_files>
-      <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
-      <add_date>N</add_date>
-      <add_time>N</add_time>
-      <loglevel>Basic</loglevel>
-      <cluster>N</cluster>
-      <slave_server_name/>
-      <set_append_logfile>N</set_append_logfile>
-      <wait_until_finished>Y</wait_until_finished>
-      <follow_abort_remote>N</follow_abort_remote>
-      <create_parent_folder>N</create_parent_folder>
-      <logging_remote_work>N</logging_remote_work>
-      <run_configuration>Pentaho local</run_configuration>
-      <parameters>
-        <pass_all_parameters>Y</pass_all_parameters>
-      </parameters>
-      <parallel>Y</parallel>
-      <draw>Y</draw>
-      <nr>0</nr>
-      <xloc>224</xloc>
-      <yloc>1664</yloc>
-      <attributes_kjc/>
-    </entry>
-    <entry>
       <name>ods_ban_cust_list</name>
       <description/>
       <type>SQL</type>
@@ -618,7 +585,7 @@ commit;</sql>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>480</xloc>
+      <xloc>464</xloc>
       <yloc>224</yloc>
       <attributes_kjc/>
     </entry>
@@ -2729,6 +2696,28 @@ commit;</sql>
       <yloc>1792</yloc>
       <attributes_kjc/>
     </entry>
+    <entry>
+      <name>设置日期变量</name>
+      <description/>
+      <type>SET_VARIABLES</type>
+      <attributes/>
+      <replacevars>Y</replacevars>
+      <filename/>
+      <file_variable_type>JVM</file_variable_type>
+      <fields>
+        <field>
+          <variable_name>v_sdate</variable_name>
+          <variable_value>${v_sdate}</variable_value>
+          <variable_type>JVM</variable_type>
+        </field>
+      </fields>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>256</xloc>
+      <yloc>1664</yloc>
+      <attributes_kjc/>
+    </entry>
   </entries>
   <hops>
     <hop>
@@ -2786,42 +2775,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_cust_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_per_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_product</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>ods_ban_cust_list</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>ods_ban_cust_list</from>
       <to>crm_ban_cust_list</to>
       <from_nr>0</from_nr>
@@ -2833,15 +2786,6 @@ commit;</sql>
     <hop>
       <from>crm_ban_cust_list</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_asset_car</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2867,15 +2811,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_cust_asset_house</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_cust_asset_house</from>
       <to>cust_asset_house</to>
       <from_nr>0</from_nr>
@@ -2887,15 +2822,6 @@ commit;</sql>
     <hop>
       <from>cust_asset_house</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_asset_other</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2930,26 +2856,8 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_cust_bank_manager_all</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>cust_bank_manager</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_doe</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -2975,15 +2883,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_cust_industry_all</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_cust_industry_all</from>
       <to>cust_industry</to>
       <from_nr>0</from_nr>
@@ -2995,15 +2894,6 @@ commit;</sql>
     <hop>
       <from>cust_industry</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_per_asset</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3029,15 +2919,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_cust_per_credit</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_cust_per_credit</from>
       <to>cust_per_credit</to>
       <from_nr>0</from_nr>
@@ -3049,15 +2930,6 @@ commit;</sql>
     <hop>
       <from>cust_per_credit</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_per_debt</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3083,15 +2955,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_cust_per_ins</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_cust_per_ins</from>
       <to>cust_per_ins</to>
       <from_nr>0</from_nr>
@@ -3103,15 +2966,6 @@ commit;</sql>
     <hop>
       <from>cust_per_ins</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_per_ralation</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3137,15 +2991,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_cust_per_zx</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_cust_per_zx</from>
       <to>cust_per_zx</to>
       <from_nr>0</from_nr>
@@ -3157,15 +3002,6 @@ commit;</sql>
     <hop>
       <from>cust_per_zx</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_white_all</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3191,15 +3027,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_livestock</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_livestock</from>
       <to>livestock</to>
       <from_nr>0</from_nr>
@@ -3211,15 +3038,6 @@ commit;</sql>
     <hop>
       <from>livestock</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_livestock_detail</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3245,15 +3063,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_sown</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_sown</from>
       <to>sown</to>
       <from_nr>0</from_nr>
@@ -3265,15 +3074,6 @@ commit;</sql>
     <hop>
       <from>sown</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_sown_detai</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3299,15 +3099,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_sown_lz</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_sown_lz</from>
       <to>sown_lz</to>
       <from_nr>0</from_nr>
@@ -3326,62 +3117,8 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_cust_comp_finance</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_cust_comp_finance</from>
       <to>cust_comp_finance</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_comp_bank_loan</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_comp_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_comp_ins</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_comp_zx</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_comp_asset</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3488,15 +3225,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_cust_card_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_cust_card_info</from>
       <to>cust_card_info</to>
       <from_nr>0</from_nr>
@@ -3508,15 +3236,6 @@ commit;</sql>
     <hop>
       <from>cust_card_info</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_cust_certification_info</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3560,24 +3279,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_comp_nc_hzs</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>设置变量</from>
-      <to>set_var</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>N</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>Start</from>
       <to>设置变量</to>
       <from_nr>0</from_nr>
@@ -3585,24 +3286,6 @@ commit;</sql>
       <enabled>N</enabled>
       <evaluation>Y</evaluation>
       <unconditional>Y</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_ods_crm_cust_bh_per_highrisk_base_info</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_ods_crm_cust_bh_per_highrisk_base_info_his</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
     </hop>
     <hop>
       <from>del_ods_crm_cust_bh_per_highrisk_base_info</from>
@@ -3634,33 +3317,6 @@ commit;</sql>
     <hop>
       <from>etl_ods_crm_cust_bh_per_highrisk_base_info_his</from>
       <to>成功</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_ods_crm_cust_asset_bio</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_ods_crm_cust_explanation</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_ods_crm_cust_operational_entity</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -3722,24 +3378,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_ods_crm_dwd_cust_grading</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>set_var</from>
-      <to>del_ods_crm_dwd_cust_grading_log</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_crm_dwd_cust_grading</from>
       <to>etl_ods_crm_dwd_cust_grading</to>
       <from_nr>0</from_nr>
@@ -3776,15 +3414,6 @@ commit;</sql>
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>set_var</from>
-      <to>del_ods_crm_live_stock_before_guarantee</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
       <from>del_ods_crm_live_stock_before_guarantee</from>
       <to>etl_ods_crm_live_stock_before_guarantee</to>
       <from_nr>0</from_nr>
@@ -3812,8 +3441,368 @@ commit;</sql>
       <unconditional>Y</unconditional>
     </hop>
     <hop>
+      <from>设置变量</from>
+      <to>设置日期变量</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>N</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
       <from>设置变量_读取参数文件</from>
-      <to>set_var</to>
+      <to>设置日期变量</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_sown_lz</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_sown_detai</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_sown</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_livestock_detail</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_livestock</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_white_all</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_per_zx</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_per_ralation</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_per_ins</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_per_debt</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_per_credit</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_per_asset</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_industry_all</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_doe</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_bank_manager_all</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_asset_other</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_asset_house</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_asset_car</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>ods_ban_cust_list</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_product</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_per_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_comp_finance</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_comp_bank_loan</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_comp_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_comp_ins</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_comp_zx</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_comp_asset</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_card_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_cust_certification_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_comp_nc_hzs</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_crm_cust_bh_per_highrisk_base_info</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_crm_cust_bh_per_highrisk_base_info_his</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_crm_cust_asset_bio</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_crm_cust_explanation</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_crm_cust_operational_entity</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_crm_dwd_cust_grading</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_crm_dwd_cust_grading_log</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>设置日期变量</from>
+      <to>del_ods_crm_live_stock_before_guarantee</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
