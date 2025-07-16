@@ -217,13 +217,21 @@ select '${v_sdate}'                                                 as day_id
      , '00'                                                         as is_coop_cd                      -- 项目合作情况代码
      , '0'                                                          as OVD_RMV_BANK_RK_SEG_BAL_3       -- 逾期三个月未代偿余额（扣除银行分险）
      , '0'                                                          as other_ovd_rmv_bank_rk_seg_bal_3 -- 逾期三个月利息以及其他费用金额余额（扣除银行分险）
-     , null                                                         as COMP_FST_COMP_NTC_DT            -- 首次代偿通知日期
+     , date_format(t2.compenstation_application_date, '%Y-%m-%d')   as COMP_FST_COMP_NTC_DT            -- 首次代偿通知日期
 from dw_base.dwd_tjnd_yw_guar_info_all_qy a
          inner join dw_base.dwd_nacga_report_guar_info_base_info b
                     on a.guarantee_code = b.biz_no
          inner join dw_nd.ods_tjnd_yw_z_report_afg_business_infomation c on a.id_business_information = c.id
          inner join dw_nd.ods_tjnd_yw_z_report_afg_business_approval d
                     on a.id_business_information = d.ID_BUSINESS_INFORMATION
+         left join
+     (
+         select id_cfbiz_underwriting, compenstation_application_date
+         from dw_nd.ods_tjnd_yw_z_report_bh_compensatory
+         where OVER_TAG = 'BJ'
+           and STATUS = 1
+     ) t2 -- 代偿表
+     on b.biz_id = t2.id_cfbiz_underwriting
 where a.day_id = '${v_sdate}'
   and b.day_id = '${v_sdate}';
 
