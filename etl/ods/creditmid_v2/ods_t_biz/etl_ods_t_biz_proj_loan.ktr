@@ -760,6 +760,8 @@ date_format(db_update_time,'%Y%m%d')  ='${v_sdate}'
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta/>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -862,6 +864,10 @@ date_format(db_update_time,'%Y%m%d')  ='${v_sdate}'
       <field>
         <column_name>fk_cert</column_name>
         <stream_name>fk_cert</stream_name>
+      </field>
+      <field>
+        <column_name>regist_date</column_name>
+        <stream_name>regist_date</stream_name>
       </field>
       <field>
         <column_name>create_name</column_name>

@@ -51,16 +51,19 @@ select '${v_sdate}'                                                 as day_id,
            when branch_off = 'JZBranch' then 5
            when branch_off = 'BDBranch' then 4
            end                                                      as off_staff_cnt,
-       sum(t4.overdue_totl) / 10000                                 as ovd_un_compt_amt,
-       count(t4.project_id)                                         as ovd_un_compt_proj_cnt,
+--       sum(t4.overdue_totl) / 10000                                 as ovd_un_compt_amt,      
+--       count(t4.project_id)                                         as ovd_un_compt_proj_cnt, 
+         sum(t6.overdue_totl) / 10000                                 as ovd_un_compt_amt,      -- 期末逾期未代偿金额（万元）
+         count(t6.proj_no_prov)                                         as ovd_un_compt_proj_cnt, -- 期末逾期未代偿项目数
        sum(gt_amt)                                                  as gt_amt,
        count(case when t1.item_stt = '已放款' then t1.guar_id end)     as gt_proj_cnt,
-       round((sum(t4.overdue_totl) / 10000) / sum(gt_amt) * 100, 2) as ovd_chance
+--       round((sum(t4.overdue_totl) / 10000) / sum(gt_amt) * 100, 2) as ovd_chance            
+       round((sum(t6.overdue_totl) / 10000) / sum(gt_amt) * 100, 2) as ovd_chance             -- 期末逾期率(%)
 from (
          select guar_id,
                 country_code,
                 item_stt
-         from dw_base.dwd_guar_info_all
+         from dw_base.dwd_guar_info_all_his
          where day_id = '${v_sdate}'
            and data_source = '担保业务管理系统新'
            and '${v_sdate}' =
@@ -73,7 +76,6 @@ from (
          select guar_id,   -- 业务编号
                 project_id -- 项目id
          from dw_base.dwd_guar_info_stat
-         where day_id = '${v_sdate}'
      ) t2 on t1.guar_id = t2.guar_id
          left join
      (
@@ -82,27 +84,35 @@ from (
          from dw_base.dwd_guar_info_onguar
          where day_id = '${v_sdate}'
      ) t3 on t1.guar_id = t3.guar_id
-         left join
-     (
-         select project_id,
-                overdue_totl -- 逾期金额合计
-         from (
-                  select *, row_number() over (partition by project_id order by db_update_time desc) rn
-                  from dw_nd.ods_t_proj_comp_aply
-              ) t1
-         where rn = 1
-           and status not in ('已代偿', '已否决', '已终止')
-     ) t4 on t2.project_id = t4.project_id
+--         left join
+--     (
+--         select project_id,
+--                overdue_totl -- 逾期金额合计
+--         from (
+--                  select *, row_number() over (partition by project_id order by db_update_time desc) rn
+--                  from dw_nd.ods_t_proj_comp_aply
+--              ) t1
+--         where rn = 1
+--           and status not in ('已代偿', '已否决', '已终止')
+--     ) t4 on t2.project_id = t4.project_id
          left join
      (
          select CITY_CODE_,              -- 区县编码
                 ROLE_CODE_ as branch_off -- 办事处编码
          from dw_base.dwd_imp_area_branch
      ) t5 on t1.country_code = t5.CITY_CODE_
-
+	 left join (
+	             select proj_no_prov
+				       ,sum(ovd_amt) as overdue_totl     -- 逾期本金金额
+				 from dw_base.dwd_tjnd_report_proj_ovd_info
+				 where day_id = '${v_sdate}'
+				 group by proj_no_prov
+			   ) t6 
+    on t1.guar_id = t6.proj_no_prov
 group by branch_off
 -- 逾期率在 1% 以上 (含1%)
-having round((sum(t4.overdue_totl) / 10000) / sum(gt_amt) * 100, 2) >= 1
+-- having round((sum(t4.overdue_totl) / 10000) / sum(gt_amt) * 100, 2) >= 1
+having round((sum(t6.overdue_totl) / 10000) / sum(gt_amt) * 100, 2) >= 1
 ;
 commit;
 

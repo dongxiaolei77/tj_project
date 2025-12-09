@@ -10,7 +10,9 @@
 -- 变更记录 ：20250505 修改t4逻辑 避免重复数据
 -- ----------------------------------------
 -- step0:重跑策略
-truncate table dw_base.dwd_tjnd_report_biz_loan_bank;
+delete
+from dw_base.dwd_tjnd_report_biz_loan_bank
+where day_id = '${v_sdate}';
 commit;
 
 -- step1:插入数据
@@ -32,7 +34,8 @@ insert into dw_base.dwd_tjnd_report_biz_loan_bank
  gov_risk, -- 政府分险
  gov_risk_amt, -- 政府应收分险金额
  IS_COMP_LIMIT_RATE, -- 是否限率代偿
- LIMIT_RATE -- 限率
+ LIMIT_RATE, -- 限率
+ comp_duran -- 代偿宽限期
 )
 select '${v_sdate}'                                                           as day_id,
        null                                                                   as biz_id,
@@ -51,7 +54,8 @@ select '${v_sdate}'                                                           as
        0                                                                      as gov_risk,
        null                                                                   as gov_risk_amt,
        if(t3.comp_rd is not null or t3.comp_limit_rate is not null, '1', '0') as IS_COMP_LIMIT_RATE,
-       if(t3.comp_rd is null, comp_limit_rate, comp_rd)                       as LIMIT_RATE
+       if(t3.comp_rd is null, comp_limit_rate, comp_rd)                       as LIMIT_RATE,
+       t3.comp_duran                                                          as comp_duran
 
 from (
          select *
@@ -71,7 +75,8 @@ from (
                 t2.fin_org_risk_share_ratio,
                 t2.gov_risk_share_ratio,
                 t2.comp_rd,
-                t2.comp_limit_rate
+                t2.comp_limit_rate,
+                t2.comp_duran
          from (select *
                from (select *, row_number() over (partition by dept_id order by update_time desc) as rn
                      from dw_nd.ods_t_sys_dept

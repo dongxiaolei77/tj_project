@@ -1,3 +1,4 @@
+-- 改 20251014
 -- 相关还款责任人
 -- 最近还款情况
 -- 新增exp_credit_comp_compt_info_ready
@@ -158,10 +159,12 @@ select distinct
 	   ,coalesce(t1.loan_bank,t1.bank_brev) as init_cred_name -- 初始债权人名称
 	   ,'' as init_cred_org_nm      -- 初始债权人机构代码
 	   ,'41' as orig_dbt_cate       -- 原债务种类  41-垫款
-	   ,coalesce(t1.repay_stt,'2')as init_rpy_sts      -- 债权转移时的还款状态 1-逾期 1-30 天 2-逾期 31-60 天 3-逾期 61-90 天 4-逾期 91-120 天 5-逾期 121-150 天 6-逾期 151-180 天 7-逾期 180 天以上
+--	   ,coalesce(t1.repay_stt,'2')as init_rpy_sts      -- 债权转移时的还款状态 1-逾期 1-30 天 2-逾期 31-60 天 3-逾期 61-90 天 4-逾期 91-120 天 5-逾期 121-150 天 6-逾期 151-180 天 7-逾期 180 天以上
+       ,'3' as init_rpy_sts -- 债务转移时的还款状态            [这里全部默认为3]                            20251014
 	   ,case when t3.is_close = '是' then '21' else '10' end as acct_status      -- 账户状态 10 正常活动 21-关闭 客户是否已偿还结清1：是0否
 	   ,case when t3.is_close = '是' then 0 else t1.compt_amt - coalesce(t3.sum_rpy_amt,0) end as acct_bal -- 余额，代偿后余额变成0
-	   ,case when t3.guar_id is null then DATE_FORMAT(t1.compt_dt,'%Y-%m-%d')
+--	   ,case when t3.guar_id is null then DATE_FORMAT(t1.compt_dt,'%Y-%m-%d')
+       ,case when t3.guar_id is null then DATE_FORMAT(t7.compt_time,'%Y-%m-%d')                       -- 20251202 原来的代偿申请日期 --> 代偿拨付日期
 			 else t3.lat_rpy_date end as repay_prd-- 余额变化日期（有还款取还款日）
 	   ,'1' as five_cate        -- 五级分类
 	   ,t7.compt_time  as five_cate_adj_date   -- 五级分类认定日期
@@ -725,7 +728,189 @@ and t2.day_id = '${v_sdate}'
 where t1.day_id ='${v_sdate}'
 ;
 commit;
-
+-- 
+-- 插入老系统已代偿项目的追偿信息，只插入  非月度表现信息段 字段，作为增量报送                      20251014
+insert into dw_base.exp_credit_comp_compt_info(
+	 day_id	                     --	数据日期
+	,ln_id	                     --	贷款ID
+	,cust_id	                 --	客户号
+	,rpt_date_code               --	报告时点说明代码
+	,acct_code                   --	账户标识码
+	,acct_status	             --	账户状态
+	,acct_bal	                 --	余额
+	,repay_prd	                 --	余额变化日期
+	,five_cate	                 --	五级分类
+	,five_cate_adj_date	         --	五级分类认定日期
+	,rem_rep_prd	                 --	剩余还款月数
+	,tot_overd	                 --	当前逾期总额
+	,overd_princ	                 --	当前逾期本金
+	,overd_dy	                 --	当前逾期天数
+	,lat_rpy_date                 --	最近一次实际还款日期
+	,lat_rpy_amt	                 --	最近一次实际还款金额
+	,lat_rpy_princ_amt	         --	最近一次实际归还本金
+	,rpmt_type                    --	还款形式
+	,lat_agrr_rpy_date	         --	最近一次约定还款日
+	,lat_agrr_rpy_amt	         --	最近一次约定还款金额
+	,nxt_agrr_rpy_date	         --	下一次约定还款日期
+	,close_date	                 --	账户关闭日期
+)
+select 	 day_id	                     --	数据日期
+	,tt1.ln_id	                     --	贷款ID
+	,cust_id	                     --	客户号
+	,rpt_date_code               --	报告时点说明代码
+	,acct_code                    --	账户标识码
+	,acct_status	                 --	账户状态
+	,acct_bal	                 --	余额
+	,repay_prd	                 --	余额变化日期
+	,five_cate	                 --	五级分类
+	,five_cate_adj_date	         --	五级分类认定日期
+	,rem_rep_prd	                 --	剩余还款月数
+	,tot_overd	                 --	当前逾期总额
+	,overd_princ	                 --	当前逾期本金
+	,overd_dy	                 --	当前逾期天数
+	,lat_rpy_date                 --	最近一次实际还款日期
+	,lat_rpy_amt	                 --	最近一次实际还款金额
+	,lat_rpy_princ_amt	         --	最近一次实际归还本金
+	,rpmt_type                    --	还款形式
+	,lat_agrr_rpy_date	         --	最近一次约定还款日
+	,lat_agrr_rpy_amt	         --	最近一次约定还款金额
+	,nxt_agrr_rpy_date	         --	下一次约定还款日期
+	,close_date	                 --	账户关闭日期
+from (
+select     
+ '${v_sdate}' as day_id,  
+			IFNULL(ACCT_NO,'')     as ln_id,              -- 合同号[用来关联老系统的旧数据]
+		    CUST_ID,           
+            if(ACCT_BAL = 0,'20','33') as rpt_date_code,                          --	报告时点说明代码			[余额为0就是关户，其他为正常还款状态]
+		    concat(date_format(LAT_RPY_DATE,'%Y%m%d'),replace(replace(GUARANTEE_CODE,'-',''),'贷','D'))          as acct_code,          -- 最近一次还款日期 + 项目编号  
+--            IFNULL(ACCT_STATUS,'') as ACCT_STATUS,   -- 账户状态
+            if(ACCT_BAL = 0,'21','10') as  ACCT_STATUS,   -- 账户状态
+            ACCT_BAL,       -- 余额
+            IFNULL(DATE(BAL_CHG_DATE),'') as repay_prd,                                             -- 余额变化日期  
+            IFNULL(FIVE_LEVEL_CLASSIFICATION,'') as FIVE_CATE,  -- 五级分类
+            IFNULL(DATE(FIVE_CATE_ADJ_DATE),'')  as FIVE_CATE_ADJ_DATE,  -- 五级分类认定日期
+--            null   as FIVE_CATE,                                  -- 五级分类
+--            null   as FIVE_CATE_ADJ_DATE,                         -- 五级分类认定日期
+            null as rem_rep_prd,                                -- 剩余还款月数  
+            null as TOT_OVERD,                                  -- 当前逾期总额
+            null as OVERD_PRINC,                                -- 当前逾期本金
+            null as OVERD_DY,                                   -- 当前逾期天数
+            IFNULL(DATE(LAT_RPY_DATE),'') as LAT_RPY_DATE,                   -- 最近一次实际还款日期        
+            IFNULL(LAT_RPY_AMT,'')        as LAT_RPY_AMT,                           -- 最近一次实际还款金额
+            IFNULL(LAT_RPY_PRINC_AMT,'')  as LAT_RPY_PRINC_AMT,               -- 最近一次实际归还本金
+            '10'                          as RPMT_TYPE,                                       -- 还款形式
+            IFNULL(DATE(LAT_AGRR_RPY_DATE),'') as LAT_AGRR_RPY_DATE, -- 最近一次约定还款日
+            IFNULL(LAT_AGRR_RPY_AMT,'')   as LAT_AGRR_RPY_AMT,         -- 最近一次约定还款金额
+            null as NXT_AGRR_RPY_DATE,                                 -- 下一次约定还款日期                                
+            if(ACCT_BAL = 0,DATE(LAT_RPY_DATE),'') as close_date,              -- 账户关闭日期
+			row_number() over(partition by case when ACCT_BAL = 0 then GUARANTEE_CODE end order by LAT_RPY_DATE) as rn    -- [根据项目编号分组，对金额为0的用入账日期排序由小到大]
+            from (
+                   select t4.id 'CUST_ID'
+				         ,t1.GUARANTEE_CODE
+						 ,replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace(replace
+                          (replace(replace(t5.WTBZHT_NO,'char(9)',''),'年委保字','NWBZ'),'“',''),'号','H'),'年担字第','NDZD')
+                          ,'-',''),'"',''),'第','D'),'”',''),' ',''),'年见贷即保','NJDJB'),'个担贷字','GDDZ'),'特例','TL'),'委保字','WBZ')'ACCT_NO'
+						 ,if(t2.OVER_TAG ='BJ','21',10)'ACCT_STATUS'
+--						 ,if(t2.OVER_TAG ='BJ','0.00',t1.BALANCE_CLAIM) 'ACCT_BAL'
+--                       ,if(t2.OVER_TAG ='BJ','0.00',round(coalesce(t3.TOTAL_COMPENSATION,0) - coalesce(t8.CUR_RECOVERY,0))) as ACCT_BAL
+                         ,case when round(coalesce(t3.TOTAL_COMPENSATION,0) - coalesce(t8.CUR_RECOVERY,0)) < 1 then 0
+						       else round(coalesce(t3.TOTAL_COMPENSATION,0) - coalesce(t8.CUR_RECOVERY,0)) end as ACCT_BAL    -- 余额
+						 ,t3.PAYMENT_DATE'FIVE_CATE_ADJ_DATE'
+						 ,ifnull(t1.ENTRY_DATA,t3.PAYMENT_DATE) 'BAL_CHG_DATE'
+						 ,t1.ENTRY_DATA 'LAT_RPY_DATE'
+						 ,round(t1.CUR_RECOVERY) 'LAT_RPY_AMT'
+						 ,round(t1.CUR_RECOVERY) 'LAT_RPY_PRINC_AMT'
+						 ,t7.LAT_AGRR_RPY_DATE
+						 ,round(t7.RECEIPT_AMOUNT) 'LAT_AGRR_RPY_AMT'
+--						 ,if(t2.OVER_TAG =  'BJ',t2.OVER_TIME,null) 'CLOSE_DATA'
+						 ,t6.FIVE_LEVEL_CLASSIFICATION
+					from (
+                           select ID_RECOVERY_TRACKING  -- 关联追偿跟踪id
+				                 ,GUARANTEE_CODE        -- 项目编号
+				                 ,BALANCE_CLAIM         -- 剩余债权
+				                 ,ENTRY_DATA            -- 入账日期
+								 ,date_format(ENTRY_DATA,'%Y%m%d') as ENTRY_DATA_1
+				                 ,sum(CUR_RECOVERY) * 10000 as CUR_RECOVERY          -- （本次）追回金额（元）
+				           from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail            -- 追偿详情表
+					       where 1 = 1
+					       and date_format(CREATED_TIME,'%Y%m%d') = '${v_sdate}' 
+						   and `STATUS` ='1'
+                           and GUARANTEE_CODE != 'TJRD-2021-5M92-9497'          -- 这笔项目有问题，暂不上报(临时)
+				           group by ID_RECOVERY_TRACKING,GUARANTEE_CODE,date_format(ENTRY_DATA,'%Y%m%d')				     					 
+					     ) t1	 
+					left join (
+				                select ID
+							          ,ID_CFBIZ_UNDERWRITING
+							    	  ,RELATED_ITEM_NO      -- 关联项目编号
+							          ,OVER_TAG             -- 追偿跟踪状态 （BJ  办结）
+							          ,COMPENSATION_BALANCE -- 代偿余额
+							    	  ,over_time            -- 追偿跟踪办结时间
+							    FROM dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking              -- bh_recovery_tracking       追偿表
+							    where `STATUS` ='1'       
+						      ) t2
+		            on ifnull(t1.ID_RECOVERY_TRACKING = t2.ID,t1.GUARANTEE_CODE = t2.RELATED_ITEM_NO)		 
+					left join (
+				                select ID_NO
+				    			      ,ID_CFBIZ_UNDERWRITING  -- 关联合同ID
+									  ,PAYMENT_DATE
+									  ,TOTAL_COMPENSATION * 10000 as TOTAL_COMPENSATION  -- 代偿总额（元）
+				    		    from dw_nd.ods_creditmid_v2_z_migrate_bh_compensatory                    -- 代偿表
+				    			where `STATUS` ='1' and OVER_TAG ='BJ'
+				    		  ) t3                
+				    on t2.ID_CFBIZ_UNDERWRITING = t3.ID_CFBIZ_UNDERWRITING
+				    left join (
+				                select ID_NUMBER
+							      ,id                      -- cust_id
+								  ,ID_BUSINESS_INFORMATION -- 业务主键
+								  ,CERT_TYPE       -- 证件类型
+								  ,CUSTOMER_NATURE -- 客户性质
+		                        from  dw_nd.ods_creditmid_v2_z_migrate_base_customers_history            -- 客户信息历史表,
+		                        where CERT_TYPE ='2'  -- [企业]
+				    		  ) t4
+--		            on t3.ID_NO = t4.ID_NUMBER                                    -- [个人的关联条件]
+                    on t3.ID_CFBIZ_UNDERWRITING = t4.ID_BUSINESS_INFORMATION      -- [企业的关联条件]
+				    left join (
+				                select ID_BUSINESS_INFORMATION
+				    			      ,WTBZHT_NO   -- 委托保证合同编号
+                                from dw_nd.ods_creditmid_v2_z_migrate_afg_business_approval             -- 审批
+		            	        where delete_flag ='1'
+				    		  ) t5 
+		            on t3.ID_CFBIZ_UNDERWRITING = t5.ID_BUSINESS_INFORMATION
+				    left join (
+				                select id
+				    			      ,FIVE_LEVEL_CLASSIFICATION  -- 五级分类
+                                from dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation           -- 业务申请表
+		            	        where delete_flag ='1'
+				    		  ) t6
+				    on t3.ID_CFBIZ_UNDERWRITING = t6.id	
+                    left join (
+					            select min(LOAN_START_DATE) LOAN_START_DATE
+				                      ,ID_BUSINESS_INFORMATION
+									  ,LOAN_END_DATE
+									  ,max(LOAN_END_DATE) LAT_AGRR_RPY_DATE
+									  ,RECEIPT_AMOUNT 
+				                from dw_nd.ods_creditmid_v2_z_migrate_afg_voucher_infomation            -- 放款凭证表 
+							    where delete_flag ='1' or DELETE_FLAG is null 
+							    group by ID_BUSINESS_INFORMATION
+							  ) t7 
+				   on t3.ID_CFBIZ_UNDERWRITING = t7.ID_BUSINESS_INFORMATION	
+				   left join (
+				               select ID_RECOVERY_TRACKING  -- 关联追偿跟踪id
+				                 ,GUARANTEE_CODE        -- 项目编号
+				                 ,date_format(ENTRY_DATA,'%Y%m%d') as ENTRY_DATA_1            -- 入账日期
+				                  ,sum(CUR_RECOVERY) over(partition by GUARANTEE_CODE order by date_format(ENTRY_DATA,'%Y%m%d')) * 10000 as CUR_RECOVERY          -- （累计）追回金额（元）[本次及之前的金额]
+				               from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail            -- 追偿详情表
+							   group by ID_RECOVERY_TRACKING,GUARANTEE_CODE,date_format(ENTRY_DATA,'%Y%m%d')
+							 ) t8
+					on t1.GUARANTEE_CODE = t8.GUARANTEE_CODE and t1.ENTRY_DATA_1 = t8.ENTRY_DATA_1
+                   where t4.CUSTOMER_NATURE = 'enterprise'       -- [企业]				   
+				) t 	
+     ) tt1		
+left join (select ln_id from dw_base.exp_credit_comp_compt_info where day_id < '${v_sdate}' and ACCT_BAL = 0) tt2
+on tt1.ln_id = tt2.ln_id
+where tt1.ACCT_BAL != 0 or (tt1.ACCT_BAL = 0 and tt1.rn = 1 and tt2.ln_id is null)	  -- [本次余额不为空0的继续上报；本次余额为0的，取最小的追偿入账日期，且之前的追偿余额不能是0]
+;
+commit;
 
 -- 相关还款责任人(只有新开户的时候报送)
 
@@ -1219,7 +1404,6 @@ commit;
 --  commit;
 
 -- 同步集市
-
 delete from dw_pbc.exp_credit_comp_compt_info where day_id = '${v_sdate}';
 commit;
 insert into dw_pbc.exp_credit_comp_compt_info
@@ -1274,7 +1458,8 @@ select day_id,
 	   nxt_agrr_rpy_date,
 	   close_date
 from dw_base.exp_credit_comp_compt_info
-where day_id = '${v_sdate}' ;
+where day_id = '${v_sdate}' 
+;
 commit;
  -- 还款责任人信息
 delete from dw_pbc.exp_credit_comp_compt_repay_duty_info  where day_id = '${v_sdate}' ;
@@ -1295,8 +1480,8 @@ where day_id = '${v_sdate}'
 ;
 commit;
 
-delete
-from dw_pbc.exp_credit_comp_compt_info
-where day_id = '${v_sdate}'
-  and ln_id in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5Z88-9594');
-commit;
+-- delete
+-- from dw_pbc.exp_credit_comp_compt_info
+-- where day_id = '${v_sdate}'
+--  and ln_id in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5S93-979U');
+-- commit;

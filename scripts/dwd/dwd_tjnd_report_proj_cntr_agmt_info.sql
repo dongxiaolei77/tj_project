@@ -1,7 +1,7 @@
 -- ----------------------------------------
 -- 开发人   : wangyj
 -- 开发时间 ：20241218
--- 目标表   :dwd_tjnd_report_proj_base_info                     -- 项目基础信息表
+-- 目标表   :dwd_tjnd_report_proj_cntr_agmt_info                -- 反担保签约记录表            
 -- 源表     ： dw_base.dwd_tjnd_yw_guar_info_all_qy             -- 迁移业务宽表
 --            dw_base.dwd_nacga_report_guar_info_base_info      -- 国农担上报业务范围表
 -- 备注     ：
@@ -34,15 +34,15 @@ select '${v_sdate}'                        as day_id
            when LENGTH(trim(a.ID_NUMBER)) = 18 and
                 trim(a.ID_NUMBER) regexp
                 '^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}([0-9Xx])$'
-               then '10'
+               then '01'
            when LENGTH(trim(a.ID_NUMBER)) = 18 and trim(a.ID_NUMBER) regexp '^[0-9A-Z]{18}$'
-               then '29' -- 18位统一社会信用代码，假设只包含数字和字母
+               then '02' -- 18位统一社会信用代码，假设只包含数字和字母
            else null end                   as main_signer_cert_typ_cd -- 反担保合同签署人证件类型代码，需补充
      , trim(a.ID_NUMBER)                   as main_signer_cert_no     -- 反担保合同签署人证件号
      , null                                as cntr_cont_begin_dt      -- 反担保合同签署日期，非必填
-     , 0                                   as dict_flag
+     , 1                                   as dict_flag
      , null                                as is_credit_auth          -- 是否已授权征信上报
-from dw_nd.ods_tjnd_yw_z_report_afg_counter_guarantor a
+from dw_nd.ods_creditmid_v2_z_migrate_afg_counter_guarantor a
          left join dw_base.dwd_tjnd_yw_guar_info_all_qy b
                    on a.ID_BUSINESS_INFORMATION = b.ID_BUSINESS_INFORMATION
          inner join dw_base.dwd_nacga_report_guar_info_base_info c
@@ -61,15 +61,15 @@ select '${v_sdate}'                        as day_id
            when LENGTH(trim(a.ID_NUMBER)) = 18 and
                 trim(a.ID_NUMBER) regexp
                 '^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}([0-9Xx])$'
-               then '10'
+               then '01'
            when LENGTH(trim(a.ID_NUMBER)) = 18 and trim(a.ID_NUMBER) regexp '^[0-9A-Z]{18}$'
-               then '29' -- 18位统一社会信用代码，假设只包含数字和字母
+               then '02' -- 18位统一社会信用代码，假设只包含数字和字母
            else null end                   as main_signer_cert_typ_cd -- 抵押合同签署人证件类型代码，需补充
      , trim(a.ID_NUMBER)                   as main_signer_cert_no     -- 抵押合同签署人证件号，需补充
      , null                                as cntr_cont_begin_dt      -- 抵押合同签署日期，非必填
-     , 0                                   as dict_flag
+     , 1                                   as dict_flag
      , null                                as is_credit_auth          -- 是否已授权征信上报
-from dw_nd.ods_tjnd_yw_z_report_afg_mortgage_information a
+from dw_nd.ods_creditmid_v2_z_migrate_afg_mortgage_information a
          left join dw_base.dwd_tjnd_yw_guar_info_all_qy b
                    on a.ID_BUSINESS_INFORMATION = b.ID_BUSINESS_INFORMATION
          inner join dw_base.dwd_nacga_report_guar_info_base_info c
@@ -88,15 +88,15 @@ select '${v_sdate}'                        as day_id
            when LENGTH(trim(a.ID_NUMBER)) = 18 and
                 trim(a.ID_NUMBER) regexp
                 '^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}([0-9Xx])$'
-               then '10'
+               then '01'
            when LENGTH(trim(a.ID_NUMBER)) = 18 and trim(a.ID_NUMBER) regexp '^[0-9A-Z]{18}$'
-               then '29' -- 18位统一社会信用代码，假设只包含数字和字母
+               then '02' -- 18位统一社会信用代码，假设只包含数字和字母
            else null end                   as main_signer_cert_typ_cd -- 质押合同签署人证件类型代码，需补充
      , trim(a.ID_NUMBER)                   as main_signer_cert_no     -- 质押合同签署人证件号，需补充
      , null                                as cntr_cont_begin_dt      -- 质押合同签署日期，非必填
-     , 0                                   as dict_flag
+     , 1                                   as dict_flag
      , null                                as is_credit_auth          -- 是否已授权征信上报
-from dw_nd.ods_tjnd_yw_z_report_afg_pledgeand_information a
+from dw_nd.ods_creditmid_v2_z_migrate_afg_pledgeand_information a
          left join dw_base.dwd_tjnd_yw_guar_info_all_qy b
                    on a.ID_BUSINESS_INFORMATION = b.ID_BUSINESS_INFORMATION
          inner join dw_base.dwd_nacga_report_guar_info_base_info c
@@ -122,15 +122,15 @@ insert into dw_base.dwd_tjnd_report_proj_cntr_agmt_info
 , is_credit_auth -- 是否已授权征信上报
 )
 select distinct '${v_sdate}' as day_id
-     , t1.cntr_cont_no                    -- 省担反担保合同编号
-     , t1.proj_no                         -- 省农担担保项目编号
-     , t1.cntr_cont_typ_cd                -- 反担保合同种类
-     , t1.main_signer_name                -- 反担保合同签署人
-     , t1.main_signer_cert_typ_cd         -- 反担保合同签署人证件类型代码
-     , trim(t1.main_signer_cert_no)       -- 反担保合同签署人证件号码
-     , null         as cntr_cont_begin_dt -- 反担保合同签署日期
-     , 1            as dict_flag
-     , null         as is_credit_auth     -- 是否已授权征信上报
+              , t1.cntr_cont_no                    -- 省担反担保合同编号
+              , t1.proj_no                         -- 省农担担保项目编号
+              , t1.cntr_cont_typ_cd                -- 反担保合同种类
+              , t1.main_signer_name                -- 反担保合同签署人
+              , t1.main_signer_cert_typ_cd         -- 反担保合同签署人证件类型代码
+              , trim(t1.main_signer_cert_no)       -- 反担保合同签署人证件号码
+              , null         as cntr_cont_begin_dt -- 反担保合同签署日期
+              , 1            as dict_flag
+              , null         as is_credit_auth     -- 是否已授权征信上报
 from (
          select a.count_cont_code          as cntr_cont_no
               , '10000'                    as cntr_cont_typ_cd /*保证*/
@@ -170,8 +170,6 @@ from (
                        ) a
                   where rk = 1
               ) b on a.project_id = b.id
-
-
          union all
          select distinct mort_con_code       as cntr_cont_no            -- 省担反担保合同编号
                        , case
@@ -230,4 +228,59 @@ from (
               ) t1 -- 抵押合同信息表--协议域
      ) t1
          inner join dw_base.dwd_tjnd_report_biz_no_base t2
-                    on t1.proj_no = t2.biz_no and t2.day_id = '${v_sdate}';
+                    on t1.proj_no = t2.biz_no and t2.day_id = '${v_sdate}'
+-- 在保转进件 抵质押数据补充
+-- 抵押
+union
+select '${v_sdate}'                        as day_id
+     , MORT_NO                             as cntr_cont_no            -- 抵押合同编号
+     , t1.guar_id                          as proj_no_prov            -- 项目编号
+     , COUNTER_GUARANTEE_CONTRACT_CATEGORY as cntr_cont_typ_cd        -- 抵押合同种类，需补充
+     , owner                               as main_signer_name        -- 抵押合同签署人
+     , case
+           when LENGTH(trim(a.ID_NUMBER)) = 18 and
+                trim(a.ID_NUMBER) regexp
+                '^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}([0-9Xx])$'
+               then '01'
+           when LENGTH(trim(a.ID_NUMBER)) = 18 and trim(a.ID_NUMBER) regexp '^[0-9A-Z]{18}$'
+               then '02' -- 18位统一社会信用代码，假设只包含数字和字母
+           else null end                   as main_signer_cert_typ_cd -- 抵押合同签署人证件类型代码，需补充
+     , trim(a.ID_NUMBER)                   as main_signer_cert_no     -- 抵押合同签署人证件号，需补充
+     , null                                as cntr_cont_begin_dt      -- 抵押合同签署日期，非必填
+     , 1                                   as dict_flag
+     , null                                as is_credit_auth          -- 是否已授权征信上报
+from dw_nd.ods_creditmid_v2_z_migrate_afg_mortgage_information a
+         left join dw_base.dwd_guar_info_stat t1
+                   on a.ID_BUSINESS_INFORMATION = t1.project_id
+         inner join dw_base.dwd_tjnd_report_biz_no_base t2
+                    on t1.guar_id = t2.biz_no
+where t1.day_id = '${v_sdate}'
+  and t2.day_id = '${v_sdate}'
+  and a.delete_flag is null
+-- 质押
+union
+select '${v_sdate}'                        as day_id
+     , PLED_NO                             as cntr_cont_no            -- 质押合同编号
+     , t1.guar_id                          as proj_no_prov            -- 项目编号
+     , COUNTER_GUARANTEE_CONTRACT_CATEGORY as cntr_cont_typ_cd        -- 质押合同种类，需补充
+     , owner                               as main_signer_name        -- 质押合同签署人
+     , case
+           when LENGTH(trim(a.ID_NUMBER)) = 18 and
+                trim(a.ID_NUMBER) regexp
+                '^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}([0-9Xx])$'
+               then '01'
+           when LENGTH(trim(a.ID_NUMBER)) = 18 and trim(a.ID_NUMBER) regexp '^[0-9A-Z]{18}$'
+               then '02' -- 18位统一社会信用代码，假设只包含数字和字母
+           else null end                   as main_signer_cert_typ_cd -- 质押合同签署人证件类型代码，需补充
+     , trim(a.ID_NUMBER)                   as main_signer_cert_no     -- 质押合同签署人证件号，需补充
+     , null                                as cntr_cont_begin_dt      -- 质押合同签署日期，非必填
+     , 1                                   as dict_flag
+     , null                                as is_credit_auth          -- 是否已授权征信上报
+from dw_nd.ods_creditmid_v2_z_migrate_afg_pledgeand_information a
+         left join dw_base.dwd_guar_info_stat t1
+                   on a.ID_BUSINESS_INFORMATION = t1.project_id
+         inner join dw_base.dwd_tjnd_report_biz_no_base t2
+                    on t1.guar_id = t2.biz_no
+where t1.day_id = '${v_sdate}'
+  and t2.day_id = '${v_sdate}'
+  and a.delete_flag is null;

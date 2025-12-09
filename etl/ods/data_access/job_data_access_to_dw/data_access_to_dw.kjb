@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
   <name>data_access_to_dw</name>
-  <description/>
-  <extended_description/>
-  <job_version/>
+  <description />
+  <extended_description />
+  <job_version />
   <directory>/</directory>
   <created_user>-</created_user>
   <created_date>2021/12/23 11:07:53.551</created_date>
@@ -20,9 +20,9 @@
     <port>3306</port>
     <username>${dw_user}</username>
     <password>${dw_pass}</password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
+    <servername />
+    <data_tablespace />
+    <index_tablespace />
     <attributes>
       <attribute>
         <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
@@ -69,12 +69,12 @@
   <slaveservers>
     </slaveservers>
   <job-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <size_limit_lines/>
-    <interval/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <size_limit_lines />
+    <interval />
+    <timeout_days />
     <field>
       <id>ID_JOB</id>
       <enabled>Y</enabled>
@@ -182,10 +182,10 @@
     </field>
   </job-log-table>
   <jobentry-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <timeout_days />
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -273,10 +273,10 @@
     </field>
   </jobentry-log-table>
   <channel-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <timeout_days />
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -339,19 +339,18 @@
     </field>
   </channel-log-table>
   <pass_batchid>N</pass_batchid>
-  <shared_objects_file/>
+  <shared_objects_file />
   <entries>
     <entry>
       <name>del_ods_data_access_cattle</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_cattle
-where update_time between '${v_sdate_beg}' and '${v_sdate_end}';
+-- where update_time between '${v_sdate_beg}' and '${v_sdate_end}';
 </sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -359,30 +358,28 @@ where update_time between '${v_sdate_beg}' and '${v_sdate_end}';
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>64</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_cattle</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_cattle.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -397,13 +394,11 @@ where update_time between '${v_sdate_beg}' and '${v_sdate_end}';
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>64</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>Start</name>
-      <description/>
+      <description />
       <type>SPECIAL</type>
-      <attributes/>
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>N</repeat>
@@ -419,30 +414,26 @@ where update_time between '${v_sdate_beg}' and '${v_sdate_end}';
       <nr>0</nr>
       <xloc>160</xloc>
       <yloc>640</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>成功</name>
-      <description/>
+      <description />
       <type>SUCCESS</type>
-      <attributes/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1120</xloc>
       <yloc>640</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_insurance</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_insurance
-where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
+-- where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -450,30 +441,28 @@ where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>128</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_insurance</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_insurance.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -488,18 +477,16 @@ where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>128</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_loan</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_loan
-where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
+-- where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -507,30 +494,28 @@ where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>192</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_loan</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_loan.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -545,18 +530,16 @@ where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>192</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_settlement</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_settlement
-where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
+-- where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -564,30 +547,28 @@ where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>256</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_settlement</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_settlement.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -602,20 +583,18 @@ where update_time between '${v_sdate_beg}' and '${v_sdate_end}';</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>256</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_grjtgx</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_grjtgx
-where DATE_FORMAT(createdate,'%Y%m%d') ='${v_sdate}'
+-- where DATE_FORMAT(createdate,'%Y%m%d') ='${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -623,30 +602,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>320</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_grjtgx</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_grjtgx.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -661,20 +638,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>320</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_qygk</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_qygk
-where DATE_FORMAT(createdate,'%Y%m%d') ='${v_sdate}'
+-- where DATE_FORMAT(createdate,'%Y%m%d') ='${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -682,30 +657,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>384</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_qygk</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_qygk.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -720,20 +693,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>384</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_tb</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_tb
-where DATE_FORMAT(createdate,'%Y%m%d') ='${v_sdate}'
+-- where DATE_FORMAT(createdate,'%Y%m%d') ='${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -741,30 +712,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>448</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_tb</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_tb.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -779,20 +748,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>448</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_tdcb</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_tdcb
-where DATE_FORMAT(createdate,'%Y%m%d') ='${v_sdate}'
+-- where DATE_FORMAT(createdate,'%Y%m%d') ='${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -800,30 +767,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>512</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_tdcb</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_tdcb.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -838,20 +803,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>512</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_zybx_auto</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_zybx_auto
-where createdate ='${v_sdate}'
+-- where createdate ='${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -859,30 +822,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>576</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_zybx_auto</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_zybx_auto.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -897,20 +858,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>576</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_zybx_rural</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_zybx_rural
-where createdate = '${v_sdate}'
+-- where createdate = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -918,30 +877,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>640</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_zybx_rural</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_zybx_rural.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -956,20 +913,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>640</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_ytpg_nyxx</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_ytpg_nyxx
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -977,30 +932,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>400</xloc>
       <yloc>704</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_ytpg_nyxx</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_ytpg_nyxx.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1015,20 +968,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>784</xloc>
       <yloc>704</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_jtnc</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_jtnc
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1036,30 +987,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>405</xloc>
       <yloc>771</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_jtnc</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_jtnc.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1074,20 +1023,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>789</xloc>
       <yloc>771</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_ltqy</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_ltqy
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1095,30 +1042,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>410</xloc>
       <yloc>835</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_ltqy</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_ltqy.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1133,20 +1078,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>794</xloc>
       <yloc>835</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_hzs</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_hzs
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1154,30 +1097,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>416</xloc>
       <yloc>896</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_hzs</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_hzs.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1192,20 +1133,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>896</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_lhs</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_lhs
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1213,30 +1152,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>416</xloc>
       <yloc>960</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_lhs</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_lhs.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1251,20 +1188,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>960</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_yshzs</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_yshzs
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1272,30 +1207,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>416</xloc>
       <yloc>1024</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_yshzs</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_yshzs.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1310,20 +1243,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>1024</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_gddl</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_gddl
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1331,30 +1262,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>416</xloc>
       <yloc>1088</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_gddl</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_gddl.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1369,20 +1298,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>1088</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_zlbt</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_zlbt
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1390,30 +1317,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>416</xloc>
       <yloc>1152</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_zlbt</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_zlbt.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1428,20 +1353,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>1152</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_wc_contract</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_wc_contract
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1449,30 +1372,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>416</xloc>
       <yloc>1216</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_wc_contract</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_wc_contract.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1487,20 +1408,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>1216</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_wc_contract_visa</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_wc_contract_visa
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1508,30 +1427,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>416</xloc>
       <yloc>1280</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_wc_contract_visa</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_wc_contract_visa.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1546,20 +1463,18 @@ commit;</sql>
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>1280</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>del_ods_data_access_t_data_nynct_claim</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
       <sql>delete from dw_nd.ods_data_access_t_data_nynct_claim
-where date_format(createdate,'%Y%m%d') = '${v_sdate}'
+-- where date_format(createdate,'%Y%m%d') = '${v_sdate}'
 ;
 commit;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>${dw_host}</connection>
       <parallel>N</parallel>
@@ -1567,30 +1482,28 @@ commit;</sql>
       <nr>0</nr>
       <xloc>416</xloc>
       <yloc>1344</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_ods_data_access_t_data_nynct_claim</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_data_access_t_data_nynct_claim.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1605,7 +1518,6 @@ commit;</sql>
       <nr>0</nr>
       <xloc>800</xloc>
       <yloc>1344</yloc>
-      <attributes_kjc/>
     </entry>
   </entries>
   <hops>

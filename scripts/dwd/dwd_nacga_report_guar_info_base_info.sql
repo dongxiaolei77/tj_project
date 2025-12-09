@@ -26,15 +26,24 @@ select distinct '${v_sdate}'              as day_id
               , a.id_business_information as proj_id
               , 'old'                     as source -- 数据来源 老业务系统
 from dw_base.dwd_tjnd_yw_guar_info_all_qy a
-         left join dw_nd.ods_tjnd_yw_afg_business_infomation b
+         left join dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation b
                    on a.id_business_information = b.id
-         left join dw_nd.ods_tjnd_yw_z_report_afg_guarantee_relieve c
+         left join dw_nd.ods_creditmid_v2_z_migrate_afg_guarantee_relieve c
                    on a.id_business_information = c.id_business_information
 where day_id = '${v_sdate}'
-  and -- 保证责任失效日期不准确
-    (((b.GUR_STATE = 'GT' and lend_reg_dt <= 20241231) or
-      date_format(c.created_time, '%Y%m%d') >= 20250101) -- 2025年1月1日在保  GT(在保)、ED（解保）、DFK（待放款）、ZZ（终止）
+  and                                                   -- 保证责任失效日期不准确
+    (((b.GUR_STATE = '50' and lend_reg_dt <= 20241231) or
+      date_format(c.created_time, '%Y%m%d') >= 20250101) -- 2025年1月1日在保  50(在保)、90（解保）、93(代偿)
         or lend_reg_dt >= 20250101 -- 2025年1月1日以来纳入在保
         or (is_compt = 1 and payment_date >= 20250101)) -- 2025年1月1日新增已代偿业务
+  and a.guarantee_code not in
+    -- 剔除在保转进件业务
+      (
+          select code
+          from (select *, row_number() over (partition by code order by db_update_time desc) rn
+                from dw_nd.ods_t_biz_project_main
+                where proj_origin = '02') t1
+          where rn = 1
+      )
 ;
 commit;

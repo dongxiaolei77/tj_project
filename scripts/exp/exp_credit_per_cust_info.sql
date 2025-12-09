@@ -5,6 +5,7 @@
 -- 源表     ：
 -- 变更记录 ：20220308  dw_nd.ods_gcredit_customer_person_detail 替换为  dw_nd.ods_crm_cust_per_info，新增dw_nd.ods_crm_cust_certification_info客户认证信息表 取证件有效期和签发机关               
 --             新增 dw_nd.ods_crm_cust_info  取客户电话号码   zzy
+--            20251014 去除在保转进件项目
 -- ---------------------------------------
 
 -- 生成文件
@@ -47,6 +48,7 @@ from
         ,row_number() over (partition by CUST_ID order by DAY_ID desc) rn
         from dw_base.exp_credit_per_guar_info t1
         where day_id <= '${v_sdate}'
+		  and guar_id not like 'TJ%'            -- [在保转进件业务的个人基本信息不报送] 20251014
     )t
     union all
     select * from (
@@ -58,6 +60,8 @@ from
         ,row_number() over (partition by cust_id order by day_id desc) rn
         from dw_base.exp_credit_per_compt_info t1
         where day_id <= '${v_sdate}'
+		  and ln_id not like 'TJ%'            -- [在保转进件业务的个人基本信息不报送] 20251014
+		  and rpt_date_code is not null          -- [排除掉已代偿追偿的业务，增量更新没有报告时点代码]  
     )t
 ) t
 where t.rn = 1

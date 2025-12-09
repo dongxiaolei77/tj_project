@@ -597,12 +597,15 @@
       <schema_name/>
     </partitioning>
     <connection>creditmid_v2</connection>
-    <sql>SELECT * FROM t_loan_after_check where date_format(db_update_time,'%Y%m%d') = '${v_sdate}' ;</sql>
+    <sql>SELECT * FROM t_loan_after_check where date_format(db_update_time,'%Y%m%d') = '${v_sdate}' ;
+-- SELECT * FROM t_loan_after_check;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
     <variables_active>Y</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
+    <cached_row_meta_active>N</cached_row_meta_active>
+    <row-meta/>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -893,6 +896,46 @@
       <field>
         <column_name>db_update_time</column_name>
         <stream_name>db_update_time</stream_name>
+      </field>
+      <field>
+        <column_name>overdue_principal</column_name>
+        <stream_name>overdue_principal</stream_name>
+      </field>
+      <field>
+        <column_name>overdue_int</column_name>
+        <stream_name>overdue_int</stream_name>
+      </field>
+      <field>
+        <column_name>is_receive</column_name>
+        <stream_name>is_receive</stream_name>
+      </field>
+      <field>
+        <column_name>receive_date</column_name>
+        <stream_name>receive_date</stream_name>
+      </field>
+      <field>
+        <column_name>overdue_date</column_name>
+        <stream_name>overdue_date</stream_name>
+      </field>
+      <field>
+        <column_name>objective_risk_type</column_name>
+        <stream_name>objective_risk_type</stream_name>
+      </field>
+      <field>
+        <column_name>objective_risk_type_relation</column_name>
+        <stream_name>objective_risk_type_relation</stream_name>
+      </field>
+      <field>
+        <column_name>subjective_risk_type</column_name>
+        <stream_name>subjective_risk_type</stream_name>
+      </field>
+      <field>
+        <column_name>overdue_reason_detail</column_name>
+        <stream_name>overdue_reason_detail</stream_name>
+      </field>
+      <field>
+        <column_name>risk_resolution_measures</column_name>
+        <stream_name>risk_resolution_measures</stream_name>
       </field>
     </fields>
     <attributes/>

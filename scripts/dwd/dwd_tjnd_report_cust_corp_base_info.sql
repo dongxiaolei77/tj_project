@@ -7,6 +7,8 @@
 -- 备注     ：
 -- 变更记录 ：zhangruwen 20250219
 --          wangyj    20250513  合并新老客户信息，优先取新系统数据，保证客户唯一
+--          20250905 法人信息取值/企业划型代码
+--          20250917  法人信息在保转进件的数据取不到的从老系统取
 -- ----------------------------------------
 
 delete
@@ -39,49 +41,114 @@ insert into dw_tmp.tmp_dwd_tjnd_report_cust_corp_legal_info
 , legal_cert_no -- '法人身份证号'
 , legal_tel -- '法人联系方式'
 )
-select t1.customer_id                                                     as scr_cust_id   -- 业务系统客户号
-     , t1.main_name                                                       as cust_name     -- 客户姓名
-     , regexp_replace(coalesce(t3.id_no, t1.main_id_no), ' |\r\n|\'', '') as cert_no       -- 身份证号剔除空格/回车/单引号特殊字符
-     , date_format(t2.create_time, '%Y%m%d')                              as create_dt     -- 创建日期
-     , t4.legal_person_name                                               as legal_name    -- 法人姓名
-     , t4.legal_person_id_no                                              as legal_cert_no -- 法人身份证号
-     , t4.legal_person_mobile                                             as legal_tel     -- 法人联系方式
-from (
-         select customer_id
-              , login_type
-              , main_name
-              , main_id_no
-              , status
-         from (
-                  select customer_id
-                       , login_type
-                       , main_name
-                       , main_id_no
-                       , status
-                       , row_number() over (partition by customer_id order by update_time desc) as rn
-                  from dw_nd.ods_wxapp_cust_login_info -- 用户注册信息
-              ) t1
-         where rn = 1
-           and status = '10' -- 注册成功
-     ) t1
-         left join
-     (
-         select customer_id
-              , create_time
-         from (
-                  select customer_id
-                       , create_time
-                       , row_number() over (partition by customer_id order by create_time asc) as rn
-                  from dw_nd.ods_wxapp_cust_login_info -- 用户注册信息
-              ) t1
-         where rn = 1
-     ) t2
-     on t1.customer_id = t2.customer_id
-         left join dw_nd.ods_crm_cust_certification_info t3 -- 客户认证信息表
-                   on t1.customer_id = t3.cust_code
-         left join dw_nd.ods_crm_cust_comp_info t4 -- CRM--企业客户信息表
-                   on t1.customer_id = t4.cust_code
-where t1.login_type = '2' -- 企业客户
+select  t_all.scr_cust_id    -- '业务系统客户号'
+      , t_all.cust_name      -- '客户姓名'
+      , t_all.cert_no        -- '身份证号剔除空格/回车/单引号特殊字符'
+      , t_all.create_dt      -- '创建日期'
+      , t_all.legal_name     -- '法人姓名'
+      , t_all.legal_cert_no  -- '法人身份证号'
+      , t_all.legal_tel      -- '法人联系方式'
+from 
+(
+select  t4.scr_cust_id    -- '业务系统客户号'
+      , t4.cust_name      -- '客户姓名'
+      , t4.cert_no        -- '身份证号剔除空格/回车/单引号特殊字符'
+      , t4.create_dt      -- '创建日期'
+      , t4.legal_name     -- '法人姓名'
+      , t4.legal_cert_no  -- '法人身份证号'
+      , t4.legal_tel      -- '法人联系方式'
+      , row_number() over(partition by t4.cert_no order by dict_flag desc) as rn
+from (                                                                                              -- 【原老系统逻辑，在保转进件的业务】               20250917
+        select  '1'                                  as  scr_cust_id   -- '业务系统客户号'
+              , a.customer_name                      as  cust_name     -- '客户姓名'
+              , a.id_number                          as  cert_no       -- '身份证号剔除空格/回车/单引号特殊字符'
+			  , '20000101'                           as  create_dt     -- '创建日期'               [老系统的逻辑给定一个很晚的日期]
+              , a.legal_representative               as  legal_name    -- '法人姓名'
+              , a.legal_representative_id            as  legal_cert_no -- '法人身份证号'
+              , a.leg_tel                            as  legal_tel     -- '法人联系方式'
+              , 0              as dict_flag
+        from (
+                  select a.cert_type               -- 证件类型代码
+                       , a.mainbody_type_corp      -- 客户主体类型代码
+                       , a.customer_name           -- 企业客户名称
+                       , a.id_number               -- 企业证件号码
+                       , a.enterpise_type          -- 企业划型代码
+                       , a.legal_representative    -- 法定代表人
+                       , a.legal_representative_id -- 法定代表人证件号码
+                       , a.leg_tel                 -- 法定代表人联系电话
+                       , row_number() over (partition by id_number order by lend_reg_dt desc ) as rk
+                  from dw_base.dwd_tjnd_yw_guar_info_all_qy a
+                  left join dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation b
+                  on a.id_business_information = b.id
+                  left join dw_nd.ods_creditmid_v2_z_migrate_afg_guarantee_relieve c
+                  on a.id_business_information = c.id_business_information
+                  where a.day_id = '${v_sdate}'
+                    and                                                   -- 保证责任失效日期不准确
+                        (((b.GUR_STATE = '50' and lend_reg_dt <= 20241231) or
+                         date_format(c.created_time, '%Y%m%d') >= 20250101) -- 2025年1月1日在保  50(在保)、90（解保）、93(代偿)
+                         or lend_reg_dt >= 20250101 -- 2025年1月1日以来纳入在保
+                         or (is_compt = 1 and payment_date >= 20250101)) -- 2025年1月1日新增已代偿业务
+                    and a.guarantee_code  in                                                        --   【 in 在保转进件业务】
+                        (
+                          select code
+                          from (select *, row_number() over (partition by code order by db_update_time desc) rn
+                                from dw_nd.ods_t_biz_project_main
+                                where proj_origin = '02') t1
+                          where rn = 1
+                        ) 
+                    and a.customer_nature = 'enterprise' -- 取企业客户
+              ) a
+        where a.rk = 1 
+		
+		union all 
+		                                                                                            -- 【新系统逻辑】 
+        select t1.customer_id                                                     as scr_cust_id   -- 业务系统客户号
+             , t1.main_name                                                       as cust_name     -- 客户姓名
+             , regexp_replace(coalesce(t3.id_no, t1.main_id_no), ' |\r\n|\'', '') as cert_no       -- 身份证号剔除空格/回车/单引号特殊字符
+             , date_format(t2.create_time, '%Y%m%d')                              as create_dt     -- 创建日期
+             , t4.legal_person_name                                               as legal_name    -- 法人姓名                   
+             , t4.legal_person_id_no                                              as legal_cert_no -- 法人身份证号              
+             , t4.legal_person_mobile                                             as legal_tel     -- 法人联系方式
+			 , 1              as dict_flag
+        from (
+                 select customer_id
+                      , login_type
+                      , main_name
+                      , main_id_no
+                      , status
+                 from (
+                          select customer_id
+                               , login_type
+                               , main_name
+                               , main_id_no
+                               , status
+                               , row_number() over (partition by customer_id order by update_time desc) as rn
+                          from dw_nd.ods_wxapp_cust_login_info -- 用户注册信息
+                      ) t1
+                 where rn = 1
+                   and status = '10' -- 注册成功
+             ) t1
+                 left join
+             (
+                 select customer_id
+                      , create_time
+                 from (
+                          select customer_id
+                               , create_time
+                               , row_number() over (partition by customer_id order by create_time asc) as rn
+                          from dw_nd.ods_wxapp_cust_login_info -- 用户注册信息
+                      ) t1
+                 where rn = 1
+             ) t2
+             on t1.customer_id = t2.customer_id
+                 left join dw_nd.ods_crm_cust_certification_info t3 -- 客户认证信息表
+                           on t1.customer_id = t3.cust_code
+                 left join dw_nd.ods_crm_cust_comp_info t4 -- CRM--企业客户信息表
+                           on t1.customer_id = t4.cust_code
+        where t1.login_type = '2' -- 企业客户
+	 ) t4
+) t_all
+where t_all.rn = 1
 ;
 commit;
 
@@ -98,115 +165,132 @@ insert into dw_base.dwd_tjnd_report_cust_corp_base_info
 , lgpr_tel_no -- 法定代表人联系电话
 , dict_flag)
 select day_id
-	,cert_type
-	,mainbody_type_corp
-	,customer_name
-	,id_number
-	,enterpise_type
-	,legal_representative
-	,lgpr_cert_typ_cd
-	,legal_representative_id
-	,leg_tel
-	,dict_flag
-from
-(
-	select *
-		,row_number()over(partition by id_number order by dict_flag desc) as rk
-	from
-	(
-		select '${v_sdate}' as day_id
-			 , cert_type               -- 证件类型代码
-			 , mainbody_type_corp      -- 客户主体类型代码
-			 , customer_name           -- 企业客户名称
-			 , id_number               -- 企业证件号码
-			 , enterpise_type          -- 企业划型代码
-			 , legal_representative    -- 法定代表人
-			 , '10'  as lgpr_cert_typ_cd                  -- 法定代表人证件类型代码
-			 , legal_representative_id -- 法定代表人证件号码
-			 , leg_tel                 -- 法定代表人联系电话
-			 , 0            as dict_flag
-		from (
-				 select cert_type               -- 证件类型代码
-					  , mainbody_type_corp      -- 客户主体类型代码
-					  , customer_name           -- 企业客户名称
-					  , id_number               -- 企业证件号码
-					  , enterpise_type          -- 企业划型代码
-					  , legal_representative    -- 法定代表人
-					  , legal_representative_id -- 法定代表人证件号码
-					  , leg_tel                 -- 法定代表人联系电话
-					  , row_number() over (partition by id_number order by lend_reg_dt desc ) as rk
-				 from dw_base.dwd_tjnd_yw_guar_info_all_qy a
-						  inner join dw_base.dwd_nacga_report_guar_info_base_info b
-									 on a.id_business_information = b.biz_id
-				 where a.day_id = '${v_sdate}'
-				   and b.day_id = '${v_sdate}'
-				   and customer_nature = 'enterprise' -- 取企业客户
-			 ) a
-		where rk = 1
+     , cert_type                          as  cert_no_typ_cd       -- 证件类型代码 
+     , mainbody_type_corp                 as  cust_main_typ_cd     -- 客户主体类型代码
+     , customer_name                      as  corp_name            -- 企业客户名称
+     , id_number                          as  corp_cert_no         -- 企业证件号码
+     , enterpise_type                     as  corp_typ_cd          -- 企业划型代码
+     , legal_representative               as  lgpr_name            -- 法定代表人
+     , lgpr_cert_typ_cd                   as  lgpr_cert_typ_cd     -- 法定代表人证件类型代码
+     , legal_representative_id            as  lgpr_cert_no         -- 法定代表人证件号码
+     , leg_tel                            as  lgpr_tel_no          -- 法定代表人联系电话
+     , dict_flag
+from (
+         select *
+              , row_number() over (partition by id_number order by dict_flag desc) as rk
+         from (
+                  select '${v_sdate}' as day_id
+                       , case
+                             when cert_type = '1' then '10'
+                             when cert_type = '2' then '29'
+                      end             as cert_type        -- 证件类型代码
+                       , mainbody_type_corp               -- 客户主体类型代码
+                       , customer_name                    -- 企业客户名称
+                       , id_number                        -- 企业证件号码
+                       , case
+                             when enterpise_type = '4' then '01'
+                             when enterpise_type = '3' then '02'
+                             when enterpise_type = '2' then '03'
+                             when enterpise_type = '1' then '04'
+                      end             as enterpise_type   -- 企业划型代码
+                       , legal_representative             -- 法定代表人
+                       , '10'         as lgpr_cert_typ_cd -- 法定代表人证件类型代码
+                       , legal_representative_id          -- 法定代表人证件号码
+                       , leg_tel                          -- 法定代表人联系电话
+                       , 0            as dict_flag
+                  from (
+                           select cert_type               -- 证件类型代码
+                                , mainbody_type_corp      -- 客户主体类型代码
+                                , customer_name           -- 企业客户名称
+                                , id_number               -- 企业证件号码
+                                , enterpise_type          -- 企业划型代码
+                                , legal_representative    -- 法定代表人
+                                , legal_representative_id -- 法定代表人证件号码
+                                , leg_tel                 -- 法定代表人联系电话
+                                , row_number() over (partition by id_number order by lend_reg_dt desc ) as rk
+                           from dw_base.dwd_tjnd_yw_guar_info_all_qy a
+                                    inner join dw_base.dwd_nacga_report_guar_info_base_info b
+                                               on a.id_business_information = b.biz_id
+                           where a.day_id = '${v_sdate}'
+                             and b.day_id = '${v_sdate}'
+                             and customer_nature = 'enterprise' -- 取企业客户
+                       ) a
+                  where rk = 1
 
-		union all
-		select '${v_sdate}' as day_id
-			 , t1.cert_no_typ_cd            -- 证件类型代码
-			 , t1.cust_main_typ_cd          -- 客户主体类型代码
-			 , t1.corp_name                 -- 企业客户名称
-			 , t1.cert_no   as corp_cert_no -- 企业证件号码
-			 , '01'            corp_typ_cd  -- 企业划型代码
-			 , t2.lgpr_name                 -- 法定代表人
-			 , t2.lgpr_cert_typ_cd          -- 法定代表人证件类型代码
-			 , t2.lgpr_cert_no              -- 法定代表人证件号码
-			 , t2.lgpr_tel_no               -- 法定代表人联系电话
-			 , 1            as dict_flag
-		from (
-				 select t1.cert_no
-					  , t1.cert_no_typ_cd
-					  , t1.cust_main_typ_cd
-					  , t1.corp_name
-				 from (
-						  select t1.cert_no                                                                       -- 企业证件号码
-							   , '29'                                                         as cert_no_typ_cd /*固定值为“统一社会信用代码”*/
-							   , case
-							       	 when t1.cust_class = '家庭农场（种养大户）' then '01'
-									 when t1.cust_class = '家庭农场' then '02'
-									 when t1.cust_class = '农民专业合作社' then '04'
-									 when t1.cust_class =  '农业企业' then '03'
-								end                                                             as cust_main_typ_cd -- 项目主体类型代码
-							   , t1.cust_type
-							   , regexp_replace(t1.cust_name, '\t|\n', '')                    as corp_name /*剔除特殊字符*/
-							   , row_number()
-								  over (partition by t1.cert_no order by t1.loan_reg_dt desc) as rk /*同一笔证件号取放款登记日期最晚业务的信息*/
-						  from dw_base.dwd_guar_info_all t1 -- 业务信息宽表--项目域
-								   inner join dw_base.dwd_tjnd_report_biz_no_base t2 -- 国担上报范围表
-											  on t1.guar_id = t2.biz_no
-												  and t2.day_id = '${v_sdate}'
-						  where t1.day_id = '${v_sdate}'
-							and (t1.cust_type = '法人或其他组织' or
-								 (t1.cust_type is null and char_length(trim(t1.cust_name)) > 4)) /*筛选符合企业校验规则的数据*/
-							and t1.cert_no not regexp
-								'^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}([0-9Xx])$' /*剔除不符合证件号码校验规则的数据*/
-					  ) t1
-				 where rk = 1
-			 ) t1
-			left join /*取法人信息*/
-			(
-				select t1.cert_no
-					 , t1.lgpr_name
-					 , t1.lgpr_cert_typ_cd
-					 , t1.lgpr_cert_no
-					 , t1.lgpr_tel_no
-				from (
-						 select cert_no
-							  , legal_name                                                                                       as lgpr_name        -- 法定代表人姓名
-							  , '10'                                                                                             as lgpr_cert_typ_cd -- 法定代表人证件类型代码
-							  , legal_cert_no                                                                                    as lgpr_cert_no     -- 法定代表人证件号码
-							  , first_value(legal_tel)
-											over (partition by cert_no order by if(legal_tel is null, 0, 1) desc,create_dt desc) as lgpr_tel_no /*法定代表人联系电话优先取非空*/
-							  , row_number() over (partition by cert_no order by create_dt desc)                                 as rk /*法人信息按照create_dt排序取最新*/
-						 from dw_tmp.tmp_dwd_tjnd_report_cust_corp_legal_info
-					 ) t1
-				where rk = 1
-			) t2
-			on t1.cert_no = t2.cert_no
-	)a
-)a
+                  union all
+                  select '${v_sdate}' as day_id
+                       , t1.cert_no_typ_cd            -- 证件类型代码
+                       , t1.cust_main_typ_cd          -- 客户主体类型代码
+                       , t1.corp_name                 -- 企业客户名称
+                       , t1.cert_no   as corp_cert_no -- 企业证件号码
+                       , t1.enterpise_type  as corp_typ_cd  -- 企业划型代码                                  20250905
+                       , t2.lgpr_name                 -- 法定代表人
+                       , t2.lgpr_cert_typ_cd          -- 法定代表人证件类型代码
+                       , t2.lgpr_cert_no              -- 法定代表人证件号码
+                       , t2.lgpr_tel_no               -- 法定代表人联系电话
+                       , 1            as dict_flag
+                  from (
+                           select t1.cert_no
+                                , t1.cert_no_typ_cd
+                                , t1.cust_main_typ_cd
+                                , t1.corp_name
+								, t1.enterpise_type
+                           from (
+                                    select t1.cert_no                                                                       -- 企业证件号码
+                                         , '29'                                                         as cert_no_typ_cd /*固定值为“统一社会信用代码”*/
+                                         , case
+                                               when t1.cust_class = '家庭农场（种养大户）' then '01'
+                                               when t1.cust_class = '家庭农场' then '02'
+                                               when t1.cust_class = '农民专业合作社' then '04'
+                                               when t1.cust_class = '农业企业' then '03'
+                                        end                                                             as cust_main_typ_cd -- 项目主体类型代码
+                                         , t1.cust_type
+                                         , regexp_replace(t1.cust_name, '\t|\n', '')                    as corp_name /*剔除特殊字符*/
+                                         , row_number()
+                                            over (partition by t1.cert_no order by t1.loan_reg_dt desc) as rk /*同一笔证件号取放款登记日期最晚业务的信息*/
+										 ,if(t1.guar_id like 'TJ%',
+                                             case
+                                                when t3.enterpise_type = '4' then '01'
+                                                when t3.enterpise_type = '3' then '02'
+                                                when t3.enterpise_type = '2' then '03'
+                                                when t3.enterpise_type = '1' then '04'
+                                             end
+											,'01')                                                       as enterpise_type   -- 企业划型代码
+                                    from dw_base.dwd_guar_info_all t1 -- 业务信息宽表--项目域
+                                             inner join dw_base.dwd_tjnd_report_biz_no_base t2 -- 国担上报范围表
+                                                        on t1.guar_id = t2.biz_no
+                                                            and t2.day_id = '${v_sdate}'
+									left join dw_base.dwd_tjnd_yw_guar_info_all_qy t3                                                             --  [关联迁移台账,取企业划型代码]  20250905
+									   on t1.guar_id = t3.guarantee_code and t3.day_id = '${v_sdate}'
+                                    where t1.day_id = '${v_sdate}'
+                                      and (t1.cust_type = '法人或其他组织' or
+                                           (t1.cust_type is null and char_length(trim(t1.cust_name)) > 4)) /*筛选符合企业校验规则的数据*/
+                                      and t1.cert_no not regexp
+                                          '^[1-9]\\d{5}(18|19|20)\\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2]\\d|3[0-1])\\d{3}([0-9Xx])$' /*剔除不符合证件号码校验规则的数据*/
+                                ) t1
+                           where rk = 1
+                       ) t1
+                           left join /*取法人信息*/
+                      (
+                          select t1.cert_no
+                               , t1.lgpr_name
+                               , t1.lgpr_cert_typ_cd
+                               , t1.lgpr_cert_no
+                               , t1.lgpr_tel_no
+                          from (
+                                   select cert_no
+                                        , legal_name                                                                                       as lgpr_name        -- 法定代表人姓名
+                                        , '10'                                                                                             as lgpr_cert_typ_cd -- 法定代表人证件类型代码
+                                        , legal_cert_no                                                                                    as lgpr_cert_no     -- 法定代表人证件号码
+                                        , first_value(legal_tel)
+                                                      over (partition by cert_no order by if(legal_tel is null, 0, 1) desc,create_dt desc) as lgpr_tel_no /*法定代表人联系电话优先取非空*/
+                                        , row_number() over (partition by cert_no order by create_dt desc)                                 as rk /*法人信息按照create_dt排序取最新*/
+                                   from dw_tmp.tmp_dwd_tjnd_report_cust_corp_legal_info
+                               ) t1
+                          where rk = 1
+                      ) t2
+                                     on t1.cert_no = t2.cert_no
+              ) a
+     ) a
 where rk = 1;
 commit;

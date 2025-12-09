@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
   <name>job_de_bwjk_to_dw</name>
-  <description/>
-  <extended_description/>
-  <job_version/>
+  <description />
+  <extended_description />
+  <job_version />
   <job_status>0</job_status>
   <directory>/</directory>
   <created_user>-</created_user>
@@ -21,9 +21,9 @@
     <port>3306</port>
     <username>${dw_user}</username>
     <password>${dw_pass}</password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
+    <servername />
+    <data_tablespace />
+    <index_tablespace />
     <attributes>
       <attribute>
         <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
@@ -70,12 +70,12 @@
   <slaveservers>
     </slaveservers>
   <job-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <size_limit_lines/>
-    <interval/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <size_limit_lines />
+    <interval />
+    <timeout_days />
     <field>
       <id>ID_JOB</id>
       <enabled>Y</enabled>
@@ -183,10 +183,10 @@
     </field>
   </job-log-table>
   <jobentry-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <timeout_days />
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -274,10 +274,10 @@
     </field>
   </jobentry-log-table>
   <channel-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <timeout_days />
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -340,13 +340,12 @@
     </field>
   </channel-log-table>
   <pass_batchid>N</pass_batchid>
-  <shared_objects_file/>
+  <shared_objects_file />
   <entries>
     <entry>
       <name>Start</name>
-      <description/>
+      <description />
       <type>SPECIAL</type>
-      <attributes/>
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>N</repeat>
@@ -362,42 +361,38 @@
       <nr>0</nr>
       <xloc>32</xloc>
       <yloc>432</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>成功</name>
-      <description/>
+      <description />
       <type>SUCCESS</type>
-      <attributes/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1136</xloc>
       <yloc>432</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_blacklist</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_blacklist.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -412,30 +407,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>32</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_duotou_loanapp</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_duotou_loanapp.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -450,30 +443,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>352</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_custommadedevice_phonetoimei</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_custommadedevice_phonetoimei.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -488,30 +479,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>160</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_duotou_arrearage</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_duotou_arrearage.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -526,30 +515,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>288</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_duotou_loanpass</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_duotou_loanpass.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -564,30 +551,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>416</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_duotou_loanreject</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_duotou_loanreject.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -602,30 +587,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>480</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_custommadedevice_info</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_custommadedevice_info.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -640,30 +623,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>96</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_duotou_reg</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_duotou_reg.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -678,30 +659,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>544</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_custommadedevice_portrait</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_custommadedevice_portrait.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -716,30 +695,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>224</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_set_var</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_set_var.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -754,19 +731,17 @@
       <nr>0</nr>
       <xloc>304</xloc>
       <yloc>432</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_blacklist where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_blacklist -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -774,19 +749,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>32</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 2</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_custommadedevice_info where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_custommadedevice_info -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -794,19 +767,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>96</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 3</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_custommadedevice_phonetoimei where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_custommadedevice_phonetoimei -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -814,19 +785,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>160</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 4</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_custommadedevice_portrait where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_custommadedevice_portrait -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -834,19 +803,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>224</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 5</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_duotou_arrearage where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_duotou_arrearage -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -854,19 +821,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>288</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 6</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_duotou_loanapp where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_duotou_loanapp -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -874,19 +839,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>352</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 7</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_duotou_loanpass where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_duotou_loanpass -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -894,19 +857,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>416</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 8</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_duotou_loanreject where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_duotou_loanreject -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -914,19 +875,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>480</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 9</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_duotou_reg where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_duotou_reg -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -934,19 +893,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>544</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 10</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_gaofa where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_gaofa -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -954,19 +911,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>608</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 11</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_legal where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_legal -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -974,19 +929,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>672</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 12</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_risk_list where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_risk_list -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -994,19 +947,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>736</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 13</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_bwfintech_credit_score where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_bwfintech_credit_score -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1014,30 +965,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>800</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_gaofa</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_gaofa.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1052,30 +1001,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>608</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_credit_score</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_credit_score.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1090,30 +1037,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>800</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_risk_list</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_risk_list.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1128,30 +1073,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>736</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_bwfintech_legal</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_bwfintech_legal.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1166,19 +1109,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>672</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL14</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_other_bwfintech_duotou_multiple_application where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_other_bwfintech_duotou_multiple_application -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1186,30 +1127,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>880</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_other_bwfintech_duotou_multiple_application</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_other_bwfintech_duotou_multiple_application.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1224,19 +1163,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>832</xloc>
       <yloc>880</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL15</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_other_bwfintech_overdue_risk where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_other_bwfintech_overdue_risk -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1244,30 +1181,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>960</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_other_bwfintech_overdue_risk</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_other_bwfintech_overdue_risk.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1282,7 +1217,6 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>864</xloc>
       <yloc>960</yloc>
-      <attributes_kjc/>
     </entry>
   </entries>
   <hops>

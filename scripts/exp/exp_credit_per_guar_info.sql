@@ -9,6 +9,7 @@
 -- 			  20220523  ods_t_sys_dept替换为dim_bank_info
 -- 			  			补充银行名称
 --            20220913 逻辑调整，是否信息使用授权书条件放到t1表内
+--            20251014 授权关联在保转件
 -- ---------------------------------------
 
 
@@ -274,15 +275,44 @@ commit;
 
 -- 客户信息 获取授权
 insert into dw_base.tmp_exp_credit_per_cust_info_id
-select
-t1.cust_id
-,t1.name
-,t1.id_type
-,t1.id_num
-from dw_base.tmp_exp_credit_per_cust_info_login  t1  -- 登录信息
-inner join dw_base.tmp_exp_credit_per_cust_info_sq t2 -- 授权信息
-on t1.cust_id = t2.cust_id                       -- 修改关联条件   20220111   原为登陆账号关联
-group by t1.id_num
+select cust_id
+	  ,name
+	  ,id_type
+	  ,id_num	
+from (
+      select cust_id
+	        ,name
+	        ,id_type
+	        ,id_num	  
+			,row_number()over (partition by id_num order by dict_flag) rn             -- [优先取原表里的证件号码、客户id，再取main表中在保转进件项目的]
+	  from  (
+              select t1.cust_id
+                    ,t1.name
+                    ,t1.id_type
+                    ,t1.id_num
+					,'0' as dict_flag
+              from dw_base.tmp_exp_credit_per_cust_info_login  t1  -- 登录信息
+              inner join dw_base.tmp_exp_credit_per_cust_info_sq t2 -- 授权信息
+              on t1.cust_id = t2.cust_id                       -- 修改关联条件   20220111   原为登陆账号关联
+              group by t1.id_num
+			  union all 
+			  select distinct cust_id 
+			        ,cust_name        as name
+					,'10'             as id_type
+			        ,cust_identity_no as id_num                                                 
+			        ,'1' as dict_flag
+			  from (select code
+			              ,cust_id
+						  ,cust_name
+                          ,cust_identity_no
+                          ,row_number()over (partition by code order by db_update_time desc,update_time desc) rn
+                    from dw_nd.ods_t_biz_project_main
+			  		where code like 'TJ%' 
+					  and main_type = '01') a        -- 主体类型：01 自然人                         20251014
+			  where a.rn = 1
+			) b
+	  ) c
+where rn = '1'
 ;
 
 commit;
@@ -2079,8 +2109,8 @@ where day_id = '${v_sdate}'
 ;
 commit;
 
-delete
-from dw_pbc.exp_credit_per_guar_info
-where day_id = '${v_sdate}'
-  and guar_id in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5Z88-9594');
-commit;
+-- delete
+-- from dw_pbc.exp_credit_per_guar_info
+-- where day_id = '${v_sdate}'
+--   and guar_id in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5S93-979U');
+-- commit;

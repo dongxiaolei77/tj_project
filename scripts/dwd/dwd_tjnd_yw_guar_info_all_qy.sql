@@ -2,18 +2,17 @@
 -- 开发人   : wangyj
 -- 开发时间 ：20241213
 -- 目标表   :dwd_tjnd_yw_guar_info_all_qy      		   迁移业务宽表
--- 源表     ： dw_nd.ods_tjnd_yw_z_report_afg_business_infomation   -- 申请表
---			  dw_nd.ods_tjnd_yw_z_report_base_customers_history    -- 客户表
---            dw_nd.ods_tjnd_yw_z_report_afg_counter_guarantor     -- 共同借款人表
---            dw_nd.ods_tjnd_yw_z_report_afg_check_business     	  -- 尽调表
---            dw_nd.ods_tjnd_yw_z_report_base_product_management   -- 产品表
---            dw_nd.ods_tjnd_yw_z_report_base_cooperative_institution_agreement  -- 合作机构表
---            dw_nd.ods_tjnd_yw_z_report_afg_voucher_infomation    -- 放款凭证表
---            dw_nd.ods_tjnd_yw_z_report_wf_process_business   	  -- 工作流引擎表
---            dw_nd.ods_tjnd_yw_z_report_wf_activity_instance  	  -- 工作流任务表
---            dw_nd.ods_tjnd_yw_z_report_afg_guarantee_letter	  -- 担保函表
---            dw_nd.ods_tjnd_yw_z_report_afg_guarantee_relieve     -- 解保表
---            dw_nd.ods_tjnd_yw_z_report_bh_compensatory           -- 代偿表
+-- 源表     ： dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation   -- 申请表
+--			  dw_nd.ods_creditmid_v2_z_migrate_base_customers_history    -- 客户表
+--            dw_nd.ods_creditmid_v2_z_migrate_afg_counter_guarantor     -- 共同借款人表
+--            dw_nd.ods_tjnd_yw_base_product_management   -- 产品表
+--            dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement  -- 合作机构表
+--            dw_nd.ods_creditmid_v2_z_migrate_afg_voucher_infomation    -- 放款凭证表
+--            dw_nd.ods_tjnd_yw_wf_process_business   	  -- 工作流引擎表
+--            dw_nd.ods_tjnd_yw_wf_activity_instance  	  -- 工作流任务表
+--            dw_nd.ods_creditmid_v2_z_migrate_afg_guarantee_letter	  -- 担保函表
+--            dw_nd.ods_creditmid_v2_z_migrate_afg_guarantee_relieve     -- 解保表
+--            dw_nd.ods_creditmid_v2_z_migrate_bh_compensatory           -- 代偿表
 -- 备注     ：
 -- 变更记录 ：
 -- ----------------------------------------
@@ -159,7 +158,7 @@ select distinct '${v_sdate}'                                  as day_id         
      , b.cust_source                                                            -- 客户来源
      , b.gender                                                                 -- 性别
      , b.address                                                                -- 户籍住址
-     , b.marriage_sta                                                           -- 婚姻状况
+     , b.MARRIAGE_STATUS                                                           -- 婚姻状况
      , b.tel                                                                    -- 联系电话
      , b.contacts_addr                                                          -- 联系地址
      , b.spouse_name                                                            -- 配偶姓名
@@ -235,7 +234,7 @@ from (
               , coop_org_name           -- 合作机构名称
               , coop_gov_id             -- 合作政府id
               , coop_gov_name           -- 合作政府名称
-         from dw_nd.ods_tjnd_yw_z_report_afg_business_infomation -- 申请表
+         from dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation -- 申请表
      ) a
          left join
      (
@@ -252,7 +251,7 @@ from (
               , a.cert_type                 -- 证件类型
               , a.gender                    -- 性别
               , a.address                   -- 户籍住址
-              , a.marriage_sta              -- 婚姻状况
+              , a.MARRIAGE_STATUS              -- 婚姻状况
               , a.tel                       -- 联系电话
               , a.contacts_addr             -- 联系地址
               , a.spouse_name               -- 配偶姓名
@@ -268,15 +267,11 @@ from (
               , a.business_revenue          -- 经营收入
               , a.operation_loan            -- 经营性贷款
               , a.office_address            -- 经营地址
-              -- , c.leg_tel                   -- 法定代表人联系电话
 	      , replace(a.tel,' ','') as leg_tel -- 法定代表人联系电话 
-         from dw_nd.ods_tjnd_yw_z_report_base_customers_history a -- 客户表
-                  left join dw_nd.ods_tjnd_yw_z_report_afg_counter_guarantor b -- 共同借款人表
+         from dw_nd.ods_creditmid_v2_z_migrate_base_customers_history a -- 客户表
+                  left join dw_nd.ods_creditmid_v2_z_migrate_afg_counter_guarantor b -- 共同借款人表
                             on a.id_business_information = b.id_business_information
                                 and a.spouse_id_no = b.id_number
-                  left join dw_nd.ods_tjnd_yw_z_report_afg_check_business c -- 尽调表
-                            on a.id_business_information = c.f_id
-                                and a.id_number = c.id_number
      ) b on a.id = b.id_business_information -- ??
          left join
      (
@@ -296,14 +291,14 @@ from (
               , gov_org_rate            -- 政府分险比例
               , coop_org_rate           -- 合作机构分险比例
               , compensation_period     -- 代偿宽限期
-         from dw_nd.ods_tjnd_yw_z_report_base_cooperative_institution_agreement -- 合作机构表
+         from dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement -- 合作机构表
      ) d on a.related_agreement_id = d.id
          left join
      (
          select id_business_information                                   -- 业务编号
               , min(date_format(created_time, '%Y%m%d')) as lend_reg_dt   -- 计入在保日期
               , min(repayment_way)                       as repayment_way -- 借款合同还款方式 ??
-         from dw_nd.ods_tjnd_yw_z_report_afg_voucher_infomation -- 放款凭证表
+         from dw_nd.ods_creditmid_v2_z_migrate_afg_voucher_infomation -- 放款凭证表
         where delete_flag = 1 
 	group by id_business_information
      ) e on a.id = e.id_business_information
@@ -323,7 +318,7 @@ from (
               , id_intended_letter      -- 担保意向函id
               , b.ai_start_datetime     -- 补充合同时间
               , c.guar_letter_time      -- 出具意向函时间
-         from dw_nd.ods_tjnd_yw_z_report_afg_business_approval a
+         from dw_nd.ods_creditmid_v2_z_migrate_afg_business_approval a
                   left join
               (
                   select a.itemid
@@ -341,14 +336,14 @@ from (
               (
                   select id
                        , creat_time as guar_letter_time
-                  from dw_nd.ods_tjnd_yw_z_report_afg_guarantee_letter -- 担保函表
+                  from dw_nd.ods_creditmid_v2_z_migrate_afg_guarantee_letter -- 担保函表
               ) c on a.id_intended_letter = c.id
      ) f on a.id = f.id_business_information
          left join
      (
          select id_business_information
               , date_of_set -- 解保日期
-         from dw_nd.ods_tjnd_yw_z_report_afg_guarantee_relieve -- 解保表
+         from dw_nd.ods_creditmid_v2_z_migrate_afg_guarantee_relieve -- 解保表
          where deleted_flag = 1
            and IF_RELIEVE_TYPE = 1
            and IS_RELIEVE_FLAG = 0
@@ -358,7 +353,7 @@ from (
          select id_cfbiz_underwriting
               , total_compensation -- 代偿拨付金额
               , payment_date       -- 代偿拨付日期
-         from dw_nd.ods_tjnd_yw_z_report_bh_compensatory -- 代偿表
+         from dw_nd.ods_creditmid_v2_z_migrate_bh_compensatory -- 代偿表
          where over_tag = 'BJ'
            and status = 1
      ) h on a.id = h.id_cfbiz_underwriting

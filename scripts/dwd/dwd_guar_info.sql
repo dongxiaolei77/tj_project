@@ -1933,3 +1933,12 @@ set t1.branch_office = case
                            when t2.ROLE_CODE_ = 'BDBranch' then '宝坻办事处' end; -- 分支机构
 commit;
 
+-- 删除担保信息表中 迁移两笔业务
+-- delete
+-- from dw_base.dwd_guar_info_all
+-- where guar_id in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5S93-979U')
+--  and day_id = '${v_sdate}';
+-- delete
+-- from dw_base.dwd_guar_info_all_his
+-- where guar_id in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5S93-979U')
+--  and day_id = '${v_sdate}';

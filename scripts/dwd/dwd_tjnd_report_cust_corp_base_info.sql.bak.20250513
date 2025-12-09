@@ -162,16 +162,11 @@ from (
                   select t1.cert_no                                                                       -- 企业证件号码
                        , '29'                                                         as cert_no_typ_cd /*固定值为“统一社会信用代码”*/
                        , case
-                             when (t1.cust_type = '法人或其他组织' or
-                                   (t1.cust_class is null and left(t1.cert_no, 1) = '9')) and
-                                  t1.cust_class regexp '家庭农场' then '02'
-                             when (t1.cust_type = '法人或其他组织' or
-                                   (t1.cust_class is null and left(t1.cert_no, 1) = '9')) and
-                                  t1.cust_class regexp '合作社|联合社|联合总社' then '04'
-                             when (t1.cust_type = '法人或其他组织' or (t1.cust_class is null and left(t1.cert_no, 1) = '9'))
-                                 then '03'
-                             else t1.cust_type
-                      end                                                             as cust_main_typ_cd -- 项目主体类型代码
+                             when t1.cust_class = '家庭农场' then '02'
+                             when t1.cust_class = '农民专业合作社' then '04'
+                             when t1.cust_class =  '农业企业' then '03'
+                        end                                                             as cust_main_typ_cd -- 项目主体类型代码
+                       , t1.cust_type
                        , regexp_replace(t1.cust_name, '\t|\n', '')                    as corp_name /*剔除特殊字符*/
                        , row_number()
                           over (partition by t1.cert_no order by t1.loan_reg_dt desc) as rk /*同一笔证件号取放款登记日期最晚业务的信息*/

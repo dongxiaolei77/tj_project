@@ -9,7 +9,7 @@
 --          dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement    BO,机构合作协议,NEW
 --          dw_nd.ods_tjnd_yw_base_enterprise                           部门表
 -- 备注     ：
--- 变更记录 ：
+-- 变更记录 ：20250912 切换底表
 -- ---------------------------------------
 -- 重跑逻辑
 delete
@@ -29,7 +29,7 @@ insert into dw_base.ads_rpt_tjnd_finance_bank_guar_stat
 )
 select '${v_sdate}'                  as day_id,
        t1.bank_name,
-       coop_amt,
+       coalesce(t5.credit_line,t3.coop_amt,0) as coop_amt,
        total_guar_cnt,
        total_guar_amt,
        gt_cnt,
@@ -51,31 +51,48 @@ from (
                   from (
                            select id,                            -- 业务id
                                   COOPERATIVE_BANK_FIRST,        -- 银行编码
-                                  GUR_STATE,                     -- 在保状态
-                                  GT_AMOUNT / 10000 as gt_amount -- 在保余额
-                           from dw_nd.ods_tjnd_yw_afg_business_infomation
+                                  case when GUR_STATE = '50' then 'GT'
+								       when GUR_STATE = '90' then 'ED'
+                                       when GUR_STATE = '93' then 'ED'									   
+									   end as GUR_STATE,         -- 在保状态              -- 20250912
+                                  GT_AMOUNT  as gt_amount -- 在保余额
+ --                          from dw_nd.ods_tjnd_yw_afg_business_infomation
+						   from dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation
                            where DELETE_FLAG = 1
                              and COOPERATIVE_BANK_FIRST is not null
                        ) t1
                            left join
                        (
                            select ID_BUSINESS_INFORMATION,                -- 业务id
-                                  sum(RECEIPT_AMOUNT) / 10000 as guar_amt -- 放款金额
-                           from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+                                  sum(RECEIPT_AMOUNT)  as guar_amt -- 放款金额
+--                           from dw_nd.ods_tjnd_yw_afg_voucher_infomation
+						   from dw_nd.ods_creditmid_v2_z_migrate_afg_voucher_infomation
                            where DELETE_FLAG = 1
                            group by ID_BUSINESS_INFORMATION
                        ) t2 on t1.id = t2.ID_BUSINESS_INFORMATION
                            left join
                        (
                            select fieldcode,                 -- 银行编码
-                                  enterfullname as bank_name -- 银行名称
+                                  case when enterfullname = '北京银行股份有限公司天津分行'     then '北京银行股份有限公司'
+								       when enterfullname = '中国光大银行股份有限公司天津分行' then '中国光大银行股份有限公司'
+									   when enterfullname = '中国工商银行股份有限公司天津'     then '中国工商银行股份有限公司'
+									   when enterfullname = '宁夏银行股份有限公司天津'         then '宁夏银行股份有限公司'
+									   when enterfullname = '兴业银行股份有限公司天津分行'     then '兴业银行股份有限公司'
+									   when enterfullname = '中国建设银行股份有限公司天津'     then '中国建设银行股份有限公司'
+									   when enterfullname = '中国邮政储蓄银行股份有限公司天津' then '中国邮政储蓄银行股份有限公司'
+					                   when enterfullname = '中国农业银行股份有限公司天津'     then '中国农业银行股份有限公司'
+					                   when enterfullname = '交通银行股份有限公司天津'         then '交通银行股份有限公司'
+				                       else enterfullname end as bank_name -- 银行名称                  -- [与新系统的银行进行合并]
                            from dw_nd.ods_tjnd_yw_base_enterprise
                            where parentid = 200
                        ) t3 on t1.COOPERATIVE_BANK_FIRST = t3.fieldcode
+                  -- 剔除在保业务
+					   where t1.GUR_STATE != 'GT'
                   group by bank_name
                            -- 新系统取数逻辑
                   union all
-                  select t2.gnd_dept_name                                                       as bank_name,
+                  select if(t2.gnd_dept_name in ('中国邮政储蓄银行股份有限公司', '交通银行股份有限公司', '中国农业银行股份有限公司'),
+                            concat(t2.gnd_dept_name, '天津'), t2.gnd_dept_name)                   as bank_name,
                          count(case when item_stt in ('已放款', '已解保', '已代偿') then t1.guar_id end) as total_guar_cnt,
                          sum(case when item_stt in ('已放款', '已解保', '已代偿') then guar_amt end)     as total_guar_amt,
                          count(case when item_stt = '已放款' then t1.guar_id end)                  as gt_cnt,
@@ -85,11 +102,13 @@ from (
                                item_stt,  -- 项目状态
                                guar_amt,  -- 放款金额
                                loan_amt   -- 合同金额
-                        from dw_base.dwd_guar_info_all
+                        from dw_base.dwd_guar_info_all_his
                         where day_id = '${v_sdate}'
-                          and data_source = '担保业务管理系统新') t1
+                          and data_source = '担保业务管理系统新'
+                          and item_stt in ('已放款', '已解保', '已代偿')
+                       ) t1
                            left join dw_base.dwd_tjnd_report_biz_loan_bank t2
-                                     on t1.guar_id = t2.biz_no
+                                     on t1.guar_id = t2.biz_no and t2.day_id = '${v_sdate}'
                            left join
                        (
                            select guar_id,
@@ -97,7 +116,8 @@ from (
                            from dw_base.dwd_guar_info_onguar
                            where day_id = '${v_sdate}'
                        ) t3 on t1.guar_id = t3.guar_id
-                  group by t2.gnd_dept_name
+                  group by if(t2.gnd_dept_name in ('中国邮政储蓄银行股份有限公司', '交通银行股份有限公司', '中国农业银行股份有限公司'),
+                              concat(t2.gnd_dept_name, '天津'), t2.gnd_dept_name)
               ) t1
          group by bank_name
      ) t1
@@ -112,38 +132,45 @@ from (
      -- 银行授信额度
          (
              select BANK_ORG_ID,                   -- 单位id
-                    COOPERATION_AMOUNT as coop_amt -- 合作额度(万元)
-             from dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement
+                    COOPERATION_AMOUNT / 100000000 as coop_amt -- 合作额度(亿元)
+--             from dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement
+			 from dw_nd.ods_creditmid_v2_base_cooperative_institution_agreement
              where IS_ENABLED = 1
                and ORG_AGREEMENT_TYPE = 0
          ) t3 on t2.enterid = t3.BANK_ORG_ID
+		 left join 
+		 ( 
+		    select case when bank_name = '北京银行股份有限公司天津分行'     then '北京银行股份有限公司'
+						when bank_name = '中国光大银行股份有限公司天津分行' then '中国光大银行股份有限公司'
+						when bank_name = '中国工商银行股份有限公司天津'     then '中国工商银行股份有限公司'
+						when bank_name = '宁夏银行股份有限公司天津'         then '宁夏银行股份有限公司'
+						when bank_name = '兴业银行股份有限公司天津分行'     then '兴业银行股份有限公司'
+						when bank_name = '中国建设银行股份有限公司天津'     then '中国建设银行股份有限公司'
+			            when bank_name = '中国邮政储蓄银行股份有限公司天津' then '中国邮政储蓄银行股份有限公司'
+					    when bank_name = '中国农业银行股份有限公司天津'     then '中国农业银行股份有限公司'
+					    when bank_name = '交通银行股份有限公司天津'         then '交通银行股份有限公司'
+
+						when bank_name = '中国光大银行股份有限公司天津分行'     then '中国光大银行股份有限公司'						
+						when bank_name = '中国农业银行股份有限公司天津市分行'   then '中国农业银行股份有限公司'
+						when bank_name = '中国工商银行股份有限公司天津市分行'   then '中国工商银行股份有限公司'
+						when bank_name = '中国建设银行股份有限公司天津市分行'   then '中国建设银行股份有限公司'
+						when bank_name = '中国邮政储蓄银行股份有限公司天津分行' then '中国邮政储蓄银行股份有限公司'
+						when bank_name = '交通银行股份有限公司天津市分行'       then '交通银行股份有限公司'
+						when bank_name = '北京银行股份有限公司天津分行'         then '北京银行股份有限公司'
+						else bank_name 
+						end as bank_name
+			      ,credit_line  -- 银行授信额度（亿元）
+			from dw_nd.ods_imp_tjnd_bank_credit_detail
+		 ) t5 on t1.bank_name = t5.bank_name
          left join
      -- 获取在保总额
          (
              select sum(all_gt_amt) as all_gt_amt
              from (
-                      select sum(if(GUR_STATE = 'GT', GT_AMOUNT, 0)) as all_gt_amt
-                      from (
-                               select id,
-                                      COOPERATIVE_BANK_FIRST,
-                                      GUR_STATE,
-                                      GT_AMOUNT / 10000 as gt_amount
-                               from dw_nd.ods_tjnd_yw_afg_business_infomation
-                               where DELETE_FLAG = 1
-                                 and COOPERATIVE_BANK_FIRST is not null
-                           ) t1
-                               left join
-                           (
-                               select fieldcode,
-                                      enterfullname as bank_name
-                               from dw_nd.ods_tjnd_yw_base_enterprise
-                               where parentid = 200
-                           ) t2 on t1.COOPERATIVE_BANK_FIRST = t2.fieldcode
-                      union all
                       select sum(onguar_amt) as all_gt_amt
                       from (
                                select *
-                               from dw_base.dwd_guar_info_all
+                               from dw_base.dwd_guar_info_all_his
                                where day_id = '${v_sdate}'
                                  and data_source = '担保业务管理系统新'
                            ) t1
@@ -156,7 +183,6 @@ from (
                            ) t2 on t1.guar_id = t2.guar_id
                   ) t1
          ) t4 on 1 = 1
-where '${v_sdate}' = date_format(last_day('${v_sdate}'), '%Y%m%d') -- 月底跑批
 order by gt_amt
     desc;
 commit;

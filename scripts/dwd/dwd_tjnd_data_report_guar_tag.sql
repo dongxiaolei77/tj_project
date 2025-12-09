@@ -50,7 +50,7 @@ insert into dw_base.dwd_tjnd_data_report_guar_tag
 ,origin_code        -- '原业务编号'
 ,is_fxhj            -- '是否展期业务'
 )
-select '${v_sdate}' as day_id
+select distinct '${v_sdate}' as day_id
        ,t1.project_no
        ,t1.guar_id
        ,t2.item_stt
@@ -80,6 +80,7 @@ select '${v_sdate}' as day_id
 			 when t2.guar_class = '农资、农机、农技等社会化服务' then '农资、农机、农技等农业社会化服务'
              when t2.guar_class in ('非农项目','粮食种植','生猪养殖','其他畜牧业','渔业生产','农田建设','农产品初加工','农业新业态', '其他农业项目') then t2.guar_class
              when t2.guar_class is null then '其他农业项目' end as guar_class_type
+
        ,case when t2.loan_amt between 10 and 300 then '政策性业务：[10-300]'
              when t2.guar_class = '生猪养殖' and t2.loan_amt > 300 and t2.loan_amt <= 1000 then '政策性业务-生猪养殖: (300,1000]'
              when t2.loan_amt < 10 or (t2.guar_class <> '生猪养殖' and t2.loan_amt > 300 and t2.loan_amt <= 1000) then '政策外“双控”业务：<10 and (300,1000]'
@@ -110,9 +111,6 @@ select '${v_sdate}' as day_id
         ,date_format(t6.submit_time, '%Y%m%d') as compt_aply_dt
         ,t7.origin_code
         ,case when t7.is_fxhj = '1' then '1' else '0' end as is_fxhj
-       
-       
-
   from dw_base.dwd_guar_info_stat t1
  inner join dw_base.dwd_guar_info_all t2
     on t1.guar_id = t2.guar_id

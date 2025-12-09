@@ -30,25 +30,26 @@ select date_format(date_add('${v_sdate}', interval 1 day), '%Y%m%d') as day_id,
        replace(HIS_COMP_ID, '_', '')                                 as old_comp_no_nacga,
        t1.CUSTOMER_NAME                                              as cust_name,
        IS_COMP                                                       as is_comp_comp,
-       COMP_POLICY_CODE                                              as comp_comp_poli_code,
+       COMP_POLICY_CODE                                              as comp_comp_poli_cd,
        date_format(rcvr_rcpt_dt, '%Y-%m-%d')                         as rcvr_rcpt_dt,
-       recovery_amt / 10000                                          as act_arrl_amt_comp,
-       recovery_amt / 10000                                          as act_arrl_amt_cntr,
+       recovery_amt                                           as act_arrl_amt_comp,                   -- [不用除10000]  20250905
+       recovery_amt                                           as act_arrl_amt_cntr,
        0                                                             as act_arrl_amt_gov,
        0                                                             as act_arrl_amt_org,
        0                                                             as act_arrl_amt_other
 from dw_nd.ods_tjnd_yw_z_report_compensatory_history t1
          inner join
-     dw_nd.ods_tjnd_yw_z_report_afg_business_infomation t2
+     dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation t2
      on t1.BUS_ID = t2.GUARANTEE_CODE
          left join
      (
          select t1.ID_CFBIZ_UNDERWRITING,          -- 业务id
                 sum(CUR_RECOVERY) as recovery_amt, -- 追偿金额
                 max(ENTRY_DATA)   as rcvr_rcpt_dt  -- 追偿入账日期
-         from dw_nd.ods_tjnd_yw_bh_recovery_tracking t1
-                  left join dw_nd.ods_tjnd_yw_z_report_bh_recovery_tracking_detail t2
-                            on t1.id = t2.ID_RECOVERY_TRACKING
+         from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking t1
+                  left join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail t2
+             --               on t1.id = t2.ID_RECOVERY_TRACKING
+			 on ifnull(t2.ID_RECOVERY_TRACKING = t1.ID,t2.GUARANTEE_CODE = t1.RELATED_ITEM_NO)
               -- 当年追偿还款
          where date_format(ENTRY_DATA, '%Y%m%d') >= concat(year('${v_sdate}'), '0101')
            -- 判断为上个月数据

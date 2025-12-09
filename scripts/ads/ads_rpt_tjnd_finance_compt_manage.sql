@@ -8,125 +8,126 @@
 --          dw_nd.ods_tjnd_yw_base_product_management       BO,产品管理,NEW
 --          dw_nd.ods_tjnd_yw_base_enterprise               部门表
 -- 备注     ：
--- 变更记录 ：
+-- 变更记录 ：20250910 旧业务系统逻辑取消注释，底表更换为v2_z_migrate相关表；新业务系统逻辑 经办人修改口径，改为从main表取数
 -- ---------------------------------------
 -- 重跑策略
-truncate table dw_base.ads_rpt_tjnd_finance_compt_manage;
+
+delete from dw_base.ads_rpt_tjnd_finance_compt_manage where day_id = '${v_sdate}';
 commit;
 -- 旧业务系统逻辑
-# insert into dw_base.ads_rpt_tjnd_finance_compt_manage
-# (day_id, -- 数据日期
-#  loan_cont_no, -- 担保合同编号
-#  cust_name, -- 客户名称
-#  cert_num, -- 证件号码
-#  compt_apply_date, -- 代偿申请日
-#  compt_total, -- 代偿总额
-#  compt_principal, -- 代偿本金
-#  compt_interest, -- 代偿利息
-#  proposed_way_of_recovery, -- 拟追偿方式
-#  payment_date, -- 打款时间
-#  rimit_bank_account, -- 打款银行账户
-#  handler, -- 经办人
-#  handle_time, -- 经办时间
-#  related_item_no, -- 关联项目编号
-#  product_name, -- 产品一级
-#  enter_full_name, -- 合作银行
-#  bank_outlets, -- 银行网点
-#  amt_insured, -- 核保金额(元)
-#  on_balance, -- 在保余额(元)
-#  guar_start_date, -- 担保开始日期
-#  guar_end_date, -- 担保到期日期
-#  level_five, -- 五级分类
-#  warning_class, -- 四级分类
-#  bank_mgr, -- 银行客户经理
-#  tel, -- 联系方式
-#  over_tag, -- 流程状态
-#  payee_account, -- 收款方客户账号
-#  payee_name, -- 收款方账户名称
-#  payee_bank_account, -- 收款方开户行名称
-#  purpose -- 用途
-# )
-# select '${v_sdate}'                              as day_id,
-#        loan_cont_no,
-#        cust_name,
-#        cert_num,
-#        date_format(compt_apply_date, '%Y-%m-%d') as compt_apply_date,
-#        compt_total,
-#        compt_principal,
-#        compt_interest,
-#        proposed_way_of_recovery,
-#        payment_date,
-#        rimit_bank_account,
-#        t4.username                               as handler,
-#        handle_time,
-#        related_item_no,
-#        product_name,
-#        enterfullname                             as enter_full_name,
-#        bank_outlets,
-#        amt_insured,
-#        on_balance,
-#        date_format(guar_start_date, '%Y-%m-%d')  as guar_start_date,
-#        date_format(guar_end_date, '%Y-%m-%d')    as guar_end_date,
-#        level_five,
-#        warning_class,
-#        bank_mgr,
-#        tel,
-#        if(over_tag = 'BJ', '代偿申请结束', '代偿申请审批中')  as over_tag,
-#        payee_account,
-#        payee_name,
-#        payee_bank_account,
-#        purpose
-# from (
-#          select RELATED_CONTRACT_NO             as loan_cont_no,             -- 关联合同编号
-#                 CUSTOMER_NAME                   as cust_name,                -- 客户名称
-#                 ID_NO                           as cert_num,                 -- 证件号码
-#                 COMPENSTATION_APPLICATION_DATE  as compt_apply_date,         -- 代偿申请日
-#                 TOTAL_COMPENSATION              as compt_total,              -- 代偿总额
-#                 COMPENSATORY_PRINCIPAL          as compt_principal,          -- 代偿本金
-#                 COMPENSATORY_INTEREST           as compt_interest,           -- 代偿利息
-#                 PROPOSED_WAY_OF_RECOVERY        as proposed_way_of_recovery, -- 拟追偿方式
-#                 PAYMENT_DATE                    as payment_date,             -- 打款时间
-#                 REMIT_BANK_ACCOUNT              as rimit_bank_account,       -- 打款银行账户
-#                 HANDLER                         as handler,                  -- 经办人id
-#                 HANDLE_TIME                     as handle_time,              -- 经办时间
-#                 RELATED_ITEM_NO                 as related_item_no,          -- 关联项目编号
-#                 BANK_OUTLETS                    as bank_outlets,             -- 银行网点
-#                 AMOUNT_INSURED                  as amt_insured,              -- 核保金额(元)
-#                 ON_BALANCE                      as on_balance,               -- 在保余额(元)
-#                 CONTRACR_START_DATE             as guar_start_date,          -- 担保开始日期
-#                 CONTRACR_END_DATE               as guar_end_date,            -- 担保到期日期
-#                 LEVEL_FIVE                      as level_five,               -- 五级分类
-#                 WARNING_CLASS                   as warning_class,            -- 四级分类
-#                 BANK_ACC_MANAGER                as bank_mgr,                 -- 银行客户经理
-#                 TEL                             as tel,                      -- 联系方式
-#                 OVER_TAG                        as over_tag,                 -- 流程状态
-#                 PRODUCT_GRADE_FIRST,                                         -- 产品编码
-#                 THREE_LEVEL_BRANCH,                                          -- 银行编码
-#                 RECEIPT_BANK_ACCOUNT            as payee_account,            -- 收款方客户账户
-#                 RECEIPT_ACCOUNT_TITLE           as payee_name,               -- 收款方账户名称
-#                 RECEIPT_OPENING_BANK            as payee_bank_account,       -- 收款方开户行名称
-#                 concat(CUSTOMER_NAME, '项目代偿支出') as purpose                   -- 用途
-#          from dw_nd.ods_tjnd_yw_bh_compensatory
-#      ) t1
-#          left join
-#      (
-#          select fieldcode,   -- 产品编码
-#                 PRODUCT_NAME -- 产品名称
-#          from dw_nd.ods_tjnd_yw_base_product_management
-#      ) t2 on t1.PRODUCT_GRADE_FIRST = t2.fieldcode
-#          left join
-#      (
-#          select fieldcode,    -- 银行编码
-#                 enterfullname -- 银行名称
-#          from dw_nd.ods_tjnd_yw_base_enterprise
-#      ) t3 on t1.THREE_LEVEL_BRANCH = t3.fieldcode
-#          left join
-#      (
-#          select userid,  -- 经办人id
-#                 username -- 经办人姓名
-#          from dw_nd.ods_tjnd_yw_base_operator
-#      ) t4 on t1.handler = t4.userid;
-# commit;
+ insert into dw_base.ads_rpt_tjnd_finance_compt_manage
+ (day_id, -- 数据日期
+  loan_cont_no, -- 担保合同编号
+  cust_name, -- 客户名称
+  cert_num, -- 证件号码
+  compt_apply_date, -- 代偿申请日
+  compt_total, -- 代偿总额
+  compt_principal, -- 代偿本金
+  compt_interest, -- 代偿利息
+  proposed_way_of_recovery, -- 拟追偿方式
+  payment_date, -- 打款时间
+  rimit_bank_account, -- 打款银行账户
+  handler, -- 经办人
+  handle_time, -- 经办时间
+  related_item_no, -- 关联项目编号
+  product_name, -- 产品一级
+  enter_full_name, -- 合作银行
+  bank_outlets, -- 银行网点
+  amt_insured, -- 核保金额(元)
+  on_balance, -- 在保余额(元)
+  guar_start_date, -- 担保开始日期
+  guar_end_date, -- 担保到期日期
+  level_five, -- 五级分类
+  warning_class, -- 四级分类
+  bank_mgr, -- 银行客户经理
+  tel, -- 联系方式
+  over_tag, -- 流程状态
+  payee_account, -- 收款方客户账号
+  payee_name, -- 收款方账户名称
+  payee_bank_account, -- 收款方开户行名称
+  purpose -- 用途
+ )
+ select '${v_sdate}'                              as day_id,
+        loan_cont_no,
+        cust_name,
+        cert_num,
+        date_format(compt_apply_date, '%Y-%m-%d') as compt_apply_date,
+        compt_total,
+        compt_principal,
+        compt_interest,
+        proposed_way_of_recovery,
+        payment_date,
+        rimit_bank_account,
+        t4.username                               as handler,
+        handle_time,
+        related_item_no,
+        product_name,
+        enterfullname                             as enter_full_name,
+        bank_outlets,
+        amt_insured,
+        on_balance,
+        date_format(guar_start_date, '%Y-%m-%d')  as guar_start_date,
+        date_format(guar_end_date, '%Y-%m-%d')    as guar_end_date,
+        level_five,
+        warning_class,
+        bank_mgr,
+        tel,
+        if(over_tag = 'BJ', '代偿申请结束', '代偿申请审批中')  as over_tag,
+        payee_account,
+        payee_name,
+        payee_bank_account,
+        purpose
+ from (
+          select RELATED_CONTRACT_NO             as loan_cont_no,             -- 关联合同编号
+                 CUSTOMER_NAME                   as cust_name,                -- 客户名称
+                 ID_NO                           as cert_num,                 -- 证件号码
+                 COMPENSTATION_APPLICATION_DATE  as compt_apply_date,         -- 代偿申请日
+                 TOTAL_COMPENSATION              as compt_total,              -- 代偿总额
+                 COMPENSATORY_PRINCIPAL          as compt_principal,          -- 代偿本金
+                 COMPENSATORY_INTEREST           as compt_interest,           -- 代偿利息
+                 PROPOSED_WAY_OF_RECOVERY        as proposed_way_of_recovery, -- 拟追偿方式
+                 PAYMENT_DATE                    as payment_date,             -- 打款时间
+                 REMIT_BANK_ACCOUNT              as rimit_bank_account,       -- 打款银行账户
+                 HANDLER                         as handler,                  -- 经办人id
+                 HANDLE_TIME                     as handle_time,              -- 经办时间
+                 RELATED_ITEM_NO                 as related_item_no,          -- 关联项目编号
+                 BANK_OUTLETS                    as bank_outlets,             -- 银行网点
+                 AMOUNT_INSURED                  as amt_insured,              -- 核保金额(元)
+                 ON_BALANCE                      as on_balance,               -- 在保余额(元)
+                 CONTRACR_START_DATE             as guar_start_date,          -- 担保开始日期
+                 CONTRACR_END_DATE               as guar_end_date,            -- 担保到期日期
+                 LEVEL_FIVE                      as level_five,               -- 五级分类
+                 WARNING_CLASS                   as warning_class,            -- 四级分类
+                 BANK_ACC_MANAGER                as bank_mgr,                 -- 银行客户经理
+                 TEL                             as tel,                      -- 联系方式
+                 OVER_TAG                        as over_tag,                 -- 流程状态
+                 PRODUCT_GRADE_FIRST,                                         -- 产品编码
+                 THREE_LEVEL_BRANCH,                                          -- 银行编码
+                 RECEIPT_BANK_ACCOUNT            as payee_account,            -- 收款方客户账户
+                 RECEIPT_ACCOUNT_TITLE           as payee_name,               -- 收款方账户名称
+                 RECEIPT_OPENING_BANK            as payee_bank_account,       -- 收款方开户行名称
+                 concat(CUSTOMER_NAME, '项目代偿支出') as purpose                   -- 用途
+          from dw_nd.ods_creditmid_v2_z_migrate_bh_compensatory
+      ) t1
+          left join
+      (
+          select fieldcode,   -- 产品编码
+                 PRODUCT_NAME -- 产品名称
+          from dw_nd.ods_creditmid_v2_z_migrate_base_product_management
+      ) t2 on t1.PRODUCT_GRADE_FIRST = t2.fieldcode
+          left join
+      (
+          select fieldcode,    -- 银行编码
+                 enterfullname -- 银行名称
+          from dw_nd.ods_tjnd_yw_base_enterprise
+      ) t3 on t1.THREE_LEVEL_BRANCH = t3.fieldcode
+          left join
+      (
+          select userid,  -- 经办人id
+                 username -- 经办人姓名
+          from dw_nd.ods_creditmid_v2_base_operator
+      ) t4 on t1.handler = t4.userid;
+ commit;
 
 
 -- --------------------------------------
@@ -174,7 +175,7 @@ select '${v_sdate}'                as day_id,
        proposed_way_of_recovery,
        payment_date,
        rimit_bank_account,
-       handler,
+       t6.branch_manager_name as handler,     -- 经办人         20250910
        handle_time,
        related_item_no,
        product_name,
@@ -207,7 +208,16 @@ from (
                 fk_end_date            as guar_end_date,    -- 贷款结束时间
                 bank_cust_manager_name as bank_mgr,         -- 银行客户经理
                 cust_mobile            as tel,              --  联系电话
-                status                 as over_tag,         -- 代偿状态
+                case when status = '00' then '申请中'
+                     when status = '10' then '审核中'
+					 when status = '20' then '拨付申请中'
+					 when status = '30' then '拨付审核中'
+					 when status = '40' then '待拨付'
+                     when status = '50' then '已代偿'	
+					 when status = '60' then '已拨付待确认'
+                     when status = '98' then '已终止'
+                     when status = '99' then '已否决'
+				end                    as over_tag,         -- 代偿状态        20250910
                 rn
          from (select *, row_number() over (partition by project_id order by db_update_time desc) as rn
                from dw_nd.ods_t_proj_comp_aply) t1
@@ -222,7 +232,7 @@ from (
                 repay_type        as proposed_way_of_recovery, -- 付款方式
                 act_disburse_date as payment_date,             -- 代偿款实际拨付日期
                 pay_acct_bank     as rimit_bank_account,       -- 付款账号银行
-                create_name       as handler,                  -- 创建者
+--                create_name       as handler,                  -- 创建者
                 update_time       as handle_time,              -- 最后修改时间
                 cola_acct         as payee_account,            -- 合作银行接收代偿款收款账号
                 cola_unit         as payee_name,               -- 合作银行接收代偿款收款单位名称
@@ -254,5 +264,17 @@ from (
                 onguar_amt * 10000 as on_balance -- 在保余额(元)
          from dw_base.dwd_guar_info_onguar
          where day_id = '${v_sdate}'
-     ) t5 on t4.guar_id = t5.guar_id;
+     ) t5 on t4.guar_id = t5.guar_id
+        left join 
+     (
+	    select a.code      -- 业务编号
+		      ,a.branch_manager_name  -- 农担分支机构项目经理名称
+		from (
+		       select *,row_number() over(partition by code order by db_update_time desc) as rn 
+		       from dw_nd.ods_t_biz_project_main
+               where date_format(db_update_time,'%Y%m%d') <= '${v_sdate}'
+			 ) a
+	    where a.rn = 1
+	 ) t6 on t5.guar_id = t6.code	
+;
 commit;

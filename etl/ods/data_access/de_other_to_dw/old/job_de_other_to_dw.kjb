@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
   <name>job_de_other_to_dw</name>
-  <description/>
-  <extended_description/>
-  <job_version/>
+  <description />
+  <extended_description />
+  <job_version />
   <directory>/</directory>
   <created_user>-</created_user>
   <created_date>2021/11/11 15:45:49.952</created_date>
@@ -20,9 +20,9 @@
     <port>3306</port>
     <username>${dw_user}</username>
     <password>${dw_pass}</password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
+    <servername />
+    <data_tablespace />
+    <index_tablespace />
     <attributes>
       <attribute>
         <code>EXTRA_OPTION_MYSQL.characterEncoding</code>
@@ -85,12 +85,12 @@
   <slaveservers>
     </slaveservers>
   <job-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <size_limit_lines/>
-    <interval/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <size_limit_lines />
+    <interval />
+    <timeout_days />
     <field>
       <id>ID_JOB</id>
       <enabled>Y</enabled>
@@ -198,10 +198,10 @@
     </field>
   </job-log-table>
   <jobentry-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <timeout_days />
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -289,10 +289,10 @@
     </field>
   </jobentry-log-table>
   <channel-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <timeout_days />
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -355,13 +355,12 @@
     </field>
   </channel-log-table>
   <pass_batchid>N</pass_batchid>
-  <shared_objects_file/>
+  <shared_objects_file />
   <entries>
     <entry>
       <name>Start</name>
-      <description/>
+      <description />
       <type>SPECIAL</type>
-      <attributes/>
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>N</repeat>
@@ -377,19 +376,17 @@
       <nr>0</nr>
       <xloc>320</xloc>
       <yloc>208</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_rc_credit where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_rc_credit -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -397,30 +394,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>448</xloc>
       <yloc>208</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_rc_credit</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_rc_credit.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -435,19 +430,16 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>592</xloc>
       <yloc>208</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>成功</name>
-      <description/>
+      <description />
       <type>SUCCESS</type>
-      <attributes/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>736</xloc>
       <yloc>208</yloc>
-      <attributes_kjc/>
     </entry>
   </entries>
   <hops>

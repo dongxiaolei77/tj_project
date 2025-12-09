@@ -497,7 +497,7 @@
     <type>MYSQL</type>
     <access>Native</access>
     <database>${tjnd_yw_host}</database>
-    <port>3306</port>
+    <port>8417</port>
     <username>${tjnd_yw_user}</username>
     <password>${tjnd_yw_pass}</password>
     <servername/>
@@ -526,7 +526,7 @@
       </attribute>
       <attribute>
         <code>PORT_NUMBER</code>
-        <attribute>3306</attribute>
+        <attribute>8417</attribute>
       </attribute>
       <attribute>
         <code>PRESERVE_RESERVED_WORD_CASE</code>

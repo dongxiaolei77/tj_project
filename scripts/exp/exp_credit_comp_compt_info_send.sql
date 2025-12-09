@@ -1,4 +1,5 @@
-
+-- 20251023 添加：账户类型不能为空，可以排掉增量更新的数据
+-- 20251023 【在还款表现段增加报告时点说明代码字段】
 -- t_en_acct_bs_sgmt	企业借贷-基础段
 
 delete from dw_pbc.t_en_acct_bs_sgmt where day_id = '${v_sdate}';
@@ -23,6 +24,7 @@ concat(day_id,acct_code)               -- ID
 ,now()     -- 创建时间
 from dw_pbc.exp_credit_comp_compt_info t1
 where t1.day_id = '${v_sdate}'
+and acct_type is not null	 -- [账户类型不能为空，可以排掉增量更新的数据]            20251023
 ;
 
 commit ;
@@ -59,6 +61,7 @@ concat(day_id,acct_code)
 ,now()         -- 创建时间
 from dw_pbc.exp_credit_comp_compt_info t1
 where t1.day_id = '${v_sdate}'
+and acct_type is not null	 -- [账户类型不能为空，可以排掉增量更新的数据]            20251023
 ;
 commit ;
 
@@ -89,6 +92,7 @@ group by guar_id
  on t1.ln_id = t2.guar_id
 where t1.DAY_ID = '${v_sdate}'
 -- and t1.rpt_date_code = '10' -- 只有新开户或者首次上报时上报该段【取消限制】
+and t1.acct_type is not null	 -- [账户类型不能为空，可以排掉增量更新的数据]            20251023
 ;
 commit;
 
@@ -128,6 +132,7 @@ group by guar_id
 on t1.guar_id = t3.guar_id
 where t1.day_id = '${v_sdate}'
 and t1.guar_cont_no is not null 
+and t2.acct_type is not null	 -- [账户类型不能为空，可以排掉增量更新的数据]            20251023
 
 ;
  
@@ -158,6 +163,7 @@ concat(day_id,acct_code)
 from dw_pbc.exp_credit_comp_compt_info t1
 where t1.day_id = '${v_sdate}'
 and t1.rpt_date_code= '10' -- 只有新开户或者首次上报时上报该段
+and acct_type is not null	 -- [账户类型不能为空，可以排掉增量更新的数据]            20251023
 ;
 commit ;
 
@@ -165,7 +171,6 @@ commit ;
 -- t_en_act_lblty_inf_sgmt	企业借贷-还款表现信息段
 delete from dw_pbc.t_en_act_lblty_inf_sgmt where day_id = '${v_sdate}';
 commit ;
-
 insert into dw_pbc.t_en_act_lblty_inf_sgmt
 select
 concat(day_id,acct_code)
@@ -190,8 +195,9 @@ concat(day_id,acct_code)
 ,nxt_agrr_rpy_date      -- 下一次约定还款日期
 ,close_date             -- 账户关闭日期
 ,now()            -- 创建时间
+,rpt_date_code          -- 报告时点说明代码                    20251023 【在还款表现段增加报告时点说明代码字段】
 from dw_pbc.exp_credit_comp_compt_info t1
-where t1.day_id = '${v_sdate}'
+where t1.day_id = '${v_sdate}'  
 ;commit ;
 
 -- t_en_acct_spec_trst_dspn_sgmt	企业借贷-特殊交易说明段
@@ -225,6 +231,7 @@ null
 ,null                              -- 上报文件行号
 from dw_pbc.exp_credit_comp_compt_info t1
 where t1.day_id = '${v_sdate}'
+and acct_type is not null	 -- [账户类型不能为空，可以排掉增量更新的数据]            20251023
 ;
 commit;
 

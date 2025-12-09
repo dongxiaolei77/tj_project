@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
   <name>job_de_fb_to_dw</name>
-  <description/>
-  <extended_description/>
-  <job_version/>
+  <description />
+  <extended_description />
+  <job_version />
   <job_status>0</job_status>
   <directory>/</directory>
   <created_user>-</created_user>
@@ -21,9 +21,9 @@
     <port>3306</port>
     <username>${dw_user}</username>
     <password>${dw_pass}</password>
-    <servername/>
-    <data_tablespace/>
-    <index_tablespace/>
+    <servername />
+    <data_tablespace />
+    <index_tablespace />
     <attributes>
       <attribute>
         <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
@@ -70,12 +70,12 @@
   <slaveservers>
     </slaveservers>
   <job-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <size_limit_lines/>
-    <interval/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <size_limit_lines />
+    <interval />
+    <timeout_days />
     <field>
       <id>ID_JOB</id>
       <enabled>Y</enabled>
@@ -183,10 +183,10 @@
     </field>
   </job-log-table>
   <jobentry-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <timeout_days />
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -274,10 +274,10 @@
     </field>
   </jobentry-log-table>
   <channel-log-table>
-    <connection/>
-    <schema/>
-    <table/>
-    <timeout_days/>
+    <connection />
+    <schema />
+    <table />
+    <timeout_days />
     <field>
       <id>ID_BATCH</id>
       <enabled>Y</enabled>
@@ -340,13 +340,12 @@
     </field>
   </channel-log-table>
   <pass_batchid>N</pass_batchid>
-  <shared_objects_file/>
+  <shared_objects_file />
   <entries>
     <entry>
       <name>Start</name>
-      <description/>
+      <description />
       <type>SPECIAL</type>
-      <attributes/>
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>N</repeat>
@@ -362,42 +361,38 @@
       <nr>0</nr>
       <xloc>16</xloc>
       <yloc>704</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>成功</name>
-      <description/>
+      <description />
       <type>SUCCESS</type>
-      <attributes/>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>1328</xloc>
       <yloc>720</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_cjqf</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_cjqf.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -412,30 +407,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>32</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_gdxx</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_gdxx.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -450,30 +443,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>352</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_db</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_db.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -488,30 +479,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>160</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_dwtz</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_dwtz.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -526,30 +515,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>288</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_gqcz</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_gqcz.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -564,30 +551,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>416</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_gsbg</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_gsbg.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -602,30 +587,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>480</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_cpws</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_cpws.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -640,30 +623,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>96</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_gszl</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_gszl.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -678,30 +659,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>544</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_dcdy</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_dcdy.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -716,30 +695,28 @@
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>224</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>etl_set_var</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_set_var.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -754,19 +731,17 @@
       <nr>0</nr>
       <xloc>288</xloc>
       <yloc>704</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_cjqf where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_cjqf -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -774,19 +749,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>32</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 2</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_cpws where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_cpws -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -794,19 +767,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>96</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 3</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_db where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_db -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -814,19 +785,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>160</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 4</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_dcdy where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_dcdy -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -834,19 +803,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>224</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 5</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_dwtz where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_dwtz -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -854,19 +821,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>288</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 6</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_gdxx where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_gdxx -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -874,19 +839,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>352</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 7</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_gqcz where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_gqcz -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -894,19 +857,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>416</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 8</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_gsbg where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_gsbg -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -914,19 +875,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>480</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 9</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_gszl where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_gszl -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -934,19 +893,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>544</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 10</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_jyyc where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_jyyc -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -954,19 +911,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>608</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 11</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_ktgg where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_ktgg -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -974,19 +929,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>672</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 12</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_sfxz where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_sfxz -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -994,19 +947,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>736</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 13</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_splc where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_splc -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1014,30 +965,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>800</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_jyyc</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_jyyc.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1052,30 +1001,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>608</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_splc</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_splc.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1090,30 +1037,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>800</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_sfxz</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_sfxz.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1128,30 +1073,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>736</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_ktgg</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_ktgg.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1166,19 +1109,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>672</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 14</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_ssgg where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_ssgg -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1186,19 +1127,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>864</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 15</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_sshy where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_sshy -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1206,19 +1145,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>928</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 16</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_sswf where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_sswf -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1226,19 +1163,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>992</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 17</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_swfzch where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_swfzch -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1246,19 +1181,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>1056</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 18</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_sxbzxr where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_sxbzxr -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1266,19 +1199,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>1120</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 19</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_xzcf where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_xzcf -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1286,19 +1217,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>1184</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 20</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_xzcf2 where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_xzcf2 -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1306,19 +1235,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>1248</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 21</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_xzxk where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_xzxk -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1326,19 +1253,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>1312</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 22</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_extdata_fb_zhixing where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_extdata_fb_zhixing -- where DATE_FORMAT(createDate,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1346,19 +1271,17 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>1376</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>SQL 23</name>
-      <description/>
+      <description />
       <type>SQL</type>
-      <attributes/>
-      <sql>delete from ods_de_t_data_fb_company where DATE_FORMAT(create_date,'%Y%m%d') = '${v_sdate}';
+      <sql>delete from ods_de_t_data_fb_company -- where DATE_FORMAT(create_date,'%Y%m%d') = '${v_sdate}';
 
 COMMIT;</sql>
       <useVariableSubstitution>T</useVariableSubstitution>
       <sqlfromfile>F</sqlfromfile>
-      <sqlfilename/>
+      <sqlfilename />
       <sendOneStatement>F</sendOneStatement>
       <connection>dw_nd</connection>
       <parallel>N</parallel>
@@ -1366,30 +1289,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>560</xloc>
       <yloc>1440</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_ssgg</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_ssgg.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1404,30 +1325,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>864</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_sshy</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_sshy.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1442,30 +1361,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>928</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_sswf</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_sswf.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1480,30 +1397,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>992</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_swfzch</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_swfzch.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1518,30 +1433,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>1056</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_sxbzxr</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_sxbzxr.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1556,30 +1469,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>1120</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_xzcf</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_xzcf.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1594,30 +1505,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>1184</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_xzcf2</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_xzcf2.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1632,30 +1541,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>1248</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_xzxk</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_xzxk.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1670,30 +1577,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>1312</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_extdata_fb_zhixing</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_extdata_fb_zhixing.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1708,30 +1613,28 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>1376</yloc>
-      <attributes_kjc/>
     </entry>
     <entry>
       <name>ods_de_t_data_fb_company</name>
-      <description/>
+      <description />
       <type>TRANS</type>
-      <attributes/>
       <specification_method>filename</specification_method>
-      <trans_object_id/>
+      <trans_object_id />
       <filename>${Internal.Entry.Current.Directory}/etl_ods_de_t_data_fb_company.ktr</filename>
-      <transname/>
+      <transname />
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
       <exec_per_row>N</exec_per_row>
       <clear_rows>N</clear_rows>
       <clear_files>N</clear_files>
       <set_logfile>N</set_logfile>
-      <logfile/>
-      <logext/>
+      <logfile />
+      <logext />
       <add_date>N</add_date>
       <add_time>N</add_time>
       <loglevel>Basic</loglevel>
       <cluster>N</cluster>
-      <slave_server_name/>
+      <slave_server_name />
       <set_append_logfile>N</set_append_logfile>
       <wait_until_finished>Y</wait_until_finished>
       <follow_abort_remote>N</follow_abort_remote>
@@ -1746,7 +1649,6 @@ COMMIT;</sql>
       <nr>0</nr>
       <xloc>816</xloc>
       <yloc>1440</yloc>
-      <attributes_kjc/>
     </entry>
   </entries>
   <hops>

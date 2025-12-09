@@ -1,7 +1,7 @@
 -- 个人借贷-基本信息段
 --
 --
--- 
+-- 20251023 添加：报告时点说明代码不能为空，可以排掉增量更新的数据
 
 
 delete from dw_pbc.t_in_acct_bs_inf_sgmt where day_id = '${v_sdate}';
@@ -37,6 +37,7 @@ concat(DAY_ID,acct_code)  -- ID
 ,now() -- 创建时间
 from dw_pbc.exp_credit_per_compt_info t1
 where t1.DAY_ID = '${v_sdate}'
+and rpt_date_code is not null	 -- [报告时点说明代码不能为空，可以排掉增量更新的数据]            20251023
 ;
 
 commit ;
@@ -146,6 +147,7 @@ concat(DAY_ID,acct_code)
 ,now() -- 创建时间
 from dw_pbc.`exp_credit_per_compt_info` t1
 where t1.DAY_ID = '${v_sdate}'
+and rpt_date_code is not null	 -- [报告时点说明代码不能为空，可以排掉增量更新的数据]            20251023
 ;
 commit ;
 
@@ -375,6 +377,7 @@ concat(DAY_ID,acct_code)  -- ID
 from dw_pbc.exp_credit_per_compt_info t1
 where t1.DAY_ID = '${v_sdate}'
 and rpt_date_code  in ('10')
+and rpt_date_code is not null	 -- [报告时点说明代码不能为空，可以排掉增量更新的数据]            20251023
 ;
 
 commit ;
@@ -467,6 +470,7 @@ group by guar_id
 )t2
  on t1.ln_id = t2.guar_id
  where t1.DAY_ID = '${v_sdate}'
+ and t1.rpt_date_code is not null	 -- [报告时点说明代码不能为空，可以排掉增量更新的数据]            20251023
   ;
  commit;
  
@@ -503,6 +507,7 @@ group by guar_id
 )t3
  on t1.guar_id = t3.guar_id
   where t1.day_id = '${v_sdate}'
+  and t2.rpt_date_code is not null	 -- [报告时点说明代码不能为空，可以排掉增量更新的数据]            20251023
   ;
   commit ;
 
@@ -553,6 +558,7 @@ left join dw_pbc.t_in_acct_orig_creditor_inf_sgmt t3
 on t1.ln_Id = t3.guar_id
 and t3.DAY_ID = '${v_sdate}'
 where t1.DAY_ID = '${v_sdate}'
+and t1.rpt_date_code is not null	 -- [报告时点说明代码不能为空，可以排掉增量更新的数据]            20251023
 ;
 
 commit ;

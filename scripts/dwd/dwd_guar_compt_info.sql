@@ -338,7 +338,7 @@ select
 	inner join dw_nd.ods_t_act_re_procdef_v2 t2
 	on t1.proc_def_id = t2.id_
 	where t2.key_= 'guarantee-dc' -- 代偿流程
-	and t1.task_name in ('财务支付','计财部拨付')
+	and t1.task_name in ('财务支付','计财部拨付','财务部拨付')
 	group by t1.wf_inst_id
 ;
 commit;

@@ -526,7 +526,9 @@
       <schema_name/>
     </partitioning>
     <connection>dw_base</connection>
-    <sql>select date_format(date_sub(date(now()),interval 1 day),'%Y%m%d') as v_sdate</sql>
+    <sql>  select date_format(date_sub(date(now()),interval 1 day),'%Y%m%d') as v_sdate
+       --  select '20251130' as v_sdate
+  </sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

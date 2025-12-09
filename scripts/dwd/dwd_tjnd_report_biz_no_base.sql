@@ -231,8 +231,8 @@ from (
 where t2.lend_reg_dt <= '${v_sdate}';
 commit;
 
-delete
-from dw_base.dwd_tjnd_report_biz_no_base
-where day_id = '${v_sdate}'
-  and biz_no in ('TJRD-2021-5Z88-9594', 'TJRD-2021-5Z85-959X');
-commit;
+-- delete
+-- from dw_base.dwd_tjnd_report_biz_no_base
+-- where day_id = '${v_sdate}'
+-- and biz_no in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5S93-979U');
+-- commit;

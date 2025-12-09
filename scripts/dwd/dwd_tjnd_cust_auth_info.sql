@@ -1,6 +1,5 @@
  -- 中间表  2025-01-01之后最早业务申请日期
 delete from dw_tmp.tmp_tjnd_cust_auth_info where day_id ='${v_sdate}';
-
 insert into dw_tmp.tmp_tjnd_cust_auth_info
 select   '${v_sdate}' as day_id
   ,a.cert_no

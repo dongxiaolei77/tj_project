@@ -1,3 +1,5 @@
+-- 改 --            20251014 授权关联在保转件
+
 -- 1.还款责任人信息（还款责任人段使用）
 -- 2.获取授权客户   （登录信息    签定使用授权书   获取授权）
 -- 3.获取所有放款日期小于等于当天的担保数据（结合第五项）
@@ -38,26 +40,56 @@ select t.cust_id
 	   ,t.id_type
 	   ,coalesce(t1.id_num,t2.zhongzheng_code)
 from (
-	select customer_id as cust_id
-		,main_name as name
-		,case when main_id_type = '21' then '10'  end as id_type   -- 10-中征码
-		,main_id_no as id_num
-	from(
-		select login_no
-			,customer_id
-			,main_name
-			,main_id_type  -- 主体证件类型
-			,main_id_no
-			,update_time
-			,row_number() over (partition by main_id_no order by update_time desc) as rn
-		from dw_nd.ods_wxapp_cust_login_info   -- 登陆账号信息表 20230112由dw_nd.ods_gcredit_customer_login_info 切源到 dw_nd.ods_wxapp_cust_login_info
-		where login_type = '2'  -- 企业
-		and main_id_type = '21' -- 企业  21企业 10个人 22迁移数据，算作个人
-		and status = '10' -- 已授权
-		and customer_id is not null
-	) t
-	where rn = 1
-)t
+       select cust_id
+			 ,name
+			 ,id_type
+			 ,id_num
+	   from (
+	          select cust_id
+			        ,name
+					,id_type
+					,id_num
+					,row_number()over (partition by id_num order by dict_flag) rn             -- [优先取原表里的证件号码、客户id，再取main表中在保转进件项目的]
+			  from (
+	                 select customer_id as cust_id
+	                 	   ,main_name as name
+	                 	   ,case when main_id_type = '21' then '10'  end as id_type   -- 10-中征码
+	                 	   ,main_id_no as id_num
+						   ,'0' as dict_flag
+	                 from (
+	                 	    select login_no
+	                 	    	     ,customer_id
+	                 	    	     ,main_name
+	                 	    	     ,main_id_type  -- 主体证件类型
+	                 	    	     ,main_id_no
+	                 	    	     ,update_time
+	                 	    	     ,row_number() over (partition by main_id_no order by update_time desc) as rn
+	                 	    from dw_nd.ods_wxapp_cust_login_info   -- 登陆账号信息表 20230112由dw_nd.ods_gcredit_customer_login_info 切源到 dw_nd.ods_wxapp_cust_login_info
+	                 	    where login_type = '2'  -- 企业
+	                 	    and main_id_type = '21' -- 企业  21企业 10个人 22迁移数据，算作个人
+	                 	    and status = '10' -- 已授权
+	                 	    and customer_id is not null
+	                      ) t
+	                 where rn = 1
+					 union all 
+					 select distinct cust_id 
+			               ,cust_name        as name
+					       ,'10'             as id_type
+			               ,cust_identity_no as id_num                                                 
+			               ,'1' as dict_flag
+			         from (select code
+			                     ,cust_id
+						         ,cust_name
+                                 ,cust_identity_no
+                                 ,row_number()over (partition by code order by db_update_time desc,update_time desc) rn
+                           from dw_nd.ods_t_biz_project_main                                        -- 20251014  
+			  		       where code like 'TJ%' 
+					       and main_type = '02') a              -- 主体类型：02 法人
+			         where a.rn = 1 
+				   ) b
+			) c 
+       where c.rn = 1			
+     )t
 left join dw_nd.ods_imp_comp_zzm t1 -- 手动录入中征码
 on t.id_num = t1.cert_no
 left join (
@@ -1944,8 +1976,8 @@ from dw_base.exp_credit_comp_guar_info_change_e
 where day_id = '${v_sdate}' ;
 commit;
 
-delete
-from dw_pbc.exp_credit_comp_guar_info
-where day_id = '${v_sdate}'
-  and guar_id in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5Z88-9594');
-commit;
+-- delete
+-- from dw_pbc.exp_credit_comp_guar_info
+-- where day_id = '${v_sdate}'
+--   and guar_id in ('TJRD-2021-5Z85-959X', 'TJRD-2021-5S93-979U');
+-- commit;

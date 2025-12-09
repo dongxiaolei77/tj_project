@@ -28,13 +28,13 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_cbirc_liability_amt_500
 commit;
 -- 插入数据
 insert into dw_base.tmp_ads_rpt_tjnd_busi_cbirc_liability_amt_500
-select sum(sum_onguar_amt)        as onguar_amt,
-       sum(reality_onguar_amt)    as reality_onguar_amt,
-       sum(sum_onguar_amt) * 0.75 as liability_amt
+select sum(sum_onguar_amt)            as onguar_amt,
+       sum(reality_onguar_amt)        as reality_onguar_amt,
+       sum(reality_onguar_amt) * 0.75 as liability_amt
 from (
          select cert_no,
-                sum(onguar_amt)                      sum_onguar_amt,
-                sum(onguar_amt * tjnd_risk / 100) as reality_onguar_amt
+                sum(onguar_amt)                                               sum_onguar_amt,
+                sum(onguar_amt * coalesce(t9.RISK_RATIO, tjnd_risk / 100)) as reality_onguar_amt
          from (
                   select guar_id, cert_no
                   from dw_base.dwd_guar_info_all_his -- 取数据日期为上月底
@@ -62,6 +62,10 @@ from (
                     -- 03 小型企业 04 微型企业
                     and enterprise_scale in ('03', '04')
               ) t4 on t1.guar_id = t4.code
+                  left join dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation t8
+                            on t1.guar_id = t8.GUARANTEE_CODE
+                  left join dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement t9 -- 合作机构表（老逻辑底表）
+                            on t8.related_agreement_id = t9.ID
          group by cert_no
      ) t1
 where sum_onguar_amt < 500;
@@ -79,13 +83,13 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_cbirc_liability_amt_200
 commit;
 -- 插入数据
 insert into dw_base.tmp_ads_rpt_tjnd_busi_cbirc_liability_amt_200
-select sum(sum_onguar_amt)        as onguar_amt,
-       sum(reality_onguar_amt)    as reality_onguar_amt,
-       sum(sum_onguar_amt) * 0.75 as liability_amt
+select sum(sum_onguar_amt)            as onguar_amt,
+       sum(reality_onguar_amt)        as reality_onguar_amt,
+       sum(reality_onguar_amt) * 0.75 as liability_amt
 from (
          select cert_no,
-                sum(onguar_amt)                      sum_onguar_amt,
-                sum(onguar_amt * tjnd_risk / 100) as reality_onguar_amt
+                sum(onguar_amt)                                               sum_onguar_amt,
+                sum(onguar_amt * coalesce(t9.RISK_RATIO, tjnd_risk / 100)) as reality_onguar_amt
          from (
                   select guar_id, cert_no
                   from dw_base.dwd_guar_info_all_his -- 取数据日期为上月底
@@ -115,6 +119,10 @@ from (
                     -- 是否农户为是
                     and is_farmer = 1
               ) t4 on t1.guar_id = t4.code
+                  left join dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation t8
+                            on t1.guar_id = t8.GUARANTEE_CODE
+                  left join dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement t9 -- 合作机构表（老逻辑底表）
+                            on t8.related_agreement_id = t9.ID
          group by cert_no
      ) t1
 where sum_onguar_amt < 200;
@@ -140,8 +148,8 @@ select '${v_sdate}'                                                            a
        (t1.reality_onguar_amt - t2.reality_onguar_amt - t3.reality_onguar_amt) as liability_amt
 
 from (
-         select sum(onguar_amt)                      onguar_amt,
-                sum(onguar_amt * tjnd_risk / 100) as reality_onguar_amt
+         select sum(onguar_amt)                                               onguar_amt,
+                sum(onguar_amt * coalesce(t9.RISK_RATIO, tjnd_risk / 100)) as reality_onguar_amt
          from (
                   select guar_id, onguar_amt
                   from dw_base.dwd_guar_info_onguar -- 取数据日期为上月底
@@ -153,6 +161,10 @@ from (
                   from dw_base.dwd_tjnd_report_biz_loan_bank
                   where day_id = '${v_sdate}'
               ) t2 on t1.guar_id = t2.biz_no
+                  left join dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation t8
+                            on t1.guar_id = t8.GUARANTEE_CODE
+                  left join dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement t9 -- 合作机构表（老逻辑底表）
+                            on t8.related_agreement_id = t9.ID
      ) t1,
      -- 单户在保余额500万元人民币以下的小微企业
      dw_base.tmp_ads_rpt_tjnd_busi_cbirc_liability_amt_500 t2,
@@ -231,8 +243,8 @@ select '${v_sdate}'                                                          as 
        t1.reality_onguar_amt - t2.reality_onguar_amt - t3.reality_onguar_amt as liability_amt
 
 from (
-         select sum(onguar_amt)                      onguar_amt,
-                sum(onguar_amt * tjnd_risk / 100) as reality_onguar_amt
+         select sum(onguar_amt)                                               onguar_amt,
+                sum(onguar_amt * coalesce(t9.RISK_RATIO, tjnd_risk / 100)) as reality_onguar_amt
          from (
                   select guar_id, onguar_amt
                   from dw_base.dwd_guar_info_onguar -- 取数据日期为上月底
@@ -244,6 +256,10 @@ from (
                   from dw_base.dwd_tjnd_report_biz_loan_bank
                   where day_id = '${v_sdate}'
               ) t2 on t1.guar_id = t2.biz_no
+                  left join dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation t8
+                            on t1.guar_id = t8.GUARANTEE_CODE
+                  left join dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement t9 -- 合作机构表（老逻辑底表）
+                            on t8.related_agreement_id = t9.ID
      ) t1,
      -- 单户在保余额500万元人民币以下的小微企业
      dw_base.tmp_ads_rpt_tjnd_busi_cbirc_liability_amt_500 t2,
@@ -334,8 +350,8 @@ select '${v_sdate}'                                                            a
        (t1.reality_onguar_amt - t2.reality_onguar_amt - t3.reality_onguar_amt) as liability_amt
 
 from (
-         select sum(onguar_amt)                      onguar_amt,
-                sum(onguar_amt * tjnd_risk / 100) as reality_onguar_amt
+         select sum(onguar_amt)                                               onguar_amt,
+                sum(onguar_amt * coalesce(t9.RISK_RATIO, tjnd_risk / 100)) as reality_onguar_amt
          from (
                   select guar_id, onguar_amt
                   from dw_base.dwd_guar_info_onguar -- 取数据日期为上月底
@@ -347,6 +363,10 @@ from (
                   from dw_base.dwd_tjnd_report_biz_loan_bank
                   where day_id = '${v_sdate}'
               ) t2 on t1.guar_id = t2.biz_no
+                  left join dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation t8
+                            on t1.guar_id = t8.GUARANTEE_CODE
+                  left join dw_nd.ods_tjnd_yw_base_cooperative_institution_agreement t9 -- 合作机构表（老逻辑底表）
+                            on t8.related_agreement_id = t9.ID
      ) t1,
      -- 单户在保余额500万元人民币以下的小微企业
      dw_base.tmp_ads_rpt_tjnd_busi_cbirc_liability_amt_500 t2,

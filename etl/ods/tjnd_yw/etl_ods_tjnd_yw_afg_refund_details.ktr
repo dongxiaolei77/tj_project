@@ -441,10 +441,10 @@
     <server>${dw_ip}</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>${dw_host]</database>
+    <database>${dw_host}</database>
     <port>3306</port>
-    <username>${dw_user]</username>
-    <password>Encrypted 2be98afc86aa7d69faf0e9160df81bce7</password>
+    <username>${dw_user}</username>
+    <password>${dw_pass}</password>
     <servername/>
     <data_tablespace/>
     <index_tablespace/>
@@ -577,7 +577,7 @@
       <schema_name/>
     </partitioning>
     <connection>tjnd_yw</connection>
-    <sql>SELECT * FROM tjnd_yw.afg_refund_details;</sql>
+    <sql>SELECT * FROM afg_refund_details;</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>

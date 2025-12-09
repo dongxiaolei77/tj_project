@@ -15,17 +15,17 @@ where day_id = '${v_sdate}';
 commit;
 
 insert into dw_base.ads_show_guar_minc_info
-select day_id
-     , city_cd
-     , city_name
-     , county_cd
-     , county_name
-     , mon
-     , mon_desc
-     , inc_cust
-     , inc_bal
-     , guar_bal
-     , accum_bal
+select t.day_id
+     , t.city_cd
+     , t.city_name
+     , t.county_cd
+     , t.county_name
+     , t.mon
+     , t.mon_desc
+     , t.inc_cust
+     , t.inc_bal
+     , t.guar_bal
+     , coalesce(t.accum_bal,0) + coalesce(tt1.accum_bal,0) as accum_bal   -- 累保金额
 from (
          select '${v_sdate}'                                 day_id
               , t1.city_cd
@@ -51,7 +51,34 @@ from (
                 , t1.country_cd
                 , t3.area_name
      ) t
-where day_id =
+left join (
+            select t2.sup_area_cd   as city_code  
+                  ,t1.area          as county_code		
+				  ,sum(loan_contract_amount) as accum_bal  -- 累保金额
+			from (
+	                select a.id
+			              ,coalesce(
+						             case when a.id in ('81043','82301','82383','88728','91752') then JSON_UNQUOTE(JSON_EXTRACT(a.area, '$[2]'))
+				                          else JSON_UNQUOTE(JSON_EXTRACT(a.area, '$[1]')) 
+					                      end 
+						           ,JSON_UNQUOTE(JSON_EXTRACT(b.area, '$[1]'))
+								   ) as area			  
+			              ,c.loan_contract_amount      -- 借款合同金额
+			        from dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation    a
+			        left join dw_nd.ods_creditmid_v2_z_migrate_base_customers_history b  -- 客户表
+			        on a.id = b.id_business_information 
+			        left join dw_nd.ods_creditmid_v2_z_migrate_afg_business_approval c
+			        on a.id = c.id_business_information
+			        where a.gur_state in ('90','93')                    -- [排除在保转进件]
+			          and a.guarantee_code not in ('TJRD-2021-5S93-979U','TJRD-2021-5Z85-959X')        -- [这两笔在进件业务]
+			     ) t1
+	        left join dw_base.dim_area_info t2
+	        on t1.area = t2.area_cd and t2.area_lvl = '3' and t2.day_id = '${v_sdate}'
+			group by t2.sup_area_cd,t1.area 
+		 ) tt1
+on t.city_cd = tt1.city_code
+and t.county_cd = tt1.county_code
+where t.day_id =
       date_format(
               date_sub(concat(date_format(date_add('${v_sdate}', interval 1 month), '%Y%m'), '01'), interval 1 day),
               '%Y%m%d') -- 月底

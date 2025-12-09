@@ -1,4 +1,4 @@
-
+-- 改 20251014
 -- 客户信息（id,base,addr）
 -- 企业信息表
 -- 主要组成人员表
@@ -52,10 +52,12 @@ from
             union all
        select cust_id,name,id_type,id_num,day_id,rpt_date_code
        from dw_base.exp_credit_comp_compt_info  -- 企业借贷客户
+	   where rpt_date_code is not null          -- [排除掉已代偿追偿的业务，增量更新没有报告时点代码]              20251014
     )t1
     inner join dw_base.dwd_agmt_guar_proj_info t2   -- 20211216  dwd_agmt_guar_proj_info担保项目信息
     on t1.cust_id = t2.cust_id
     where t2.proj_stt in ('50','90','93')  -- 50-已放款 90-已解保 93-已代偿
+	  and t2.proj_no not like 'TJ%'              -- [在保转进件业务的个人基本信息不报送]                           20251014	  
     group by t1.id_num
 )t1
 left join dw_base.dim_ecoindus_code t2   -- 国民经济行业分类维表

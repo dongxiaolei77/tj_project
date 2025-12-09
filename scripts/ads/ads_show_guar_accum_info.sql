@@ -11,7 +11,89 @@
 --            20230613 增加字段：不考虑分险的代偿金额
 --            20240301 增加字段：累计代偿合同金额
 -- ---------------------------------------
- 
+ -- 创建临时表
+drop table if exists  dw_base.tmp_ads_show_guar_accum_info_old_data;
+commit;
+
+create table dw_base.tmp_ads_show_guar_accum_info_old_data(
+ city_code      varchar(50) comment '市编码'
+,county_code    varchar(50) comment '区编码'
+,accum_cust     int            comment '累报项目数'
+,accum_bal      decimal(18,6)  comment '累保金额'
+,rel_guar_qty   int               comment '累计解保笔数（担保年度）'
+,rel_guar_bal   decimal(18,6)     comment '解保金额'
+,comp_qty       int               comment '累计代偿笔数（考虑分险）'
+,comp_loan_amt  decimal(18,6)     comment '累计代偿合同金额'
+) engine = InnoDB
+  default charset = utf8mb4
+  collate = utf8mb4_bin;
+commit;
+
+insert into dw_base.tmp_ads_show_guar_accum_info_old_data
+select  city_code     
+       ,county_code   
+       ,sum(accum_cust)     as  accum_cust    
+       ,sum(accum_bal)      as  accum_bal    
+       ,sum(rel_guar_qty)   as  rel_guar_qty 
+       ,sum(rel_guar_bal)   as  rel_guar_bal 
+       ,sum(comp_qty)       as  comp_qty     
+       ,sum(comp_loan_amt)  as  comp_loan_amt
+from (
+	   select t2.sup_area_cd   as city_code
+	         ,t2.sup_area_name as city_name
+			 ,t1.area          as county_code
+			 ,t2.area_name     as county_name 	
+             ,1 as accum_cust
+             ,t1.loan_contract_amount as accum_bal		
+             ,case when t3.ID_BUSINESS_INFORMATION is not null then 1 else 0 end as rel_guar_qty 
+             ,coalesce(t3.unguar_amt,0) as rel_guar_bal 
+             ,case when t4.id_cfbiz_underwriting is not null then 1 else 0 end as comp_qty     
+             ,coalesce(t4.total_compensation,0) as comp_loan_amt			 
+	   from (
+	          select a.id	
+			        ,coalesce(case when a.id in ('81043','82301','82383','88728','91752') then JSON_UNQUOTE(JSON_EXTRACT(a.area, '$[2]'))
+				                       else JSON_UNQUOTE(JSON_EXTRACT(a.area, '$[1]')) 
+					                   end 
+					         ,JSON_UNQUOTE(JSON_EXTRACT(b.area, '$[1]'))
+					         ) as area						
+			        ,c.loan_contract_amount      -- 借款合同金额
+			  from dw_nd.ods_creditmid_v2_z_migrate_afg_business_infomation    a
+			  left join dw_nd.ods_creditmid_v2_z_migrate_base_customers_history b  -- 客户表
+			  on a.id = b.id_business_information 
+			  left join dw_nd.ods_creditmid_v2_z_migrate_afg_business_approval c
+			  on a.id = c.id_business_information
+			  where a.gur_state in ('90','93')                    -- [排除在保转进件]
+			    and a.guarantee_code not in ('TJRD-2021-5S93-979U','TJRD-2021-5Z85-959X')        -- [这两笔在进件业务]
+			) t1
+	   left join dw_base.dim_area_info t2
+	   on t1.area = t2.area_cd and t2.area_lvl = '3' and t2.day_id = '${v_sdate}'
+	   left join (
+	               select ID_BUSINESS_INFORMATION,
+                          sum(REPAYMENT_PRINCIPAL)                     as unguar_amt,
+                          date_format(max(REPAYMENT_TIME), '%Y-%m-%d') as unguar_dt,
+                          date_format(max(created_time), '%Y-%m-%d')   as unguar_reg_dt
+                   from dw_nd.ods_creditmid_v2_z_migrate_afg_voucher_repayment
+                   where REPAYMENT_PRINCIPAL > 0
+                     and DELETE_FLAG = 1
+                   group by id_business_information
+				 ) t3 -- 还款凭证信息
+	   on t1.id = t3.ID_BUSINESS_INFORMATION
+	   left join (
+	               select id_cfbiz_underwriting
+                        , total_compensation -- 代偿拨付金额
+                        , payment_date       -- 代偿拨付日期
+                   from dw_nd.ods_creditmid_v2_z_migrate_bh_compensatory -- 代偿表
+                   where over_tag = 'BJ'
+                     and status = 1
+				 ) t4
+		on t1.id = t4.id_cfbiz_underwriting
+	   where t1.area is not null
+	 ) tt1
+group by
+	city_code  -- 地市
+	,county_code  -- 区县
+;
+commit;
  
  -- 创建临时表，获取累计申请金额、累计申请笔数
  drop table if exists dw_tmp.tmp_ads_show_guar_accum_info_apply; commit;
@@ -50,10 +132,10 @@ insert into dw_base.ads_show_guar_accum_info
 ,city_name
 ,country_code
 ,country_name
-,apply_bal
-,apply_qty
-,accum_bal
-,accum_cust
+,apply_bal          -- 累计申请金额？
+,apply_qty          -- 累计申请笔数？
+,accum_bal          -- 累保金额
+,accum_cust         -- 累保笔数
 ,guar_bal
 ,guar_cust
 ,lsday_inc_bal
@@ -64,12 +146,12 @@ insert into dw_base.ads_show_guar_accum_info
 ,year_inc_cust
 ,loan_bal
 ,loan_qty
-,rel_guar_bal
-,rel_guar_qty
-,comp_loan_amt
-,comp_bal
-,portrait_comp_bal
-,comp_qty
+,rel_guar_bal       -- 解保金额
+,rel_guar_qty       -- 累计解保笔数（担保年度）
+,comp_loan_amt      -- 累计代偿合同金额
+,comp_bal           -- 代偿金额（考虑分险）？
+,portrait_comp_bal  -- 代偿金额（不考虑分险）？
+,comp_qty           -- 累计代偿笔数（考虑分险）
 ,plant_accum_bal
 ,plant_accum_qty
 )
@@ -147,3 +229,17 @@ on t1.city_code = t2.city_cd
 and t1.country_code = t2.country_cd
 ;
 commit ;
+-- 加上老系统数据
+update dw_base.ads_show_guar_accum_info t1 
+left join dw_base.tmp_ads_show_guar_accum_info_old_data t2
+on t1.city_code = t2.city_code
+and t1.country_code = t2.county_code
+set t1.accum_cust     = coalesce(t1.accum_cust,0) + coalesce(t2.accum_cust,0)              -- '累报项目数'
+   ,t1.accum_bal      = coalesce(t1.accum_bal,0) + coalesce(t2.accum_bal,0)                -- '累保金额'
+   ,t1.rel_guar_qty   = coalesce(t1.rel_guar_qty,0) + coalesce(t2.rel_guar_qty,0)          -- '累计解保笔数（担保年度）'
+   ,t1.rel_guar_bal   = coalesce(t1.rel_guar_bal,0) + coalesce(t2.rel_guar_bal,0)          -- '解保金额'
+   ,t1.comp_qty       = coalesce(t1.comp_qty,0) + coalesce(t2.comp_qty,0)                  -- '累计代偿笔数（考虑分险）'
+   ,t1.comp_loan_amt  = coalesce(t1.comp_loan_amt,0) + coalesce(t2.comp_loan_amt,0)        -- '累计代偿合同金额'
+where t1.day_id = '${v_sdate}'
+;
+commit;
