@@ -51,26 +51,26 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt_old_d
     recovery_date    date          comment '追偿登记日期(取最近一天)',
     recovery_amt     decimal(18,6) comment '追偿金额(万元)',
 	
-    now_compt_amt_day  decimal(18,6) comment '当期放款金额(万元)（日报）',           
-    now_compt_amt_xun  decimal(18,6) comment '当期放款金额(万元)（旬报）',           
-    now_compt_amt_mon  decimal(18,6) comment '当期放款金额(万元)（月报）',           
-    now_compt_amt_qua  decimal(18,6) comment '当期放款金额(万元)（季报）',           
-    now_compt_amt_hyr  decimal(18,6) comment '当期放款金额(万元)（半年报）',         
-    now_compt_amt_tyr  decimal(18,6) comment '当期放款金额(万元)（年报）',           
+    now_compt_amt_day  decimal(18,6) comment '当期代偿金额(万元)（日报）',           
+    now_compt_amt_xun  decimal(18,6) comment '当期代偿金额(万元)（旬报）',           
+    now_compt_amt_mon  decimal(18,6) comment '当期代偿金额(万元)（月报）',           
+    now_compt_amt_qua  decimal(18,6) comment '当期代偿金额(万元)（季报）',           
+    now_compt_amt_hyr  decimal(18,6) comment '当期代偿金额(万元)（半年报）',         
+    now_compt_amt_tyr  decimal(18,6) comment '当期代偿金额(万元)（年报）',           
 	
-    now_compt_cnt_day  int           comment '当期放款笔数（日报）',  
-    now_compt_cnt_xun  int           comment '当期放款笔数（旬报）',  
-    now_compt_cnt_mon  int           comment '当期放款笔数（月报）',  
-    now_compt_cnt_qua  int           comment '当期放款笔数（季报）',  
-    now_compt_cnt_hyr  int           comment '当期放款笔数（半年报）',
-    now_compt_cnt_tyr  int           comment '当期放款笔数（年报）',  
+    now_compt_cnt_day  int           comment '当期代偿笔数（日报）',  
+    now_compt_cnt_xun  int           comment '当期代偿笔数（旬报）',  
+    now_compt_cnt_mon  int           comment '当期代偿笔数（月报）',  
+    now_compt_cnt_qua  int           comment '当期代偿笔数（季报）',  
+    now_compt_cnt_hyr  int           comment '当期代偿笔数（半年报）',
+    now_compt_cnt_tyr  int           comment '当期代偿笔数（年报）',  
 	
-    now_recovery_amt_day  decimal(18,6) comment '当期还款金额(万元)（日报）',  
-	now_recovery_amt_xun  decimal(18,6) comment '当期还款金额(万元)（旬报）',  
-    now_recovery_amt_mon  decimal(18,6) comment '当期还款金额(万元)（月报）',  	
-    now_recovery_amt_qua  decimal(18,6) comment '当期还款金额(万元)（季报）',  	
-    now_recovery_amt_hyr  decimal(18,6) comment '当期还款金额(万元)（半年报）',	
-    now_recovery_amt_tyr  decimal(18,6) comment '当期还款金额(万元)（年报）',  	  	
+    now_recovery_amt_day  decimal(18,6) comment '当期收回金额(万元)（日报）',  
+	now_recovery_amt_xun  decimal(18,6) comment '当期收回金额(万元)（旬报）',  
+    now_recovery_amt_mon  decimal(18,6) comment '当期收回金额(万元)（月报）',  	
+    now_recovery_amt_qua  decimal(18,6) comment '当期收回金额(万元)（季报）',  	
+    now_recovery_amt_hyr  decimal(18,6) comment '当期收回金额(万元)（半年报）',	
+    now_recovery_amt_tyr  decimal(18,6) comment '当期收回金额(万元)（年报）',  	  	
 					    	
     type1             varchar(50)   comment '按银行',
     type2             varchar(50)   comment '按产品',
@@ -451,12 +451,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -470,12 +470,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -488,12 +488,12 @@ select '${v_sdate}'          as day_id,
        case
             when type3 = '08' then '农产品初加工'                                           -- 0
             when type3 = '01' then '粮食种植'                                              -- 1
-            when type3 = '02' then '重要、特色农产品种植'                                     -- 2
+            when type3 = '02' then '重要特色农产品种植'                                     -- 2
             when type3 = '04' then '其他畜牧业'                                            -- 3
             when type3 = '03' then '生猪养殖'                                              -- 4
             when type3 = '07' then '农产品流通'                                            -- 5
             when type3 = '05' then '渔业生产'                                              -- 6
-            when type3 = '12' then '农资、农机、农技等农业社会化服务'                           -- 7
+            when type3 = '12' then '农资、农机、农技等社会化服务'                           -- 7
             when type3 = '09' then '农业新业态'                                            -- 8
             when type3 = '06' then '农田建设'                                              -- 9
             when type3 = '10' then '其他农业项目'                                          -- 10
@@ -502,12 +502,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -528,12 +528,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -547,12 +547,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -566,12 +566,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -585,12 +585,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -647,9 +647,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -661,7 +661,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -700,9 +700,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -714,7 +714,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -727,12 +727,12 @@ select '${v_sdate}'          as day_id,
        case
             when type3 = '08' then '农产品初加工'                                           -- 0
             when type3 = '01' then '粮食种植'                                              -- 1
-            when type3 = '02' then '重要、特色农产品种植'                                     -- 2
+            when type3 = '02' then '重要特色农产品种植'                                     -- 2
             when type3 = '04' then '其他畜牧业'                                            -- 3
             when type3 = '03' then '生猪养殖'                                              -- 4
             when type3 = '07' then '农产品流通'                                            -- 5
             when type3 = '05' then '渔业生产'                                              -- 6
-            when type3 = '12' then '农资、农机、农技等农业社会化服务'                           -- 7
+            when type3 = '12' then '农资、农机、农技等社会化服务'                           -- 7
             when type3 = '09' then '农业新业态'                                            -- 8
             when type3 = '06' then '农田建设'                                              -- 9
             when type3 = '10' then '其他农业项目'                                          -- 10
@@ -766,9 +766,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -780,7 +780,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -826,9 +826,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -840,7 +840,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -879,9 +879,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -893,7 +893,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -932,9 +932,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -946,7 +946,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -985,9 +985,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -999,7 +999,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1037,14 +1037,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -1064,14 +1064,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -1084,12 +1084,12 @@ select '${v_sdate}'          as day_id,
        case
             when type3 = '08' then '农产品初加工'                                           -- 0
             when type3 = '01' then '粮食种植'                                              -- 1
-            when type3 = '02' then '重要、特色农产品种植'                                     -- 2
+            when type3 = '02' then '重要特色农产品种植'                                     -- 2
             when type3 = '04' then '其他畜牧业'                                            -- 3
             when type3 = '03' then '生猪养殖'                                              -- 4
             when type3 = '07' then '农产品流通'                                            -- 5
             when type3 = '05' then '渔业生产'                                              -- 6
-            when type3 = '12' then '农资、农机、农技等农业社会化服务'                           -- 7
+            when type3 = '12' then '农资、农机、农技等社会化服务'                           -- 7
             when type3 = '09' then '农业新业态'                                            -- 8
             when type3 = '06' then '农田建设'                                              -- 9
             when type3 = '10' then '其他农业项目'                                          -- 10
@@ -1104,14 +1104,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1138,14 +1138,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1165,14 +1165,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1192,14 +1192,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1219,14 +1219,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1299,9 +1299,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1318,7 +1318,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -1373,9 +1373,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1392,7 +1392,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -1405,12 +1405,12 @@ select '${v_sdate}'          as day_id,
        case
             when type3 = '08' then '农产品初加工'                                           -- 0
             when type3 = '01' then '粮食种植'                                              -- 1
-            when type3 = '02' then '重要、特色农产品种植'                                     -- 2
+            when type3 = '02' then '重要特色农产品种植'                                     -- 2
             when type3 = '04' then '其他畜牧业'                                            -- 3
             when type3 = '03' then '生猪养殖'                                              -- 4
             when type3 = '07' then '农产品流通'                                            -- 5
             when type3 = '05' then '渔业生产'                                              -- 6
-            when type3 = '12' then '农资、农机、农技等农业社会化服务'                           -- 7
+            when type3 = '12' then '农资、农机、农技等社会化服务'                           -- 7
             when type3 = '09' then '农业新业态'                                            -- 8
             when type3 = '06' then '农田建设'                                              -- 9
             when type3 = '10' then '其他农业项目'                                          -- 10
@@ -1460,9 +1460,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1479,7 +1479,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1541,9 +1541,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1560,7 +1560,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1615,9 +1615,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1634,7 +1634,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1689,9 +1689,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1708,7 +1708,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1763,9 +1763,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1782,7 +1782,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1828,9 +1828,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1839,7 +1839,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -1867,9 +1867,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1878,7 +1878,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -1891,12 +1891,12 @@ select '${v_sdate}'          as day_id,
        case
             when type3 = '08' then '农产品初加工'                                           -- 0
             when type3 = '01' then '粮食种植'                                              -- 1
-            when type3 = '02' then '重要、特色农产品种植'                                     -- 2
+            when type3 = '02' then '重要特色农产品种植'                                     -- 2
             when type3 = '04' then '其他畜牧业'                                            -- 3
             when type3 = '03' then '生猪养殖'                                              -- 4
             when type3 = '07' then '农产品流通'                                            -- 5
             when type3 = '05' then '渔业生产'                                              -- 6
-            when type3 = '12' then '农资、农机、农技等农业社会化服务'                           -- 7
+            when type3 = '12' then '农资、农机、农技等社会化服务'                           -- 7
             when type3 = '09' then '农业新业态'                                            -- 8
             when type3 = '06' then '农田建设'                                              -- 9
             when type3 = '10' then '其他农业项目'                                          -- 10
@@ -1919,9 +1919,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1930,7 +1930,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -1965,9 +1965,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -1976,7 +1976,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2004,9 +2004,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -2015,7 +2015,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2043,9 +2043,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -2054,7 +2054,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2082,9 +2082,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -2093,7 +2093,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2131,14 +2131,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)   
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2158,14 +2158,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)   
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2178,12 +2178,12 @@ select '${v_sdate}'          as day_id,
        case
             when type3 = '08' then '农产品初加工'                                           -- 0
             when type3 = '01' then '粮食种植'                                              -- 1
-            when type3 = '02' then '重要、特色农产品种植'                                     -- 2
+            when type3 = '02' then '重要特色农产品种植'                                     -- 2
             when type3 = '04' then '其他畜牧业'                                            -- 3
             when type3 = '03' then '生猪养殖'                                              -- 4
             when type3 = '07' then '农产品流通'                                            -- 5
             when type3 = '05' then '渔业生产'                                              -- 6
-            when type3 = '12' then '农资、农机、农技等农业社会化服务'                           -- 7
+            when type3 = '12' then '农资、农机、农技等社会化服务'                           -- 7
             when type3 = '09' then '农业新业态'                                            -- 8
             when type3 = '06' then '农田建设'                                              -- 9
             when type3 = '10' then '其他农业项目'                                          -- 10
@@ -2198,14 +2198,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)  
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2232,14 +2232,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0) 
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2259,14 +2259,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)  
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2286,14 +2286,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)  
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2313,14 +2313,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0) 
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2340,26 +2340,26 @@ create table if not exists dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt_new_d
     recovery_date    date          comment '追偿登记日期(取最近一天)',
     recovery_amt     decimal(18,6) comment '追偿金额(万元)',
 	
-    now_compt_amt_day  decimal(18,6) comment '当期放款金额(万元)（日报）',           
-    now_compt_amt_xun  decimal(18,6) comment '当期放款金额(万元)（旬报）',           
-    now_compt_amt_mon  decimal(18,6) comment '当期放款金额(万元)（月报）',           
-    now_compt_amt_qua  decimal(18,6) comment '当期放款金额(万元)（季报）',           
-    now_compt_amt_hyr  decimal(18,6) comment '当期放款金额(万元)（半年报）',         
-    now_compt_amt_tyr  decimal(18,6) comment '当期放款金额(万元)（年报）',           
+    now_compt_amt_day  decimal(18,6) comment '当期代偿金额(万元)（日报）',           
+    now_compt_amt_xun  decimal(18,6) comment '当期代偿金额(万元)（旬报）',           
+    now_compt_amt_mon  decimal(18,6) comment '当期代偿金额(万元)（月报）',           
+    now_compt_amt_qua  decimal(18,6) comment '当期代偿金额(万元)（季报）',           
+    now_compt_amt_hyr  decimal(18,6) comment '当期代偿金额(万元)（半年报）',         
+    now_compt_amt_tyr  decimal(18,6) comment '当期代偿金额(万元)（年报）',           
 	
-    now_compt_cnt_day  int           comment '当期放款笔数（日报）',  
-    now_compt_cnt_xun  int           comment '当期放款笔数（旬报）',  
-    now_compt_cnt_mon  int           comment '当期放款笔数（月报）',  
-    now_compt_cnt_qua  int           comment '当期放款笔数（季报）',  
-    now_compt_cnt_hyr  int           comment '当期放款笔数（半年报）',
-    now_compt_cnt_tyr  int           comment '当期放款笔数（年报）',  
+    now_compt_cnt_day  int           comment '当期代偿笔数（日报）',  
+    now_compt_cnt_xun  int           comment '当期代偿笔数（旬报）',  
+    now_compt_cnt_mon  int           comment '当期代偿笔数（月报）',  
+    now_compt_cnt_qua  int           comment '当期代偿笔数（季报）',  
+    now_compt_cnt_hyr  int           comment '当期代偿笔数（半年报）',
+    now_compt_cnt_tyr  int           comment '当期代偿笔数（年报）',  
 	
-    now_recovery_amt_day  decimal(18,6) comment '当期还款金额(万元)（日报）',  
-	now_recovery_amt_xun  decimal(18,6) comment '当期还款金额(万元)（旬报）',  
-    now_recovery_amt_mon  decimal(18,6) comment '当期还款金额(万元)（月报）',  	
-    now_recovery_amt_qua  decimal(18,6) comment '当期还款金额(万元)（季报）',  	
-    now_recovery_amt_hyr  decimal(18,6) comment '当期还款金额(万元)（半年报）',	
-    now_recovery_amt_tyr  decimal(18,6) comment '当期还款金额(万元)（年报）',  	  	
+    now_recovery_amt_day  decimal(18,6) comment '当期收回金额(万元)（日报）',  
+	now_recovery_amt_xun  decimal(18,6) comment '当期收回金额(万元)（旬报）',  
+    now_recovery_amt_mon  decimal(18,6) comment '当期收回金额(万元)（月报）',  	
+    now_recovery_amt_qua  decimal(18,6) comment '当期收回金额(万元)（季报）',  	
+    now_recovery_amt_hyr  decimal(18,6) comment '当期收回金额(万元)（半年报）',	
+    now_recovery_amt_tyr  decimal(18,6) comment '当期收回金额(万元)（年报）',  	  	
 					    	
     type1             varchar(50)   comment '按银行',
     type2             varchar(50)   comment '按产品',
@@ -2401,7 +2401,7 @@ insert into dw_base.tmp_ads_rpt_tjnd_busi_record_stat_compt_new_data_main
 	   ,t7.gnd_dept_name                  as    type1 -- 按银行
 	   ,coalesce(t9.product_type,t12.PRODUCT_NAME)                   as    type2 -- 按产品
 	   ,t1.guar_class                     as    type3 -- 按行业归类
-	   ,t10.branch_off                    as    type4 -- 按办事处
+	   ,t11.branch_off                    as    type4 -- 按办事处
 	   ,t1.area                           as    type5 -- 按区域
 	   ,t1.loan_bank                      as    type6 -- 按一级支行
 	   ,t11.nd_proj_mgr_name              as    type7 -- 按项目经理核算	   
@@ -2616,14 +2616,15 @@ from (
      ) t9 on t8.aggregate_scheme = t9.code
          left join
      (
-         select CITY_CODE_,              -- 区县编码
-                ROLE_CODE_ as branch_off -- 办事处编码
+         select CITY_CODE_              -- 区县编码
+      --          ROLE_CODE_ as branch_off -- 办事处编码
          from dw_base.dwd_imp_area_branch
      ) t10 on t1.area_code = t10.CITY_CODE_
          left join
      (
          select code,                            -- 项目id
                 fk_manager_name as nd_proj_mgr_name, -- 创建者
+				case when branch = '蓟州办事处' then '蓟州' else branch end as branch_off, -- 办事处
                 rn
          from (
                   select *, row_number() over (partition by code order by db_update_time desc) as rn
@@ -2667,12 +2668,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2686,12 +2687,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2705,12 +2706,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2721,22 +2722,22 @@ select '${v_sdate}'          as day_id,
        '日报'                as report_type,
        '办事处'                as group_type,
        case
-            when type4 = 'NHDLBranch'   then '宁河东丽办事处'                                   -- 'YW_NHDLBSC'   
-            when type4 = 'JNBHBranch'   then '津南滨海新区办事处'                               --  'YW_JNBHXQBSC'  
-            when type4 = 'BCWQBranch'   then '武清北辰办事处'                                   -- 'YW_WQBCBSC'   
-            when type4 = 'XQJHBranch'   then '西青静海办事处'                                   -- 'YW_XQJHBSC'   
-            when type4 = 'JZBranch'     then '蓟州办事处'                                       -- 'YW_JZBSC'     
-            when type4 = 'BDBranch'     then '宝坻办事处'                                       -- 'YW_BDBSC'     
+            when type4 = '宁河东丽' then '宁河东丽办事处'                          
+            when type4 = '津南滨海' then '津南滨海新区办事处'                      
+            when type4 = '北辰武清' then '武清北辰办事处'                          
+            when type4 = '西青静海' then '西青静海办事处'                          
+            when type4 = '蓟州'     then '蓟州办事处'                              
+            when type4 = '宝坻'     then '宝坻办事处'                              
             end                                          as group_name,      	   
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2750,12 +2751,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2769,12 +2770,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2788,12 +2789,12 @@ select '${v_sdate}'          as day_id,
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') < '${v_sdate}' then recovery_amt else 0 end)   as start_balance,  -- 期初余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') < '${v_sdate}' then 1 else 0 end)                 as start_cnt,      -- 期初笔数
-       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_day)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_day)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_day)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m%d') = '${v_sdate}' then recovery_amt else 0 end)
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2850,9 +2851,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -2864,7 +2865,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2903,9 +2904,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -2917,7 +2918,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -2956,9 +2957,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -2970,7 +2971,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -2981,12 +2982,12 @@ select '${v_sdate}'          as day_id,
        '旬报'                as report_type,
        '办事处'                as group_type,
        case
-            when type4 = 'NHDLBranch'   then '宁河东丽办事处'                                   -- 'YW_NHDLBSC'   
-            when type4 = 'JNBHBranch'   then '津南滨海新区办事处'                               --  'YW_JNBHXQBSC'  
-            when type4 = 'BCWQBranch'   then '武清北辰办事处'                                   -- 'YW_WQBCBSC'   
-            when type4 = 'XQJHBranch'   then '西青静海办事处'                                   -- 'YW_XQJHBSC'   
-            when type4 = 'JZBranch'     then '蓟州办事处'                                       -- 'YW_JZBSC'     
-            when type4 = 'BDBranch'     then '宝坻办事处'                                       -- 'YW_BDBSC'     
+            when type4 = '宁河东丽' then '宁河东丽办事处'                          
+            when type4 = '津南滨海' then '津南滨海新区办事处'                      
+            when type4 = '北辰武清' then '武清北辰办事处'                          
+            when type4 = '西青静海' then '西青静海办事处'                          
+            when type4 = '蓟州'     then '蓟州办事处'                              
+            when type4 = '宝坻'     then '宝坻办事处'        
             end                                          as group_name,      	   
        -- 旬:判断参数日期如果在每月1号到10号则期初为1号；如果10号到20号则起初为10号；否则为20号	     	   
 	   sum(case when date_format(compt_date, '%Y%m%d') 
@@ -3016,9 +3017,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -3030,7 +3031,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3069,9 +3070,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -3083,7 +3084,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3122,9 +3123,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -3136,7 +3137,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3175,9 +3176,9 @@ select '${v_sdate}'          as day_id,
 							 )
 						 ) 
 	                then 1 else 0 end)                                                                   as start_cnt,      -- 期初笔数	   
-       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_xun)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_xun)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_xun)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -	   
 			  (case when if('${v_sdate}' <= date_format('${v_sdate}', '%Y%m10')
 			                  , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y%m01') and date_format('${v_sdate}', '%Y%m10')
@@ -3189,7 +3190,7 @@ select '${v_sdate}'          as day_id,
 			  		  then recovery_amt
 			  		  else 0 end
 			  	 )             
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3227,14 +3228,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -3254,14 +3255,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -3281,14 +3282,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3299,12 +3300,12 @@ select '${v_sdate}'          as day_id,
        '月报'                as report_type,
        '办事处'                as group_type,
        case
-            when type4 = 'NHDLBranch'   then '宁河东丽办事处'                                   -- 'YW_NHDLBSC'   
-            when type4 = 'JNBHBranch'   then '津南滨海新区办事处'                               --  'YW_JNBHXQBSC'  
-            when type4 = 'BCWQBranch'   then '武清北辰办事处'                                   -- 'YW_WQBCBSC'   
-            when type4 = 'XQJHBranch'   then '西青静海办事处'                                   -- 'YW_XQJHBSC'   
-            when type4 = 'JZBranch'     then '蓟州办事处'                                       -- 'YW_JZBSC'     
-            when type4 = 'BDBranch'     then '宝坻办事处'                                       -- 'YW_BDBSC'     
+            when type4 = '宁河东丽' then '宁河东丽办事处'                          
+            when type4 = '津南滨海' then '津南滨海新区办事处'                      
+            when type4 = '北辰武清' then '武清北辰办事处'                          
+            when type4 = '西青静海' then '西青静海办事处'                          
+            when type4 = '蓟州'     then '蓟州办事处'                              
+            when type4 = '宝坻'     then '宝坻办事处'        
             end                                          as group_name,      	   
        sum(case when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') 
 	            then compt_amt 
@@ -3315,14 +3316,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3342,14 +3343,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3369,14 +3370,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3396,14 +3397,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y%m01') then 1
                else 0 end)                              as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_mon)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_mon)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_mon)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when date_format(recovery_date, '%Y%m01') = date_format('${v_sdate}', '%Y%m01')
 	                   then recovery_amt 
 	          		else 0 end)              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3476,9 +3477,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -3495,7 +3496,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -3550,9 +3551,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -3569,7 +3570,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -3624,9 +3625,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -3643,7 +3644,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3654,12 +3655,12 @@ select '${v_sdate}'          as day_id,
        '季报'                as report_type,
        '办事处'                as group_type,
        case
-            when type4 = 'NHDLBranch'   then '宁河东丽办事处'                                   -- 'YW_NHDLBSC'   
-            when type4 = 'JNBHBranch'   then '津南滨海新区办事处'                               --  'YW_JNBHXQBSC'  
-            when type4 = 'BCWQBranch'   then '武清北辰办事处'                                   -- 'YW_WQBCBSC'   
-            when type4 = 'XQJHBranch'   then '西青静海办事处'                                   -- 'YW_XQJHBSC'   
-            when type4 = 'JZBranch'     then '蓟州办事处'                                       -- 'YW_JZBSC'     
-            when type4 = 'BDBranch'     then '宝坻办事处'                                       -- 'YW_BDBSC'     
+            when type4 = '宁河东丽' then '宁河东丽办事处'                          
+            when type4 = '津南滨海' then '津南滨海新区办事处'                      
+            when type4 = '北辰武清' then '武清北辰办事处'                          
+            when type4 = '西青静海' then '西青静海办事处'                          
+            when type4 = '蓟州'     then '蓟州办事处'                              
+            when type4 = '宝坻'     then '宝坻办事处'      
             end                                          as group_name,      	   
        sum(case
                when date_format(compt_date, '%Y%m%d')
@@ -3705,9 +3706,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -3724,7 +3725,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3779,9 +3780,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -3798,7 +3799,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3853,9 +3854,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -3872,7 +3873,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3927,9 +3928,9 @@ select '${v_sdate}'          as day_id,
                                  )))
                    then 1
                else 0 end)                              as start_cnt,                -- 期初笔数	       	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if(quarter('${v_sdate}') = 1
 		       		          , date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -3946,7 +3947,7 @@ select '${v_sdate}'          as day_id,
 		       				  )
                        then recovery_amt
                        else 0 end)   
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -3992,9 +3993,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -4003,7 +4004,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -4031,9 +4032,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -4042,7 +4043,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -4070,9 +4071,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -4081,7 +4082,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4092,12 +4093,12 @@ select '${v_sdate}'          as day_id,
        '半年报'                as report_type,
        '办事处'                as group_type,
        case
-            when type4 = 'NHDLBranch'   then '宁河东丽办事处'                                   -- 'YW_NHDLBSC'   
-            when type4 = 'JNBHBranch'   then '津南滨海新区办事处'                               --  'YW_JNBHXQBSC'  
-            when type4 = 'BCWQBranch'   then '武清北辰办事处'                                   -- 'YW_WQBCBSC'   
-            when type4 = 'XQJHBranch'   then '西青静海办事处'                                   -- 'YW_XQJHBSC'   
-            when type4 = 'JZBranch'     then '蓟州办事处'                                       -- 'YW_JZBSC'     
-            when type4 = 'BDBranch'     then '宝坻办事处'                                       -- 'YW_BDBSC'     
+            when type4 = '宁河东丽' then '宁河东丽办事处'                          
+            when type4 = '津南滨海' then '津南滨海新区办事处'                      
+            when type4 = '北辰武清' then '武清北辰办事处'                          
+            when type4 = '西青静海' then '西青静海办事处'                          
+            when type4 = '蓟州'     then '蓟州办事处'                              
+            when type4 = '宝坻'     then '宝坻办事处'     
             end                                          as group_name,      	   
        sum(case
                when date_format(compt_date, '%Y%m%d')
@@ -4116,9 +4117,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -4127,7 +4128,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4155,9 +4156,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -4166,7 +4167,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4194,9 +4195,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -4205,7 +4206,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4233,9 +4234,9 @@ select '${v_sdate}'          as day_id,
                         date_format('${v_sdate}', '%Y0701'))
                    then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数        	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_hyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_hyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_hyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (case when if('${v_sdate}' < date_format('${v_sdate}', '%Y0701')
 			                  ,date_format(recovery_date, '%Y%m%d') between date_format('${v_sdate}', '%Y0101') and '${v_sdate}'
@@ -4244,7 +4245,7 @@ select '${v_sdate}'          as day_id,
 			           then recovery_amt
 					   else 0 end
 				 )              
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4282,14 +4283,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)   
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -4309,14 +4310,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)   
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0 end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end)  as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                as end_cnt      -- 期末笔数
@@ -4336,14 +4337,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)  
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4354,12 +4355,12 @@ select '${v_sdate}'          as day_id,
        '年报'                as report_type,
        '办事处'                as group_type,
        case
-            when type4 = 'NHDLBranch'   then '宁河东丽办事处'                                   -- 'YW_NHDLBSC'   
-            when type4 = 'JNBHBranch'   then '津南滨海新区办事处'                               --  'YW_JNBHXQBSC'  
-            when type4 = 'BCWQBranch'   then '武清北辰办事处'                                   -- 'YW_WQBCBSC'   
-            when type4 = 'XQJHBranch'   then '西青静海办事处'                                   -- 'YW_XQJHBSC'   
-            when type4 = 'JZBranch'     then '蓟州办事处'                                       -- 'YW_JZBSC'     
-            when type4 = 'BDBranch'     then '宝坻办事处'                                       -- 'YW_BDBSC'     
+            when type4 = '宁河东丽' then '宁河东丽办事处'                          
+            when type4 = '津南滨海' then '津南滨海新区办事处'                      
+            when type4 = '北辰武清' then '武清北辰办事处'                          
+            when type4 = '西青静海' then '西青静海办事处'                          
+            when type4 = '蓟州'     then '蓟州办事处'                              
+            when type4 = '宝坻'     then '宝坻办事处'      
             end                                          as group_name,      	   
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then compt_amt
@@ -4370,14 +4371,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0) 
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4397,14 +4398,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)  
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4424,14 +4425,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0)  
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4451,14 +4452,14 @@ select '${v_sdate}'          as day_id,
        sum(case
                when date_format(compt_date, '%Y%m%d') < date_format('${v_sdate}', '%Y0101') then 1
                else 0 end)                                 as start_cnt,                -- 期初笔数          	   
-       sum(now_compt_amt_qua)                                                                            as now_compt_amt,        -- 当期放款金额(万元)
-       sum(now_compt_cnt_qua)                                                                            as now_compt_cnt,        -- 当期放款笔数
-       sum(now_recovery_amt_qua)                                                                         as now_recovery_amt,         -- 当期还款金额(万元)
+       sum(now_compt_amt_tyr)                                                                            as now_compt_amt,        -- 当期代偿金额(万元)
+       sum(now_compt_cnt_tyr)                                                                            as now_compt_cnt,        -- 当期代偿笔数
+       sum(now_recovery_amt_tyr)                                                                         as now_recovery_amt,         -- 当期追回金额(万元)
        sum(if(compt_amt -
               (
                          if(date_format(recovery_date, '%Y0101') = date_format('${v_sdate}', '%Y0101'), recovery_amt, 0) 
                   )               
-                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期还款笔数
+                  <= 0, 1, 0))                                                                           as now_recovery_cnt,         -- 当期追回笔数
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then compt_amt else 0  end) -
        sum(case when date_format(recovery_date, '%Y%m%d') <= '${v_sdate}' then recovery_amt else 0 end) as end_balance, -- 期末余额(万元)
        sum(case when date_format(compt_date, '%Y%m%d') <= '${v_sdate}' then 1 else 0 end)                  as end_cnt      -- 期末笔数
@@ -4510,3 +4511,37 @@ where day_id = '${v_sdate}'
   and start_cnt = 0
 ;
 commit;
+
+-- 添加合计
+insert into  dw_base.ads_rpt_tjnd_busi_record_stat_compt
+(day_id, -- 数据日期
+ report_type,-- 报表类型 (旬报、月报、季报、半年报、年报)
+ group_type, -- 统计类型
+ group_name, -- 分组名称
+ start_balance, -- 期初余额(万元)
+ start_cnt, -- 期初笔数
+ now_compt_amt, -- 当期代偿金额(万元)
+ now_compt_cnt, -- 当期代偿笔数
+ now_recovery_amt, -- 当期收回金额(万元)
+ now_recovery_cnt, -- 当期收回笔数
+ end_balance, -- 期末余额(万元)
+ end_cnt -- 期末笔数
+)
+select '${v_sdate}' as day_id,
+       report_type,
+       group_type,
+       '合计' as group_name,
+       sum(start_balance) as start_balance,
+       sum(start_cnt)     as start_cnt,
+       sum(now_compt_amt) as now_compt_amt,
+       sum(now_compt_cnt) as now_compt_cnt,
+       sum(now_recovery_amt) as now_recovery_amt,
+       sum(now_recovery_cnt) as now_recovery_cnt,
+       sum(end_balance) as end_balance,
+       sum(end_cnt)     as end_cnt
+from dw_base.ads_rpt_tjnd_busi_record_stat_compt
+where day_id = '${v_sdate}'
+group by report_type, group_type
+;
+commit;
+
