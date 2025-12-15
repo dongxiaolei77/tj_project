@@ -323,16 +323,18 @@ from (
               (
                   select -- cur_recovery（本次）追回金额
                          sum(cur_recovery * 10000) as zhje,
-                         id_recovery_tracking -- 关联追偿跟踪ID
+                         id_recovery_tracking, -- 关联追偿跟踪ID
+						 						 GUARANTEE_CODE -- 项目id
 --                  from dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail -- 追偿跟踪详情表
 				  FROM dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail  -- 追偿跟踪详情表
                   where status = 1
                     and date_format(entry_data, '%Y%m') <= date_format('${v_sdate}', '%Y%m')
-                  group by id_recovery_tracking
+                  group by id_recovery_tracking,GUARANTEE_CODE
               ) d
                   -- t.id 主键
                   -- d.id_recovery_tracking 关联追偿跟踪ID
-              on t.id = d.id_recovery_tracking
+--              on t.id = d.id_recovery_tracking
+			on ifnull(d.ID_RECOVERY_TRACKING = t.ID,d.GUARANTEE_CODE = t.RELATED_ITEM_NO)   
          where t.status = 1 -- 状态
            and t.id_cfbiz_underwriting in -- 关联合同ID
                (select guar_id -- 业务id

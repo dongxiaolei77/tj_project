@@ -168,7 +168,8 @@ from (
 					else 0 end) as year_recovery_amt -- 当年追偿金额
 		from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
 				inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-							on b.id_recovery_tracking = a.id
+--							on b.id_recovery_tracking = a.id
+                            on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO) 
 		group by a.id_cfbiz_underwriting
 	) t4 -- 追偿跟踪表
 	on t1.id = t4.id_cfbiz_underwriting
@@ -244,10 +245,10 @@ from (
 		) t4 on t2.project_id = t4.project_id
 			left join
 		(
-			select CITY_CODE_,              -- 区县编码
-					ROLE_CODE_ as branch_off -- 办事处编码
-			from dw_base.dwd_imp_area_branch
-		) t5 on t1.country_code = t5.CITY_CODE_
+	        select code,branch as branch_off
+	        from (select *,row_number() over (partition by code order by db_update_time desc) as rn from dw_nd.ods_t_biz_project_main) a 
+            where a.rn = 1	
+		) t5 on t1.guar_id = t5.code
 	group by branch_off
 ) t1
 group by inst_name,inst_type,off_staff_cnt

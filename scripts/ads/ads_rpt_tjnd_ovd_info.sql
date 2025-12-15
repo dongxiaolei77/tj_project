@@ -11,7 +11,7 @@
 --            dw_base.dim_area_info
 --            dw_nd.ods_t_biz_proj_sign   -- 项目签约表
 --            dw_nd.ods_t_biz_proj_loan   -- 项目放款表
---            dw_nd.ods_t_biz_proj_appr   -- 续支项目申请表
+--            dw_nd.ods_t_biz_proj_appr   -- 批复信息表
 --            dw_nd.ods_t_ct_en_guar      -- 委保合同先关信息
 --            dw_nd.ods_t_loan_after_check  -- 保后检查表
 --            dw_nd.ods_t_biz_proj_repayment_detail
@@ -157,6 +157,7 @@ insert into dw_base.ads_rpt_tjnd_ovd_info
 ,loan_amt_end_dt    -- '贷款到期日期'
 ,ovd_dt             -- '逾期日期'
 ,overdue_principal_wan  -- '逾期本金金额（万元）'
+,onguar_amt         -- '在保余额（万元）'
 )
 select 
  '${v_sdate}' as day_id             -- '数据日期'
@@ -196,6 +197,7 @@ select
 ,t3.jk_ctrct_end_date as loan_amt_end_dt    -- '贷款到期日期'
 ,coalesce(t99.overdue_date,t10.ovd_dt)      as ovd_dt             -- '逾期日期'
 ,t99.overdue_principal / 10000 as overdue_principal_wan  -- '逾期本金金额（万元）'
+,coalesce(t11.onguar_amt,0) as  onguar_amt        -- '在保余额（万元）'
 from      (
             select project_id
 			      ,overdue_principal
@@ -338,7 +340,7 @@ left join (
 			      ,reply_amount  -- 批复金额
 				  ,reply_period  -- 批复期限(月)
 				  ,guar_rate     -- 担保费率
-			from (select *,row_number()over(partition by project_id order by db_update_time desc ) rn from dw_nd.ods_t_biz_proj_appr) e       -- 续支项目申请表
+			from (select *,row_number()over(partition by project_id order by db_update_time desc ) rn from dw_nd.ods_t_biz_proj_appr) e       -- 批复信息表
 			where e.rn = 1
 		  ) t5
 on t1.project_id = t5.project_id
@@ -376,32 +378,6 @@ on t1.project_id = t9.project_id
                 apply_comp_amount                    as shod_compt_amt,    -- 申请代偿金额
                 date_format(overdue_date,'%Y-%m-%d')                         as ovd_dt,            -- 逾期日期
                 str_to_date(act_disburse_date,'%Y%m%d') as compt_dt,          -- 代偿款实际拨付日期
---                case when objective_over_reason = '90'  then '政策风险-其他重要政策变动-其他'                            
---				     when objective_over_reason = '70'  then '担保客户生命健康风险-借款人或项目实际控制人突发重大疾病'   
---					 when objective_over_reason = '100' then '其他不可抗力-战争'                                         
---					 when objective_over_reason = '110' then '其他不能预见、不能避免并不能克服的客观情况'                
---					 when objective_over_reason = '20'  then '自然风险-其他自然灾害'                                     
---					 when objective_over_reason = '60'  then '担保客户生命健康风险-借款人或项目实际控制人死亡'           
---					 when objective_over_reason = '10'  then '自然风险-其他自然灾害'                                     
---					 when objective_over_reason = '40'  then '自然风险-传染病疫情'                                       
---					 when objective_over_reason = '30'  then '自然风险-动物疫情'                                         
---					 when objective_over_reason = '80'  then '政策风险-征收、征用、封锁'                                 
---					 when objective_over_reason = '50'  then '自然风险-其他自然灾害'                                     
---                     end                             as claim_cause       -- 客观风险成因
---			   ,case when subjective_over_reason = '130' then '其他主观原因'          
---				     when subjective_over_reason = '90'  then '隐性负债'              
---				     when subjective_over_reason = '100' then '其他主观原因'          
---				     when subjective_over_reason = '80'  then '银行抽贷'              
---				     when subjective_over_reason = '120' then '违法/违规/涉诉'        
---				     when subjective_over_reason = '20'  then '其他主观原因'          
---				     when subjective_over_reason = '60'  then '隐性负债'             
---				     when subjective_over_reason = '110' then '违法/违规/涉诉'       
---				     when subjective_over_reason = '30'  then '其他主观原因'         
---				     when subjective_over_reason = '70'  then '经营能力不足'         
---				     when subjective_over_reason = '50'  then '经营能力不足'         
---				     when subjective_over_reason = '40'  then '经营能力不足'         
---				     when subjective_over_reason = '10'  then '不良嗜好'              
---		             end                             as claim_cause_detail       -- 主观风险成因
                b.value as claim_cause,              -- 客观风险成因
 			   c.value as claim_cause_detail        -- 主观风险成因
          from (
@@ -433,6 +409,8 @@ on t1.project_id = t9.project_id
 		on a.subjective_over_reason = c.code
          where rn = 1
      ) t10 on t1.project_id = t10.project_id
+left join (select guar_id,onguar_amt from  dw_base.dwd_guar_info_onguar where day_id = '${v_sdate}') t11
+on t2.guar_id = t11.guar_id
 ;
 commit;
 

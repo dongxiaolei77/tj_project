@@ -158,7 +158,8 @@ from (
                                  else 0 end) as year_recovery_amt -- 当年追偿金额
                   from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                            inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                      on b.id_recovery_tracking = a.id
+--                                      on b.id_recovery_tracking = a.id
+                                        on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)  
                   group by a.id_cfbiz_underwriting
               ) t5 -- 追偿跟踪表
               on t1.id = t5.id_cfbiz_underwriting

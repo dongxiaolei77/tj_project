@@ -590,7 +590,8 @@ from (
                            select sum(cur_recovery) as start_num -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+										on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -2 month)), '%Y%m%d')
                        ) t1
@@ -675,7 +676,8 @@ from (
                            select sum(cur_recovery) as end_num -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where date_format(ENTRY_DATA, '%Y%m%d') <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
                        ) t1
@@ -768,7 +770,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval 2 month)), '%Y%m%d')
                        ) t1
@@ -911,7 +914,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -2 month)), '%Y%m%d')
                        ) t1
@@ -1403,7 +1407,8 @@ from (
                            select sum(cur_recovery) as start_num -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -2 month)), '%Y%m%d')
                        ) t1
@@ -1488,7 +1493,8 @@ from (
                            select sum(cur_recovery) as end_num -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where date_format(ENTRY_DATA, '%Y%m%d') <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
                        ) t1
@@ -1561,7 +1567,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval 2 month)), '%Y%m%d')
                        ) t1
@@ -1704,7 +1711,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
                        ) t1
@@ -3136,7 +3144,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval 2 month)), '%Y%m%d')
                        ) t1
@@ -3274,7 +3283,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
                        ) t1
@@ -3343,7 +3353,8 @@ from (
                            select sum(cur_recovery) as start_num -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -2 month)), '%Y%m%d')
                        ) t1
@@ -3428,7 +3439,8 @@ from (
                            select sum(cur_recovery) as end_num -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where date_format(ENTRY_DATA, '%Y%m%d') <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
                        ) t1
@@ -3622,7 +3634,8 @@ from (
                            select sum(cur_recovery) as start_num -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -2 month)), '%Y%m%d')
                        ) t1
@@ -3707,7 +3720,8 @@ from (
                            select sum(cur_recovery) as end_num -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where date_format(ENTRY_DATA, '%Y%m%d') <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
                        ) t1
@@ -3819,7 +3833,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval 2 month)), '%Y%m%d')
                        ) t1
@@ -4013,7 +4028,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -1 month)), '%Y%m%d')
                        ) t1
@@ -4087,7 +4103,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval 2 month)), '%Y%m%d')
                        ) t1
@@ -4230,7 +4247,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -2 month)), '%Y%m%d')
                        ) t1
@@ -4431,7 +4449,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval 2 month)), '%Y%m%d')
                        ) t1
@@ -4574,7 +4593,8 @@ from (
                                   cur_recovery as rcvr_amt -- 当年追偿金额
                            from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking a -- 追偿跟踪表
                                     inner join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail b -- 追偿跟踪详情表
-                                               on b.id_recovery_tracking = a.id
+--                                               on b.id_recovery_tracking = a.id
+											   on ifnull(b.ID_RECOVERY_TRACKING = a.ID,b.GUARANTEE_CODE = a.RELATED_ITEM_NO)
                            where ENTRY_DATA <=
                                  DATE_FORMAT(LAST_DAY(DATE_ADD('${v_sdate}', interval -2 month)), '%Y%m%d')
                        ) t1

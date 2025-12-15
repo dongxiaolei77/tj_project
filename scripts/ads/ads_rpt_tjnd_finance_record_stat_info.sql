@@ -125,7 +125,7 @@ commit;
             when unguar_type = '["03"]' then '质押'                                                                                   -- ["collateral"]
             when unguar_type is not null then '组合'
             end                                 as unguar_type,                                     -- 反担保方式
-        guar_amt                                as guar_amt,                                        -- 担保额  / 10000    
+        t3.loan_contract_amount                 as guar_amt,                                        -- 担保额  / 10000    
         case
             when guar_status = '50' then '在保'                                                                                        --  guar_status = 'GT'
             when guar_status in ('93','90') then '解保'                                                                                --  guar_status = 'ED'
@@ -137,9 +137,7 @@ commit;
         t3.contracr_end_date   as guar_end_date,          -- 担保期限（止）
         guar_term,
         loan_bank,
-        case when coalesce(t3.receiv_guar_amt,0) != coalesce(t3.disc_guar_amt,0) and coalesce(t3.disc_guar_amt,0) != 0 then 0.2           -- [如果应收保费总金额(元)和减免保费金额(元)不一致并且减免报废不为0, 前面的保费费率默认为0.2%]
-             else year_guar_rate * 100
-			 end                                 as year_guar_rate,    -- 年保费比率
+        year_guar_rate * 100                     as year_guar_rate,    -- 年保费比率
         guar_fee,
         null                                     as is_peasant_household,
         case
@@ -186,7 +184,9 @@ commit;
       (
           select ID_BUSINESS_INFORMATION,          -- 业务id
                  WTBZHT_NO      as weibao_cont_no, -- 委托保证合同编号
-                 APPROVED_TERM  as guar_term,      -- 本次审批期限
+				 GUARANTEE_PERIOD as guar_term,    -- 保函期限
+--                 APPROVED_TERM  as guar_term,      -- 本次审批期限
+                 loan_contract_amount,             -- 借款合同金额（万元）
                  FULL_BANK_NAME as loan_bank,      -- 合作银行全称
                  GUARANTEE_TATE as year_guar_rate, -- 担保费率
                  SHARE_FEE      as guar_fee,       -- 实际应收保费
@@ -282,7 +282,7 @@ select '${v_sdate}' as day_id,
 --       guar_type,
        t2.aggregate_scheme as guar_type,  -- 担保类型
        coalesce(t2.unguar_type,t9.unguar_type) as unguar_type,   -- 反担保方式
-       guar_amt,
+       t1.loan_amt as guar_amt,        -- 担保额
        guar_status,
        date_format(loan_enter_date,'%Y-%m-%d') as loan_enter_date,
        date_format(loan_date,'%Y-%m-%d') as loan_date,
@@ -291,7 +291,8 @@ select '${v_sdate}' as day_id,
        t8.loan_cont_end_dt  as guar_end_date,   -- 担保期限（止）
        guar_term,
        loan_bank,
-       case when coalesce(t7.receiv_guar_amt,t9.receiv_guar_amt,0) != coalesce(t7.disc_guar_amt,t9.disc_guar_amt,0) and coalesce(t7.disc_guar_amt,t9.disc_guar_amt,0) != 0 then 0.2   -- [如果应收保费总金额(元)和减免保费金额(元)不一致并且减免报废不为0, 前面的保费费率默认为0.2%]
+       case when t1.guar_id like 'TJ%' then year_guar_rate
+	        when coalesce(t7.receiv_guar_amt,t9.receiv_guar_amt,0) != coalesce(t7.disc_guar_amt,t9.disc_guar_amt,0) and coalesce(t7.disc_guar_amt,t9.disc_guar_amt,0) != 0 then 0.2   -- [如果应收保费总金额(元)和减免保费金额(元)不一致并且减免报废不为0, 前面的保费费率默认为0.2%]
 	        else year_guar_rate
 			end     as year_guar_rate,
        guar_fee,
@@ -315,6 +316,7 @@ from (
                 guar_class    as gnd_indus_class, -- 行业类型
 --                protect_guar  as unguar_type,     -- 反担保措施
                 guar_amt      as guar_amt,        -- 放款金额
+				loan_amt      ,                   -- 借款合同额度
                 item_stt      as guar_status,     -- 项目状态
                 loan_reg_dt   as loan_enter_date, -- 放款登记日期
                 grant_dt      as loan_date,       -- 放款日期

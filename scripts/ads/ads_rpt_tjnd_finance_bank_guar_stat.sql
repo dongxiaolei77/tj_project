@@ -186,3 +186,26 @@ from (
 order by gt_amt
     desc;
 commit;
+
+insert into dw_base.ads_rpt_tjnd_finance_bank_guar_stat
+(day_id, -- 数据日期
+ bank_name, -- 银行
+ coop_amt, -- 授信额度
+ total_guar_cnt, -- 累计担保笔数
+ total_guar_amt, -- 累计担保金额(万元)
+ gt_cnt, -- 在保笔数
+ gt_amt, -- 业务在保余额(万元)
+ gt_amt_proportion -- 在保额占比
+)
+select '${v_sdate}' as day_id, -- 数据日期
+       '合计' as bank_name, -- 银行
+       sum(coop_amt) as coop_amt, -- 授信额度
+       sum(total_guar_cnt) as total_guar_cnt, -- 累计担保笔数
+       sum(total_guar_amt) as total_guar_amt, -- 累计担保金额(万元)
+       sum(gt_cnt) as gt_cnt, -- 在保笔数
+       sum(gt_amt) as gt_amt, -- 业务在保余额(万元)
+       1 as gt_amt_proportion -- 在保额占比
+from dw_base.ads_rpt_tjnd_finance_bank_guar_stat
+where day_id = '${v_sdate}'
+;
+commit;

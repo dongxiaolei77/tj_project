@@ -75,7 +75,8 @@ commit;
 		  from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking t1                       -- 追偿跟踪表
 --        left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
 		  left join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail t2           -- 追偿跟踪详情表
-                 on t1.id = t2.ID_RECOVERY_TRACKING
+--                 on t1.id = t2.ID_RECOVERY_TRACKING
+                   on ifnull(t2.ID_RECOVERY_TRACKING = t1.ID,t2.GUARANTEE_CODE = t1.RELATED_ITEM_NO)
           group by t1.ID_CFBIZ_UNDERWRITING
       ) t3 on t1.id = t3.ID_CFBIZ_UNDERWRITING
           left join
@@ -87,7 +88,8 @@ commit;
 		  from dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking t1                       -- 追偿跟踪表
 --        left join dw_nd.ods_tjnd_yw_bh_recovery_tracking_detail t2
 		  left join dw_nd.ods_creditmid_v2_z_migrate_bh_recovery_tracking_detail t2           -- 追偿跟踪详情表
-                 on t1.id = t2.ID_RECOVERY_TRACKING
+--                 on t1.id = t2.ID_RECOVERY_TRACKING
+                   on ifnull(t2.ID_RECOVERY_TRACKING = t1.ID,t2.GUARANTEE_CODE = t1.RELATED_ITEM_NO)  
           where year(t2.ENTRY_DATA) = year('${v_sdate}')
           group by t1.ID_CFBIZ_UNDERWRITING
       ) t4 on t1.ID = t4.ID_CFBIZ_UNDERWRITING;

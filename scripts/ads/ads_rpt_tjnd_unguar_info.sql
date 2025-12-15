@@ -429,7 +429,7 @@ left join (
 			            when status = '99' then '已否决'
 		                end  as unguar_stat
 				  ,  wf_inst_id -- 工作流实例id
-				  ,date_format(complete_time,'%Y-%m-%d') as complete_time
+				  ,date_format(complete_time,'%Y-%m-%d') as complete_time   -- 流程完成时间
 		    from (select *,row_number() over (partition by project_id order by update_time desc) rn from dw_nd.ods_t_biz_proj_unguar) a 
 			where a.rn = 1
 		  )	 t3
